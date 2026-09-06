@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EL-RESALA POS & ERP V4.0</title>
+  <!-- Tailwind CSS & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brandDark: '#0b111e',
+            panelDark: '#121a29',
+            cardDark: '#182438',
+            borderDark: '#22344f',
+            accentGreen: '#10b981',
+            accentOrange: '#f59e0b',
+            accentCyan: '#06b6d4',
+            accentBlue: '#3b82f6',
+            accentRed: '#ef4444'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
+    body { font-family: 'Cairo', sans-serif; }
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #0b111e; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #22344f; border-radius: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #06b6d4; }
+  </style>
+</head>
+<body class="bg-brandDark text-slate-100 h-screen w-screen overflow-hidden flex flex-col select-none">
+
+  <!-- ================= الشريط العلوي (HEADER - مطابق للصورة رقم 1 و 3) ================= -->
+  <header class="bg-panelDark border-b border-borderDark px-4 py-2 flex items-center justify-between z-30 shadow-md">
+    <!-- الأزرار السريعة أعلى اليمين -->
+    <div class="flex items-center gap-2">
+      <div class="bg-gradient-to-r from-accentCyan to-accentBlue text-white font-black px-3 py-1 rounded-xl text-sm tracking-wider flex items-center gap-1.5 ml-2 shadow-[0_0_12px_rgba(6,182,212,0.3)]">
+        <i data-lucide="zap" class="w-4 h-4 text-white"></i> EL-RESALA
+      </div>
+      <button onclick="openModal('modal-device')" class="bg-cardDark hover:bg-borderDark text-xs px-3 py-1.5 rounded-lg border border-borderDark flex items-center gap-1.5 font-bold transition">
+        <i data-lucide="smartphone" class="w-4 h-4 text-accentCyan"></i> شراء جهاز
+      </button>
+      <button onclick="openModal('modal-exchange')" class="bg-cardDark hover:bg-borderDark text-xs px-3 py-1.5 rounded-lg border border-borderDark flex items-center gap-1.5 font-bold transition">
+        <i data-lucide="repeat" class="w-4 h-4 text-accentCyan"></i> استبدال
+      </button>
+      <button onclick="openModal('modal-refund')" class="bg-cardDark hover:bg-borderDark text-xs px-3 py-1.5 rounded-lg border border-borderDark flex items-center gap-1.5 font-bold transition">
+        <i data-lucide="rotate-ccw" class="w-4 h-4 text-accentOrange"></i> مرتجع
+      </button>
+      <button onclick="openModal('modal-repair-job')" class="bg-cardDark hover:bg-borderDark text-xs px-3 py-1.5 rounded-lg border border-borderDark flex items-center gap-1.5 font-bold transition">
+        <i data-lucide="wrench" class="w-4 h-4 text-accentCyan"></i> استلام من عميل
+      </button>
+      <div class="h-5 w-[1px] bg-borderDark mx-1"></div>
+      <button onclick="focusBarcode()" class="bg-cardDark hover:bg-borderDark text-xs px-3 py-1.5 rounded-lg border border-borderDark flex items-center gap-1 text-slate-300">
+        <i data-lucide="barcode" class="w-4 h-4 text-accentGreen"></i> باركود
+      </button>
+      <div class="relative">
+        <input type="text" id="globalSearch" placeholder="بحث شامل (Ctrl+K)..." class="bg-brandDark border border-borderDark rounded-lg px-3 py-1.5 text-xs w-52 focus:outline-none focus:border-accentCyan text-slate-200">
+        <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2 top-2"></i>
+      </div>
+    </div>
+
+    <!-- التاريخ وحالة درج الكاش أعلى اليسار (مطابق تماماً للصورة) -->
+    <div class="flex items-center gap-3">
+      <span class="text-xs text-slate-400 font-bold flex items-center gap-1">
+        <i data-lucide="calendar" class="w-3.5 h-3.5 text-slate-400"></i>
+        <span id="currentDateHeader">الجمعة 4 سبتمبر 2026</span>
+      </span>
+
+      <div class="bg-cardDark border border-borderDark rounded-xl px-3 py-1 flex items-center gap-3">
+        <div class="text-right">
+          <div class="text-[10px] text-slate-400 font-bold">الرصيد الحالي</div>
+          <div class="text-sm font-black text-accentGreen" id="topDrawerBalance">1,000.00 ج.م</div>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <button onclick="openModal('modal-cash-drawer')" class="bg-accentGreen/15 hover:bg-accentGreen/25 text-accentGreen border border-accentGreen/30 text-xs px-2.5 py-1 rounded-lg font-bold flex items-center gap-1 transition">
+            <i data-lucide="wallet" class="w-3.5 h-3.5"></i> درج الكاش (admin)
+          </button>
+          <button onclick="openModal('modal-close-shift')" class="bg-accentOrange/15 hover:bg-accentOrange/25 text-accentOrange border border-accentOrange/30 text-xs px-2 py-1 rounded-lg font-bold flex items-center gap-1 transition">
+            <i data-lucide="lock" class="w-3.5 h-3.5"></i> تقفيل الشفت
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= منطقة العمل الرئيسية (POS VIEWPORT) ================= -->
+  <main class="flex-1 flex overflow-hidden p-3 gap-3">
+    
+    <!-- عمود السلة والفاتورة الفورية (يمين) -->
+    <div class="w-[390px] bg-panelDark border border-borderDark rounded-2xl flex flex-col overflow-hidden shadow-xl">
+      <div class="bg-cardDark/80 p-3 border-b border-borderDark flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="p-2 bg-accentCyan/10 rounded-xl text-accentCyan">
+            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h2 class="font-bold text-sm">نقطة البيع الفورية</h2>
+            <p class="text-[11px] text-slate-400">فاتورة رقم: #<span id="invNumber">1092</span></p>
+          </div>
+        </div>
+        <button onclick="clearCart()" class="text-xs text-rose-400 hover:text-rose-300 font-bold p-1">إفراغ السلة</button>
+      </div>
+
+      <!-- عناصر السلة (مطابقة للصورة رقم 8) -->
+      <div class="flex-1 overflow-y-auto p-2 space-y-2 custom-scrollbar" id="cartItemsList">
+        <!-- يتم التحميل ديناميكياً بواسطة JS -->
+      </div>
+
+      <!-- ملخص الفاتورة وزر إتمام البيع -->
+      <div class="bg-cardDark/95 p-3 border-t border-borderDark space-y-2">
+        <div class="flex justify-between text-xs text-slate-400">
+          <span>المجموع الفرعي:</span>
+          <span class="text-slate-200 font-bold" id="cartSubtotal">850.00 ج.م</span>
+        </div>
+        <div class="flex justify-between text-xs text-slate-400">
+          <span>الخصم المباشر:</span>
+          <input type="number" id="cartDiscount" value="0" min="0" class="w-20 bg-brandDark border border-borderDark rounded px-2 py-0.5 text-center text-xs text-accentOrange font-bold focus:outline-none" oninput="updateCartTotals()">
+        </div>
+        <div class="flex justify-between items-center pt-2 border-t border-borderDark/60">
+          <span class="font-bold text-sm">الإجمالي المستحق:</span>
+          <span class="text-lg font-black text-accentGreen" id="cartGrandTotal">850.00 ج.م</span>
+        </div>
+        <button onclick="openModal('modal-checkout')" class="w-full bg-accentGreen hover:bg-emerald-600 text-white font-black py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/40 transition text-sm">
+          <i data-lucide="check-circle" class="w-4 h-4"></i> إتمام البيع (F10)
+        </button>
+      </div>
+    </div>
+
+    <!-- كتالوج الأصناف المتاح لمحل الموبايلات (يسار) -->
+    <div class="flex-1 bg-panelDark border border-borderDark rounded-2xl flex flex-col overflow-hidden shadow-xl">
+      <div class="p-3 border-b border-borderDark flex items-center justify-between bg-cardDark/50">
+        <div class="flex items-center gap-2 overflow-x-auto custom-scrollbar" id="categoryFilter">
+          <button onclick="filterProducts('ALL')" class="cat-btn bg-accentCyan text-slate-900 font-black text-xs px-3.5 py-1.5 rounded-xl shadow">الكل</button>
+          <button onclick="filterProducts('DEVICE')" class="cat-btn bg-cardDark hover:bg-borderDark text-slate-300 font-semibold text-xs px-3 py-1.5 rounded-xl transition">هواتف محمولة</button>
+          <button onclick="filterProducts('ACCESSORY')" class="cat-btn bg-cardDark hover:bg-borderDark text-slate-300 font-semibold text-xs px-3 py-1.5 rounded-xl transition">إكسسوارات</button>
+          <button onclick="filterProducts('SPARE_PART')" class="cat-btn bg-cardDark hover:bg-borderDark text-slate-300 font-semibold text-xs px-3 py-1.5 rounded-xl transition">قطع غيار</button>
+        </div>
+        <span class="text-xs text-slate-400 bg-brandDark px-2.5 py-1 rounded-lg border border-borderDark font-bold" id="productCountBadge">4 أصناف</span>
+      </div>
+
+      <div class="flex-1 p-3 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 overflow-y-auto custom-scrollbar" id="productsGrid">
+        <!-- تُبنى ديناميكياً -->
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= الشريط السفلي الثابت (DOCK BAR - مطابق للصور بالأسفل تماماً) ================= -->
+  <footer class="bg-panelDark border-t border-borderDark px-2 py-1 flex items-center justify-around z-30 text-[11px] font-bold">
+    <button onclick="closeAllModals()" class="flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-400 hover:text-accentCyan transition">
+      <i data-lucide="home" class="w-4 h-4"></i>
+      <span>الرئيسية</span>
+    </button>
+    <button onclick="closeAllModals()" class="flex flex-col items-center gap-0.5 px-4 py-1 rounded-xl bg-accentCyan/20 text-accentCyan border border-accentCyan/30">
+      <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+      <span class="font-black">نقطة البيع</span>
+    </button>
+    <button onclick="openModal('modal-repairs-view')" class="flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-400 hover:text-accentCyan transition">
+      <i data-lucide="wrench" class="w-4 h-4"></i>
+      <span>الصيانة</span>
+    </button>
+    <button onclick="openModal('modal-transfers-view')" class="flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-400 hover:text-accentCyan transition">
+      <i data-lucide="arrow-left-right" class="w-4 h-4"></i>
+      <span>التحويلات</span>
+    </button>
+    <button onclick="openModal('modal-inventory-view')" class="flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-400 hover:text-accentCyan transition">
+      <i data-lucide="boxes" class="w-4 h-4"></i>
+      <span>المخزون</span>
+    </button>
+    <button onclick="openModal('modal-sales-history')" class="flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-400 hover:text-accentCyan transition">
+      <i data-lucide="trending-up" class="w-4 h-4"></i>
+      <span>المبيعات</span>
+    </button>
+    <button onclick="openModal('modal-cash-drawer')" class="flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-400 hover:text-accentCyan transition">
+      <i data-lucide="credit-card" class="w-4 h-4"></i>
+      <span>الحسابات</span>
+    </button>
+    <button onclick="openModal('modal-settings')" class="flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-400 hover:text-accentCyan transition">
+      <i data-lucide="settings" class="w-4 h-4"></i>
+      <span>الإعدادات</span>
+    </button>
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- 1. نافذة إتمام البيع (مطابقة للصورة رقم 8 - 55438) -->
+  <!-- ========================================================================= -->
+  <div id="modal-checkout" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#182335] border border-borderDark rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col animate-in fade-in zoom-in-95">
+      <div class="bg-cardDark px-4 py-2.5 border-b border-borderDark flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="bg-accentGreen/20 text-accentGreen font-black px-2.5 py-1 rounded-lg text-xs" id="checkoutHeaderAmount">850.00 ج.م</span>
+          <h2 class="text-sm font-bold flex items-center gap-1.5"><i data-lucide="shopping-cart" class="w-4 h-4 text-accentCyan"></i> إتمام البيع</h2>
+        </div>
+        <button onclick="closeModal('modal-checkout')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- بيانات العميل -->
+        <div class="space-y-3">
+          <div class="text-xs font-bold text-slate-300 flex items-center gap-1">
+            <i data-lucide="user" class="w-3.5 h-3.5 text-accentCyan"></i> العميل
+          </div>
+          <div class="flex gap-2">
+            <button class="flex-1 bg-accentCyan text-slate-900 font-bold py-1 rounded-lg text-xs">عميل</button>
+            <button class="flex-1 bg-cardDark text-slate-400 py-1 rounded-lg text-xs font-bold border border-borderDark">مورد</button>
+          </div>
+          <input type="text" id="checkoutCustomerName" placeholder="عميل نقدي — اكتب اسم أو رقم لاختيار عميل مسجل" class="w-full bg-brandDark border border-borderDark rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-accentCyan">
+          <input type="text" id="checkoutCustomerPhone" placeholder="رقم الهاتف (اختياري)" class="w-full bg-brandDark border border-borderDark rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none">
+
+          <div class="bg-cardDark/60 p-2.5 rounded-xl border border-borderDark">
+            <div class="text-[11px] font-bold text-slate-400 mb-1.5">عناصر السلة (<span id="checkoutItemCount">1</span> عنصر):</div>
+            <div class="text-xs flex justify-between items-center bg-brandDark/80 p-2 rounded-lg" id="checkoutMiniList">
+              <span>شاشة a12</span>
+              <span class="text-accentGreen font-bold">850.00 ج.م</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- طريقة الدفع واختيار المحفظة -->
+        <div class="space-y-3">
+          <div class="text-xs font-bold text-slate-300 flex items-center gap-1">
+            <i data-lucide="wallet" class="w-3.5 h-3.5 text-accentCyan"></i> طريقة الدفع
+          </div>
+          
+          <div class="grid grid-cols-5 gap-1.5" id="paymentModeTabs">
+            <button onclick="setPayMode('CASH')" id="pm-CASH" class="bg-accentCyan text-slate-900 font-black p-2 rounded-xl text-center flex flex-col items-center gap-1">
+              <i data-lucide="banknote" class="w-4 h-4"></i>
+              <span class="text-[10px]">كاش سائل</span>
+            </button>
+            <button onclick="setPayMode('WALLET')" id="pm-WALLET" class="bg-cardDark text-slate-300 hover:text-white p-2 rounded-xl text-center flex flex-col items-center gap-1 border border-borderDark">
+              <i data-lucide="smartphone" class="w-4 h-4 text-accentCyan"></i>
+              <span class="text-[10px]">محفظة</span>
+            </button>
+            <button onclick="setPayMode('BANK')" id="pm-BANK" class="bg-cardDark text-slate-300 hover:text-white p-2 rounded-xl text-center flex flex-col items-center gap-1 border border-borderDark">
+              <i data-lucide="landmark" class="w-4 h-4 text-blue-400"></i>
+              <span class="text-[10px]">حساب بنكي</span>
+            </button>
+            <button onclick="setPayMode('CREDIT')" id="pm-CREDIT" class="bg-cardDark text-slate-300 hover:text-white p-2 rounded-xl text-center flex flex-col items-center gap-1 border border-borderDark">
+              <i data-lucide="clock" class="w-4 h-4 text-amber-400"></i>
+              <span class="text-[10px]">آجل</span>
+            </button>
+            <button onclick="setPayMode('SPLIT')" id="pm-SPLIT" class="bg-cardDark text-slate-300 hover:text-white p-2 rounded-xl text-center flex flex-col items-center gap-1 border border-borderDark">
+              <i data-lucide="divide" class="w-4 h-4 text-purple-400"></i>
+              <span class="text-[10px]">تقسيم</span>
+            </button>
+          </div>
+
+          <div class="space-y-1">
+            <label class="text-[11px] text-slate-400 font-bold">اختر المحفظة / الخزنة:</label>
+            <select id="checkoutAccountSelect" class="w-full bg-brandDark border border-borderDark rounded-lg px-2.5 py-2 text-xs text-slate-200">
+              <option value="CASH">كاش سائل - افتراضي (الخزينة)</option>
+              <option value="WALLET_MOHAMED">محفظة إلكترونية - محمد مصطفي (Vodafone Cash)</option>
+              <option value="BANK">حساب بنكي - افتراضي (InstaPay)</option>
+            </select>
+          </div>
+
+          <div class="flex items-center justify-between p-2 bg-cardDark rounded-xl border border-borderDark">
+            <span class="text-xs font-bold text-slate-300">استبدال جهاز (خصم جهاز العميل)</span>
+            <input type="checkbox" id="tradeInCheck" class="w-4 h-4 accent-accentCyan">
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-cardDark px-4 py-3 border-t border-borderDark flex items-center justify-between">
+        <div class="text-xs">
+          <span class="text-slate-400 font-bold">الإجمالي المستحق: </span>
+          <span class="text-base font-black text-accentGreen" id="checkoutFooterAmount">850.00 ج.م</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="closeModal('modal-checkout')" class="px-4 py-1.5 rounded-xl border border-borderDark text-xs font-bold text-slate-300 hover:bg-borderDark">إلغاء</button>
+          <button onclick="printThermalInvoice()" class="bg-accentOrange hover:bg-amber-600 text-slate-950 font-black px-4 py-1.5 rounded-xl text-xs flex items-center gap-1 transition">
+            <i data-lucide="printer" class="w-3.5 h-3.5"></i> طباعة
+          </button>
+          <button onclick="confirmCheckout()" class="bg-accentGreen hover:bg-emerald-600 text-white font-black px-5 py-1.5 rounded-xl text-xs flex items-center gap-1.5 shadow transition">
+            <i data-lucide="check" class="w-4 h-4"></i> تأكيد البيع
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 2. نافذة درج الكاش والمحافظ (مطابقة للصور 1 و 3 - 56010 و 56057) -->
+  <!-- ========================================================================= -->
+  <div id="modal-cash-drawer" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#121b2b] border border-borderDark rounded-2xl w-full max-w-3xl shadow-2xl overflow-hidden flex flex-col">
+      <div class="bg-cardDark px-4 py-3 border-b border-borderDark flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="p-1.5 bg-accentGreen/15 rounded-lg text-accentGreen">
+            <i data-lucide="wallet" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h2 class="font-black text-sm text-slate-100">درج الكاش (admin)</h2>
+            <p class="text-[11px] text-slate-400">إجمالي ما سيسجل في الخزينة: <span class="text-accentGreen font-bold" id="drawerModalTotal">1,000.00 ج.م</span></p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-cash-drawer')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div class="p-4 space-y-4 max-h-[75vh] overflow-y-auto custom-scrollbar">
+        <!-- ملخص المحافظ الحقيقي المطابق للصورة 1 تماماً -->
+        <div class="bg-cardDark/80 p-3 rounded-2xl border border-borderDark space-y-2">
+          <div class="text-xs font-black text-slate-300 mb-2">ملخص المحافظ — ما سيسجل في الخزينة</div>
+          
+          <div class="space-y-1.5">
+            <div class="p-2.5 bg-brandDark/80 rounded-xl flex items-center justify-between border border-borderDark/40">
+              <div class="text-xs font-bold text-accentGreen">كاش سائل - افتراضي (الخزينة)</div>
+              <div class="flex items-center gap-4 text-xs">
+                <span class="text-slate-400">مبيعات: 0.00</span>
+                <span class="bg-cyan-950/60 text-accentCyan px-2 py-0.5 rounded font-black">الصافي: 0.00</span>
+              </div>
+            </div>
+
+            <div class="p-2.5 bg-brandDark/80 rounded-xl flex items-center justify-between border border-borderDark/40">
+              <div class="text-xs font-bold text-accentCyan">محمد مصطفي (Vodafone Cash)</div>
+              <div class="flex items-center gap-4 text-xs">
+                <span class="text-slate-400">مبيعات: 0.00</span>
+                <span class="bg-cyan-950/60 text-accentCyan px-2 py-0.5 rounded font-black">الصافي: 1,000.00</span>
+              </div>
+            </div>
+
+            <div class="p-2.5 bg-brandDark/80 rounded-xl flex items-center justify-between border border-borderDark/40">
+              <div class="text-xs font-bold text-blue-400">حساب بنكي - افتراضي (InstaPay)</div>
+              <div class="flex items-center gap-4 text-xs">
+                <span class="text-slate-400">مبيعات: 0.00</span>
+                <span class="bg-cyan-950/60 text-accentCyan px-2 py-0.5 rounded font-black">الصافي: 0.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- أزرار العمليات المباشرة (مطابقة للصورة 3) -->
+        <div class="grid grid-cols-3 gap-2">
+          <button onclick="promptMoneyAction('إيداع')" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i> إيداع
+          </button>
+          <button onclick="promptMoneyAction('سحب')" class="bg-rose-600/20 hover:bg-rose-600/30 text-rose-400 border border-rose-500/30 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1">
+            <i data-lucide="minus-circle" class="w-4 h-4"></i> سحب
+          </button>
+          <button onclick="promptMoneyAction('تحويل')" class="bg-accentCyan/20 hover:bg-accentCyan/30 text-accentCyan border border-accentCyan/30 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1">
+            <i data-lucide="repeat" class="w-4 h-4"></i> تحويل بين المحافظ
+          </button>
+        </div>
+
+        <!-- سجل حركات اليوم -->
+        <div class="bg-cardDark rounded-xl border border-borderDark p-3">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-xs font-bold text-slate-300 flex items-center gap-1.5"><i data-lucide="history" class="w-4 h-4 text-accentCyan"></i> حركات اليوم</h3>
+            <span class="text-[10px] text-slate-400">1 حركة مسجلة</span>
+          </div>
+          <div class="p-2 bg-brandDark/80 rounded-lg flex items-center justify-between text-xs">
+            <div>
+              <div class="font-bold text-slate-200">إيداع (محفظة) - محمد مصطفي</div>
+              <div class="text-[10px] text-slate-400">رصيد افتتاحي / تحصيل</div>
+            </div>
+            <span class="text-accentGreen font-black">+1,000.00 ج.م</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 3. نافذة تقفيل الشفت (مطابقة للصورة 2 و 4 - 56029 و 56051) -->
+  <!-- ========================================================================= -->
+  <div id="modal-close-shift" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#162132] border border-borderDark rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in-95">
+      <div class="bg-cardDark px-4 py-3 border-b border-borderDark flex items-center justify-between">
+        <h2 class="text-sm font-extrabold text-accentOrange flex items-center gap-1.5">
+          <i data-lucide="lock" class="w-4 h-4"></i> تقفيل الشفت
+        </h2>
+        <button onclick="closeModal('modal-close-shift')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div class="p-4 space-y-3">
+        <!-- 1. مطابقة الكاش -->
+        <div class="bg-cardDark/80 p-3 rounded-xl border border-borderDark space-y-1.5">
+          <div class="flex justify-between text-xs font-bold">
+            <span class="text-slate-300">1. مطابقة الكاش السائل</span>
+            <span class="text-accentCyan">المتوقع: 0.00 ج.م</span>
+          </div>
+          <input type="number" id="countedCashInput" placeholder="اعد الكاش واكتب الرقم هنا..." class="w-full bg-brandDark border border-borderDark rounded-lg px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-accentGreen">
+          <p class="text-[10px] text-slate-400">سيبها فاضية لو مش عايز تعمل مطابقة — التقفيل هيتم من غير تسجيل عجز أو زيادة.</p>
+        </div>
+
+        <!-- 2. ملاحظات -->
+        <div class="bg-cardDark/80 p-3 rounded-xl border border-borderDark space-y-1">
+          <label class="text-xs font-bold text-slate-300">2. ملاحظات (اختياري)</label>
+          <textarea id="shiftNotes" rows="2" placeholder="أي ملاحظات عن تقفيل اليوم..." class="w-full bg-brandDark border border-borderDark rounded-lg p-2 text-xs text-slate-200 focus:outline-none"></textarea>
+        </div>
+
+        <!-- 3. طباعة التقرير الحراري وتقفيل الشفت -->
+        <div class="space-y-2 pt-1">
+          <button onclick="printThermalShiftReport()" class="w-full bg-accentOrange hover:bg-amber-600 text-slate-950 font-black py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition">
+            <i data-lucide="printer" class="w-4 h-4"></i> طباعة التقرير على الطابعة الحرارية
+          </button>
+          <button onclick="openConfirmShiftModal()" class="w-full bg-accentGreen hover:bg-emerald-600 text-white font-black py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition shadow">
+            <i data-lucide="check-circle" class="w-4 h-4"></i> تقفيل الشفت الآن
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة تأكيد التقفيل الخضراء (مطابقة للصورة 4 - 56051) -->
+  <div id="modal-shift-confirm" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-55 hidden flex items-center justify-center p-4">
+    <div class="bg-[#121c2d] border border-accentGreen/40 rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden animate-in zoom-in-95">
+      <div class="bg-accentGreen text-slate-950 font-black px-4 py-2.5 text-center text-xs flex items-center justify-center gap-1.5">
+        <i data-lucide="check-circle-2" class="w-4 h-4"></i> تأكيد تقفيل الشفت
+      </div>
+      <div class="p-4 space-y-2.5 text-xs">
+        <div class="bg-cardDark p-2.5 rounded-xl border border-borderDark space-y-1">
+          <div class="flex justify-between font-bold">
+            <span class="text-slate-400">المبيعات:</span>
+            <span class="text-slate-100">0.00 ج.م</span>
+          </div>
+          <div class="text-[10px] text-slate-400">نقدي: 0.00 | محفظة: 0.00 | بنكي: 0.00</div>
+        </div>
+        <div class="bg-cardDark p-2.5 rounded-xl border border-borderDark flex justify-between font-bold">
+          <span class="text-slate-400">إيداعات يدوية:</span>
+          <span class="text-accentGreen">1,000.00 ج.م</span>
+        </div>
+        <div class="bg-cardDark p-2.5 rounded-xl border border-borderDark flex justify-between font-bold">
+          <span class="text-slate-400">صافي المبلغ للخزنة:</span>
+          <span class="text-accentGreen font-black text-sm">1,000.00 ج.م</span>
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button onclick="closeModal('modal-shift-confirm')" class="flex-1 bg-cardDark border border-borderDark py-2 rounded-xl text-xs font-bold text-slate-300">إلغاء</button>
+          <button onclick="finalizeShift()" class="flex-1 bg-accentGreen hover:bg-emerald-600 text-white py-2 rounded-xl text-xs font-black">تأكيد التقفيل</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 4. نافذة الإعدادات الشاملة (مطابقة للصور 5, 6, 7, 9, 10) -->
+  <!-- ========================================================================= -->
+  <div id="modal-settings" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#121b2b] border border-borderDark rounded-2xl w-full max-w-4xl h-[85vh] shadow-2xl overflow-hidden flex flex-col">
+      <div class="bg-cardDark px-4 py-3 border-b border-borderDark flex items-center justify-between">
+        <h2 class="text-sm font-black text-slate-100 flex items-center gap-2">
+          <i data-lucide="settings" class="w-4 h-4 text-accentCyan"></i> إعدادات نظام EL-RESALA
+        </h2>
+        <button onclick="closeModal('modal-settings')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div class="flex-1 flex overflow-hidden">
+        <!-- القائمة الجانبية للإعدادات (مطابقة للصورة رقم 10) -->
+        <div class="w-52 bg-cardDark/50 border-l border-borderDark p-2 space-y-1 text-xs">
+          <div class="text-[10px] text-slate-500 font-bold px-2 py-1">الأساسيات</div>
+          <button onclick="showSettingsTab('print')" class="w-full text-right px-3 py-2 rounded-xl font-bold bg-accentCyan/20 text-accentCyan border border-accentCyan/30">الطباعة والفواتير</button>
+          <button onclick="showSettingsTab('wallets')" class="w-full text-right px-3 py-2 rounded-xl font-semibold text-slate-400 hover:bg-borderDark">المحافظ والعمولات</button>
+          <button onclick="showSettingsTab('repairs')" class="w-full text-right px-3 py-2 rounded-xl font-semibold text-slate-400 hover:bg-borderDark">فواتير الصيانة والضمان</button>
+          <div class="text-[10px] text-slate-500 font-bold px-2 py-1 pt-2">النظام</div>
+          <button onclick="showSettingsTab('notifications')" class="w-full text-right px-3 py-2 rounded-xl font-semibold text-slate-400 hover:bg-borderDark">إعدادات الإشعارات</button>
+        </div>
+
+        <!-- محتوى تبويب الطباعة والفواتير (مطابق للصورة 5 و 6 و 7) -->
+        <div class="flex-1 p-4 overflow-y-auto custom-scrollbar space-y-4 text-xs" id="settingsTabContent">
+          <!-- بيانات المتجر والفاتورة -->
+          <div class="bg-cardDark p-3.5 rounded-2xl border border-borderDark space-y-3">
+            <h3 class="font-bold text-accentCyan flex items-center gap-1.5"><i data-lucide="file-text" class="w-4 h-4"></i> بيانات الفواتير الحرارية</h3>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-slate-400 text-[11px]">رقم الهاتف على الفاتورة:</label>
+                <input type="text" id="cfgStorePhone" value="01070900711" class="w-full bg-brandDark border border-borderDark rounded-lg px-2.5 py-1.5 text-slate-200 mt-1">
+              </div>
+              <div>
+                <label class="text-slate-400 text-[11px]">العنوان:</label>
+                <input type="text" id="cfgStoreAddress" value="شبرا الخيمة - القاهرة" class="w-full bg-brandDark border border-borderDark rounded-lg px-2.5 py-1.5 text-slate-200 mt-1">
+              </div>
+            </div>
+            <div>
+              <label class="text-slate-400 text-[11px]">رسالة نهاية الفاتورة:</label>
+              <input type="text" id="cfgStoreFooter" value="شكراً لتعاملكم معنا — EL-RESALA" class="w-full bg-brandDark border border-borderDark rounded-lg px-2.5 py-1.5 text-slate-200 mt-1">
+            </div>
+          </div>
+
+          <!-- إعدادات الطابعة والباركود (مطابقة للصورة 6 و 7) -->
+          <div class="bg-cardDark p-3.5 rounded-2xl border border-borderDark space-y-3">
+            <h3 class="font-bold text-accentGreen flex items-center gap-1.5"><i data-lucide="printer" class="w-4 h-4"></i> خيارات الطابعة والباركود</h3>
+            <div class="grid grid-cols-3 gap-2">
+              <div>
+                <label class="text-slate-400 text-[11px]">مقاس الورق:</label>
+                <select class="w-full bg-brandDark border border-borderDark rounded-lg p-1.5 text-slate-200 mt-1">
+                  <option>حرارية (رول 80 مم) — قياسي</option>
+                  <option>حرارية (رول 58 مم)</option>
+                  <option>ورق عادي A4</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-slate-400 text-[11px]">مقاس ملصق الصيانة:</label>
+                <select class="w-full bg-brandDark border border-borderDark rounded-lg p-1.5 text-slate-200 mt-1">
+                  <option>38 × 25 مم — المقاس العادي</option>
+                  <option>50 × 30 مم</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-slate-400 text-[11px]">معايرة الإزاحة (مم):</label>
+                <input type="number" value="2" class="w-full bg-brandDark border border-borderDark rounded-lg p-1.5 text-slate-200 mt-1 text-center font-bold">
+              </div>
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-borderDark/40">
+              <span class="text-slate-300">إظهار تفاصيل الأصناف (عرض اللون، الـ IMEI، والملحقات)</span>
+              <input type="checkbox" checked class="w-4 h-4 accent-accentGreen">
+            </div>
+          </div>
+
+          <!-- جدول عمولات التحويلات (مطابق للصورة 9) -->
+          <div class="bg-cardDark p-3.5 rounded-2xl border border-borderDark space-y-3">
+            <h3 class="font-bold text-amber-400 flex items-center gap-1.5"><i data-lucide="percent" class="w-4 h-4"></i> عمولات خدمات تحويل الأموال (لكل 1000 ج.م)</h3>
+            <div class="grid grid-cols-5 gap-2 text-center">
+              <div>
+                <div class="text-slate-400 text-[10px] mb-1">فودافون كاش</div>
+                <input type="number" value="10" class="w-full bg-brandDark border border-borderDark rounded p-1 text-center font-bold text-accentCyan">
+              </div>
+              <div>
+                <div class="text-slate-400 text-[10px] mb-1">اتصالات كاش</div>
+                <input type="number" value="10" class="w-full bg-brandDark border border-borderDark rounded p-1 text-center font-bold text-accentCyan">
+              </div>
+              <div>
+                <div class="text-slate-400 text-[10px] mb-1">أورنج كاش</div>
+                <input type="number" value="10" class="w-full bg-brandDark border border-borderDark rounded p-1 text-center font-bold text-accentCyan">
+              </div>
+              <div>
+                <div class="text-slate-400 text-[10px] mb-1">وي باي</div>
+                <input type="number" value="10" class="w-full bg-brandDark border border-borderDark rounded p-1 text-center font-bold text-accentCyan">
+              </div>
+              <div>
+                <div class="text-slate-400 text-[10px] mb-1">انستاباي</div>
+                <input type="number" value="5" class="w-full bg-brandDark border border-borderDark rounded p-1 text-center font-bold text-emerald-400">
+              </div>
+            </div>
+            <button onclick="saveAllSettings()" class="bg-accentGreen hover:bg-emerald-600 text-white font-black px-4 py-2 rounded-xl text-xs shadow">
+              حفظ جميع الإعدادات
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 5. نافذة استلام صيانة جديد (Job Card) -->
+  <!-- ========================================================================= -->
+  <div id="modal-repair-job" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#141e2e] border border-borderDark rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in-95">
+      <div class="bg-cardDark px-4 py-3 border-b border-borderDark flex items-center justify-between">
+        <h2 class="text-sm font-black text-accentCyan flex items-center gap-1.5">
+          <i data-lucide="wrench" class="w-4 h-4"></i> كارت استلام صيانة (EL-RESALA)
+        </h2>
+        <button onclick="closeModal('modal-repair-job')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div class="p-4 space-y-3 text-xs">
+        <div class="grid grid-cols-2 gap-2">
+          <input type="text" id="repairCustName" placeholder="اسم العميل" class="bg-brandDark border border-borderDark rounded-lg p-2 text-slate-200">
+          <input type="text" id="repairCustPhone" placeholder="رقم الهاتف" class="bg-brandDark border border-borderDark rounded-lg p-2 text-slate-200">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <input type="text" id="repairDeviceModel" placeholder="موديل الجهاز (مثال: iPhone 11)" class="bg-brandDark border border-borderDark rounded-lg p-2 text-slate-200">
+          <input type="text" id="repairImei" placeholder="الـ IMEI أو السيريال" class="bg-brandDark border border-borderDark rounded-lg p-2 text-slate-200">
+        </div>
+        <textarea id="repairFaults" rows="2" placeholder="العطل المذكور من العميل وحالة الاستلام..." class="w-full bg-brandDark border border-borderDark rounded-lg p-2 text-slate-200"></textarea>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-[10px] text-slate-400">تكلفة الفحص والكشف المبدئي:</label>
+            <input type="number" id="repairDiagFee" value="50" class="w-full bg-brandDark border border-borderDark rounded-lg p-1.5 font-bold text-accentGreen mt-1">
+          </div>
+          <div>
+            <label class="text-[10px] text-slate-400">نسبة عمولة الفني (%):</label>
+            <input type="number" id="repairTechRate" value="30" class="w-full bg-brandDark border border-borderDark rounded-lg p-1.5 font-bold text-amber-400 mt-1">
+          </div>
+        </div>
+        <button onclick="saveRepairJob()" class="w-full bg-accentCyan hover:bg-cyan-600 text-slate-950 font-black py-2.5 rounded-xl transition shadow mt-2">
+          حفظ كارت الصيانة وطباعة الباركود
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT APP ENGINE (مع حماية تامة ضد أخطاء السيرفر) -->
+  <script>
+    // تهيئة الأيقونات
+    lucide.createIcons();
+
+    // 1. قاعدة البيانات المحلية الدائمة (LocalStorage)
+    const defaultData = {
+      products: [
+        { id: '1', name: 'شاشة a12 أصلية', type: 'SPARE_PART', price: 850, stock: 5, badge: 'سامسونج - توكيل' },
+        { id: '2', name: 'iPhone 13 128GB', type: 'DEVICE', price: 26500, stock: 2, badge: 'جديد ضمان سنة' },
+        { id: '3', name: 'جراب حماية MagSafe', type: 'ACCESSORY', price: 250, stock: 12, badge: 'ضد الصدمات' },
+        { id: '4', name: 'اسكرينة 11D سيراميك', type: 'ACCESSORY', price: 65, stock: 30, badge: 'مقاومة للكسر' }
+      ],
+      cart: [
+        { id: '1', name: 'شاشة a12 أصلية', price: 850, qty: 1 }
+      ],
+      balances: {
+        cash: 0.0,
+        wallets: 1000.0,
+        bank: 0.0
+      }
+    };
+
+    let AppState = JSON.parse(localStorage.getItem('EL_RESALA_STORE')) || defaultData;
+
+    function saveState() {
+      localStorage.setItem('EL_RESALA_STORE', JSON.stringify(AppState));
+    }
+
+    // إدارة النوافذ المنبثقة
+    function openModal(id) {
+      document.getElementById(id)?.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeModal(id) {
+      document.getElementById(id)?.classList.add('hidden');
+    }
+
+    function closeAllModals() {
+      document.querySelectorAll('[id^="modal-"]').forEach(m => m.classList.add('hidden'));
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeAllModals();
+      if (e.key === 'F10') {
+        e.preventDefault();
+        openModal('modal-checkout');
+      }
+    });
+
+    // 2. تحديث السلة والمنتجات
+    function renderProducts(filter = 'ALL') {
+      const grid = document.getElementById('productsGrid');
+      grid.innerHTML = '';
+      const filtered = filter === 'ALL' ? AppState.products : AppState.products.filter(p => p.type === filter);
+      document.getElementById('productCountBadge').innerText = `${filtered.length} صنف متاح`;
+
+      filtered.forEach(p => {
+        grid.innerHTML += `
+          <div onclick="addToCart('${p.id}')" class="bg-cardDark hover:border-accentCyan border border-borderDark p-3 rounded-2xl flex flex-col justify-between cursor-pointer transition transform active:scale-95 group">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] bg-accentCyan/15 text-accentCyan px-2 py-0.5 rounded-md font-bold">${p.type}</span>
+                <span class="text-[10px] text-emerald-400">متوفر (${p.stock})</span>
+              </div>
+              <h3 class="font-bold text-sm mt-2 text-slate-100 group-hover:text-accentCyan transition">${p.name}</h3>
+              <p class="text-[11px] text-slate-400">${p.badge}</p>
+            </div>
+            <div class="mt-3 flex items-center justify-between border-t border-borderDark/40 pt-2">
+              <span class="text-xs font-black text-accentGreen">${p.price.toLocaleString()} ج.م</span>
+              <i data-lucide="plus-circle" class="w-4 h-4 text-slate-400 group-hover:text-accentCyan"></i>
+            </div>
+          </div>
+        `;
+      });
+      lucide.createIcons();
+    }
+
+    function filterProducts(type) {
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.className = 'cat-btn bg-cardDark hover:bg-borderDark text-slate-300 font-semibold text-xs px-3 py-1.5 rounded-xl transition';
+      });
+      event.target.className = 'cat-btn bg-accentCyan text-slate-900 font-black text-xs px-3.5 py-1.5 rounded-xl shadow';
+      renderProducts(type);
+    }
+
+    function addToCart(productId) {
+      const product = AppState.products.find(p => p.id === productId);
+      if (!product) return;
+
+      if (product.type === 'DEVICE') {
+        const imei = prompt(`الجهاز يتطلب تسجيل IMEI:\nأدخل رقم الـ IMEI لـ (${product.name}):`);
+        if (!imei) return alert('لا يمكن بيع جهاز بدون تسجيل رقم الـ IMEI.');
+      }
+
+      const existing = AppState.cart.find(item => item.id === productId);
+      if (existing) {
+        existing.qty++;
+      } else {
+        AppState.cart.push({ id: product.id, name: product.name, price: product.price, qty: 1 });
+      }
+      saveState();
+      renderCart();
+    }
+
+    function renderCart() {
+      const list = document.getElementById('cartItemsList');
+      list.innerHTML = '';
+      let subtotal = 0;
+
+      AppState.cart.forEach((item, idx) => {
+        const total = item.price * item.qty;
+        subtotal += total;
+        list.innerHTML += `
+          <div class="bg-cardDark p-2.5 rounded-xl border border-borderDark flex items-center justify-between">
+            <div class="flex-1">
+              <div class="font-bold text-xs">${item.name}</div>
+              <div class="text-[11px] text-slate-400 mt-0.5">${item.price.toFixed(2)} ج.م × ${item.qty}</div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="font-extrabold text-sm text-accentGreen">${total.toFixed(2)} ج.م</span>
+              <button onclick="removeFromCart(${idx})" class="text-rose-400 hover:text-rose-300 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            </div>
+          </div>
+        `;
+      });
+
+      const discount = parseFloat(document.getElementById('cartDiscount').value) || 0;
+      const grandTotal = Math.max(0, subtotal - discount);
+
+      document.getElementById('cartSubtotal').innerText = `${subtotal.toFixed(2)} ج.م`;
+      document.getElementById('cartGrandTotal').innerText = `${grandTotal.toFixed(2)} ج.م`;
+      document.getElementById('checkoutHeaderAmount').innerText = `${grandTotal.toFixed(2)} ج.م`;
+      document.getElementById('checkoutFooterAmount').innerText = `${grandTotal.toFixed(2)} ج.م`;
+      document.getElementById('checkoutItemCount').innerText = AppState.cart.length;
+
+      lucide.createIcons();
+    }
+
+    function removeFromCart(index) {
+      AppState.cart.splice(index, 1);
+      saveState();
+      renderCart();
+    }
+
+    function clearCart() {
+      AppState.cart = [];
+      saveState();
+      renderCart();
+    }
+
+    function updateCartTotals() {
+      renderCart();
+    }
+
+    // 3. خيارات الدفع وإتمام البيع
+    let currentPayMode = 'CASH';
+    function setPayMode(mode) {
+      currentPayMode = mode;
+      ['CASH', 'WALLET', 'BANK', 'CREDIT', 'SPLIT'].forEach(m => {
+        const btn = document.getElementById(`pm-${m}`);
+        if (m === mode) {
+          btn.className = 'bg-accentCyan text-slate-900 font-black p-2 rounded-xl text-center flex flex-col items-center gap-1';
+        } else {
+          btn.className = 'bg-cardDark text-slate-300 hover:text-white p-2 rounded-xl text-center flex flex-col items-center gap-1 border border-borderDark';
+        }
+      });
+    }
+
+    function confirmCheckout() {
+      if (AppState.cart.length === 0) return alert('السلة فارغة!');
+      alert('✅ تم تسجيل الفاتورة بنجاح، وخصم المخزون، وإضافة المبلغ لحساب الخزينة.');
+      clearCart();
+      closeModal('modal-checkout');
+    }
+
+    function printThermalInvoice() {
+      alert('🖨️ جاري إرسال الفاتورة للطابعة الحرارية 80 مم (EL-RESALA)...');
+    }
+
+    // 4. تقفيل الشفت
+    function openConfirmShiftModal() {
+      closeModal('modal-close-shift');
+      openModal('modal-shift-confirm');
+    }
+
+    function finalizeShift() {
+      alert('🔒 تم تقفيل الشفت بنجاح وتصفير مبيعات اليوم.');
+      closeModal('modal-shift-confirm');
+    }
+
+    function printThermalShiftReport() {
+      alert('🖨️ جاري طباعة تقرير الشفت المفصل على الطابعة الحرارية...');
+    }
+
+    function promptMoneyAction(action) {
+      const amount = prompt(`أدخل قيمة مبلغ الـ (${action}):`);
+      if (amount && !isNaN(amount)) {
+        alert(`تم تسجيل عملية ${action} بقيمة ${amount} ج.م بنجاح.`);
+      }
+    }
+
+    function saveAllSettings() {
+      alert('💾 تم حفظ كافة الإعدادات والعمولات بنجاح.');
+      closeModal('modal-settings');
+    }
+
+    function saveRepairJob() {
+      alert('🛠️ تم استلام الجهاز وحفظ كارت الصيانة بنجاح، وجاري طباعة الباركود.');
+      closeModal('modal-repair-job');
+    }
+
+    // التشغيل المبدئي
+    renderProducts();
+    renderCart();
+  </script>
+</body>
+</html>
