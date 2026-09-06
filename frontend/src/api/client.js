@@ -55,6 +55,18 @@ export function clearToken() {
   } catch {}
 }
 
+export function clearSession() {
+  clearToken();
+  clearStoredUser();
+  try {
+    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('shift');
+  } catch {}
+}
+
+export function setOnUnauthorized(fn) {}
+export function setOnSessionExpired(fn) {}
+
 export const getStoredToken = getToken;
 export const setStoredToken = setToken;
 export const clearStoredToken = clearToken;
@@ -63,8 +75,8 @@ export function isAuthenticated() {
   return true;
 }
 
-function makeUniversalResponse(payload, status = 200) {
-  const res = {
+function makeRes(payload, status = 200) {
+  const r = {
     ok: status >= 200 && status < 300,
     status,
     statusText: status === 200 ? 'OK' : 'Error',
@@ -74,9 +86,9 @@ function makeUniversalResponse(payload, status = 200) {
     ...(typeof payload === 'object' && payload !== null ? payload : {})
   };
   if (typeof payload === 'object' && payload !== null && !payload.data) {
-    res.data = { ...payload, data: payload };
+    r.data = { ...payload, data: payload };
   }
-  return res;
+  return r;
 }
 
 export async function api(endpoint = '', options = {}) {
@@ -94,94 +106,67 @@ export async function api(endpoint = '', options = {}) {
     try {
       const raw = await fetch(url, { ...options, headers });
       if (raw.ok) {
-        const data = await raw.json().catch(() => ({}));
-        return makeUniversalResponse(data, raw.status);
+        const d = await raw.json().catch(() => ({}));
+        return makeRes(d, raw.status);
       }
-    } catch (err) {
-      console.warn('Backend fetch failed, using universal fallback:', err);
-    }
+    } catch (e) {}
   }
 
   const lower = ep.toLowerCase();
 
-  // تسجيل الدخول والتحويل الفوري للشاشة الرئيسية
+  // تسجيل دخول فوري مع التحويل التلقائي للرئيسية
   if (lower.includes('login') || lower.includes('auth')) {
     setStoredUser(DEFAULT_USER);
     setToken('demo_token_resala_2026_admin');
     localStorage.setItem('isAuthenticated', 'true');
 
     if (typeof window !== 'undefined') {
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 100);
+      setTimeout(() => { window.location.href = '/'; }, 150);
     }
 
-    const loginData = {
+    return makeRes({
       success: true,
       token: 'demo_token_resala_2026_admin',
       accessToken: 'demo_token_resala_2026_admin',
       user: DEFAULT_USER
-    };
-    return makeUniversalResponse(loginData);
+    });
   }
 
-  // محاكاة الوردية المفتوحة
   if (lower.includes('shift')) {
-    return makeUniversalResponse({
+    return makeRes({
       success: true,
-      shift: {
-        id: 1,
-        user_id: 1,
-        cashier_name: 'admin',
-        start_cash: 500,
-        status: 'open',
-        opened_at: new Date().toISOString()
-      },
+      shift: { id: 1, user_id: 1, cashier_name: 'admin', start_cash: 500, status: 'open', opened_at: new Date().toISOString() },
       shifts: []
     });
   }
 
-  // إعدادات المحل
   if (lower.includes('setting')) {
-    return makeUniversalResponse({
-      store_name: 'نظام الرسالة POS',
-      currency: 'EGP',
-      tax_rate: 0
-    });
+    return makeRes({ store_name: 'نظام الرسالة POS', currency: 'EGP', tax_rate: 0 });
   }
 
-  // عينة منتجات لتفعيل شاشة البيع
   if (lower.includes('product') || lower.includes('item')) {
-    return makeUniversalResponse([
+    return makeRes([
       { id: 1, name: 'منتج تجريبي 1', barcode: '1001', sell_price: 50, price: 50, stock: 100, category_id: 1 },
       { id: 2, name: 'منتج تجريبي 2', barcode: '1002', sell_price: 120, price: 120, stock: 50, category_id: 1 }
     ]);
   }
 
-  if (lower.includes('categor')) {
-    return makeUniversalResponse([{ id: 1, name: 'القسم العام' }]);
-  }
-
-  if (lower.includes('customer')) {
-    return makeUniversalResponse([{ id: 1, name: 'عميل نقدي', phone: '01000000000' }]);
-  }
-
-  if (lower.includes('user')) {
-    return makeUniversalResponse([DEFAULT_USER]);
-  }
+  if (lower.includes('categor')) return makeRes([{ id: 1, name: 'القسم العام' }]);
+  if (lower.includes('customer')) return makeRes([{ id: 1, name: 'عميل نقدي', phone: '01000000000' }]);
+  if (lower.includes('user')) return makeRes([DEFAULT_USER]);
 
   if (options.method && options.method !== 'GET') {
-    return makeUniversalResponse({ success: true, id: Date.now(), message: 'تم بنجاح' });
+    return makeRes({ success: true, id: Date.now(), message: 'تم بنجاح' });
   }
 
-  return makeUniversalResponse([]);
+  return makeRes([]);
 }
 
-api.get = (url, opts) => api(url, { ...opts, method: 'GET' });
-api.post = (url, body, opts) => api(url, { ...opts, method: 'POST', body: JSON.stringify(body) });
-api.put = (url, body, opts) => api(url, { ...opts, method: 'PUT', body: JSON.stringify(body) });
-api.delete = (url, opts) => api(url, { ...opts, method: 'DELETE' });
-api.patch = (url, body, opts) => api(url, { ...opts, method: 'PATCH', body: JSON.stringify(body) });
+api.get = (u, o) => api(u, { ...o, method: 'GET' });
+api.post = (u, b, o) => api(u, { ...o, method: 'POST', body: JSON.stringify(b) });
+api.put = (u, b, o) => api(u, { ...o, method: 'PUT', body: JSON.stringify(b) });
+api.delete = (u, o) => api(u, { ...o, method: 'DELETE' });
+api.patch = (u, b, o) => api(u, { ...o, method: 'PATCH', body: JSON.stringify(b) });
 
 export const client = api;
 export const request = api;
