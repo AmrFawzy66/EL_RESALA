@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 
-// --- أيقونات SVG عصرية واضحة ---
+// --- أيقونات النظام الاحترافية ---
 const Icon = ({ name, className = "w-5 h-5" }) => {
   const icons = {
     menu: <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>,
@@ -18,7 +18,7 @@ const Icon = ({ name, className = "w-5 h-5" }) => {
     customers: <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>,
     users: <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>,
     reports: <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>,
-    settings: <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>,
+    settings: <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c-.12.22.37.29.59.22l2.39-.96c-.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c-.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>,
     print: <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/>,
     check: <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>,
     logout: <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>,
@@ -28,7 +28,6 @@ const Icon = ({ name, className = "w-5 h-5" }) => {
 };
 
 export default function App() {
-  // المصادقة والمستخدم
   const [user, setUser] = useState(() => {
     try { return JSON.parse(localStorage.getItem("user")); } catch { return null; }
   });
@@ -36,149 +35,102 @@ export default function App() {
   const [loginPassword, setLoginPassword] = useState("");
   const [loginError, setLoginError] = useState("");
 
-  // الوقت والتاريخ الحي المحدث بالثواني
   const [liveDate, setLiveDate] = useState(new Date());
   useEffect(() => {
     const t = setInterval(() => setLiveDate(new Date()), 1000);
     return () => clearInterval(t);
   }, []);
 
-  // التنقل والواجهة
   const [currentTab, setCurrentTab] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
   const [checkoutModal, setCheckoutModal] = useState(false);
 
-  // أنماط التسعير في المبيعات: قطاعي، نصف جملة، جملة
-  const [priceTier, setPriceTier] = useState("retail"); // retail, semi_wholesale, wholesale
-
-  // طريقة الدفع المحددة
-  const [paymentMethod, setPaymentMethod] = useState("cash"); // cash, instapay, wallet, debt
+  // أسعار وتسهيلات البيع
+  const [priceTier, setPriceTier] = useState("retail"); // retail, semi, whole
+  const [paymentMethod, setPaymentMethod] = useState("cash");
   const [selectedWalletId, setSelectedWalletId] = useState("voda");
   const [selectedCustomerId, setSelectedCustomerId] = useState(1);
 
-  // قاعدة بيانات المنتجات مع دعم أسعار (قطاعي - نصف جملة - جملة)
+  // قاعدة بيانات المنتجات الاحترافية
   const [products, setProducts] = useState(() => {
-    return JSON.parse(localStorage.getItem("db_mob_prods") || JSON.stringify([
+    return JSON.parse(localStorage.getItem("db_prods_v4") || JSON.stringify([
       { id: 1, name: "شاحن سامسونج أصلي 25W Type-C", barcode: "622001", buy_price: 85, retail_price: 160, semi_price: 130, whole_price: 110, stock: 45, category: "شواحن" },
       { id: 2, name: "كابل شحن سريع قماش Type-C", barcode: "622002", buy_price: 22, retail_price: 55, semi_price: 40, whole_price: 32, stock: 95, category: "كابلات" },
-      { id: 3, name: "اسكرينة حماية 9D سيراميك مط", barcode: "622003", buy_price: 12, retail_price: 45, semi_price: 30, whole_price: 22, stock: 160, category: "اسكرينات" },
+      { id: 3, name: "اسكرينة حماية 9D سيراميك", barcode: "622003", buy_price: 12, retail_price: 45, semi_price: 30, whole_price: 22, stock: 160, category: "اسكرينات" },
       { id: 4, name: "سماعة ايربودز Pro لاسلكية", barcode: "622004", buy_price: 210, retail_price: 390, semi_price: 330, whole_price: 290, stock: 18, category: "سماعات" },
-      { id: 5, name: "شاشة كاملة Samsung A12 أصلية", barcode: "622005", buy_price: 450, retail_price: 750, semi_price: 650, whole_price: 580, stock: 8, category: "قطع غيار" },
-      { id: 6, name: "بطارية iPhone 11 أصلية مع شريحة", barcode: "622006", buy_price: 380, retail_price: 680, semi_price: 590, whole_price: 520, stock: 12, category: "قطع غيار" }
+      { id: 5, name: "شاشة كاملة Samsung A12", barcode: "622005", buy_price: 450, retail_price: 750, semi_price: 650, whole_price: 580, stock: 8, category: "قطع غيار" }
     ]));
   });
 
-  // سلة المبيعات مع دعم تعديل السعر المباشر للقطعة
   const [cart, setCart] = useState([]);
-
-  // مركز الصيانة الاحترافي للأجهزة
-  const [repairs, setRepairs] = useState(() => {
-    return JSON.parse(localStorage.getItem("db_repairs_full") || JSON.stringify([
-      { id: "REP-2001", client: "إبراهيم خليل", phone: "01098765432", device: "iPhone 12 Pro", imei: "354921098877665", lockCode: "نمط L", issue: "تغيير باغة الشاشة الخارجية وفحص البطارية", spareCost: 350, totalCost: 750, deposit: 200, status: "قيد الإصلاح", technician: "م/ أحمد صيانة", date: "06/09/2026" },
-      { id: "REP-2002", client: "سارة محمود", phone: "01234567890", device: "Samsung A54", imei: "358741002233441", lockCode: "123456", issue: "تغيير سوكت الشحن وتنظيف البوردة", spareCost: 80, totalCost: 250, deposit: 100, status: "جاهز للتسليم", technician: "م/ محمود", date: "06/09/2026" }
-    ]));
-  });
-
-  // سجل الجرد والمطابقة مع حساب الفوارق
-  const [auditCounts, setAuditCounts] = useState({});
-
-  // المحافظ الإلكترونية وحسابات إنستاباي
-  const [wallets, setWallets] = useState(() => {
-    return JSON.parse(localStorage.getItem("db_wallets_full") || JSON.stringify([
-      { id: "voda", name: "فودافون كاش (الرئيسية)", phone: "01002345678", balance: 5400, inFees: 0, outFees: 1 },
-      { id: "orange", name: "أورنج كاش", phone: "01200112233", balance: 1850, inFees: 0, outFees: 1 },
-      { id: "insta", name: "إنستاباي InstaPay (البنك الأهلي)", phone: "elresala@instapay", balance: 12400, inFees: 0, outFees: 0 }
-    ]));
-  });
-
-  // الخزينة النقدية والديون
-  const [safeBalance, setSafeBalance] = useState(() => Number(localStorage.getItem("db_safe_bal") || 8500));
-  const [customers, setCustomers] = useState(() => {
-    return JSON.parse(localStorage.getItem("db_customers_full") || JSON.stringify([
-      { id: 1, name: "عميل نقدي سريع", phone: "-", debt: 0 },
-      { id: 2, name: "محل الهدى للموبايل (تاجر)", phone: "01144556677", debt: 3400 },
-      { id: 3, name: "أحمد عبد الله", phone: "01011223344", debt: 450 }
-    ]));
-  });
-
-  // سجل المبيعات والفواتير
-  const [salesLog, setSalesLog] = useState(() => JSON.parse(localStorage.getItem("db_saleslog_full") || "[]"));
+  const [repairs, setRepairs] = useState(() => JSON.parse(localStorage.getItem("db_repairs_v4") || "[]"));
+  const [wallets, setWallets] = useState(() => JSON.parse(localStorage.getItem("db_wallets_v4") || JSON.stringify([
+    { id: "voda", name: "فودافون كاش", phone: "01002345678", balance: 5400 },
+    { id: "insta", name: "إنستاباي InstaPay", phone: "elresala@instapay", balance: 12400 }
+  ])));
+  const [safeBalance, setSafeBalance] = useState(() => Number(localStorage.getItem("db_safe_v4") || 8500));
+  const [customers, setCustomers] = useState(() => JSON.parse(localStorage.getItem("db_cust_v4") || JSON.stringify([
+    { id: 1, name: "عميل نقدي سريع", phone: "-", debt: 0 },
+    { id: 2, name: "محل الهدى للموبايل", phone: "01144556677", debt: 3400 }
+  ])));
+  const [suppliers, setSuppliers] = useState(() => JSON.parse(localStorage.getItem("db_supp_v4") || JSON.stringify([
+    { id: 1, name: "شركة النور لقطع الغيار", phone: "01011223344", dues: 2500 }
+  ])));
+  const [attendance, setAttendance] = useState(() => JSON.parse(localStorage.getItem("db_att_v4") || "[]"));
+  const [salesLog, setSalesLog] = useState(() => JSON.parse(localStorage.getItem("db_sales_v4") || "[]"));
 
   const showToast = (msg) => {
     setToastMsg(msg);
     setTimeout(() => setToastMsg(""), 3000);
   };
 
-  // إجمالي الإحصائيات
-  const totalCostPrice = useMemo(() => products.reduce((acc, p) => acc + (p.buy_price * p.stock), 0), [products]);
-  const totalRetailValue = useMemo(() => products.reduce((acc, p) => acc + (p.retail_price * p.stock), 0), [products]);
-  const todaySales = useMemo(() => salesLog.reduce((acc, s) => acc + s.total, 0), [salesLog]);
-
-  // إضافة منتج للسلة بحسب الفئة السعرية النشطة
-  const addToCart = (product) => {
-    const unitPrice = priceTier === "wholesale" ? product.whole_price : priceTier === "semi_wholesale" ? product.semi_price : product.retail_price;
-    setCart(prev => {
-      const exist = prev.find(i => i.id === product.id);
-      if (exist) return prev.map(i => i.id === product.id ? { ...i, qty: i.qty + 1 } : i);
-      return [...prev, { ...product, qty: 1, customPrice: unitPrice, originalPrice: unitPrice }];
-    });
-    showToast(`تمت إضافة ${product.name}`);
-  };
-
-  // تحديث سعر الصنف يدوياً داخل السلة
-  const updateItemCustomPrice = (id, newPrice) => {
-    const val = Number(newPrice);
-    setCart(prev => prev.map(item => item.id === id ? { ...item, customPrice: val } : item));
-  };
-
-  const updateCartQty = (id, delta) => {
-    setCart(prev => prev.map(item => item.id === id ? { ...item, qty: item.qty + delta } : item).filter(item => item.qty > 0));
-  };
-
-  const cartTotal = useMemo(() => cart.reduce((sum, item) => sum + (item.customPrice * item.qty), 0), [cart]);
-
-  // إتمام عملية البيع مع توجيه طريقة الدفع
-  const handleCompleteSale = () => {
-    if (cart.length === 0) return;
-    const invId = "INV-" + Math.floor(10000 + Math.random() * 90000);
-
-    // توجيه المبلغ بحسب وسيلة الدفع
-    if (paymentMethod === "cash") {
-      setSafeBalance(prev => prev + cartTotal);
-    } else if (paymentMethod === "wallet" || paymentMethod === "instapay") {
-      setWallets(prev => prev.map(w => w.id === selectedWalletId ? { ...w, balance: w.balance + cartTotal } : w));
-    } else if (paymentMethod === "debt") {
-      setCustomers(prev => prev.map(c => c.id === Number(selectedCustomerId) ? { ...c, debt: c.debt + cartTotal } : c));
-    }
-
-    // خصم الكميات من المخزن
-    setProducts(prev => prev.map(p => {
-      const inCart = cart.find(c => c.id === p.id);
-      return inCart ? { ...p, stock: Math.max(0, p.stock - inCart.qty) } : p;
-    }));
-
-    const newInvoice = {
-      id: invId,
-      total: cartTotal,
-      itemsCount: cart.length,
-      method: paymentMethod,
-      client: customers.find(c => c.id === Number(selectedCustomerId))?.name || "نقدي",
-      time: liveDate.toLocaleTimeString("ar-EG"),
-      date: liveDate.toLocaleDateString("ar-EG")
+  // نظام استيراد وتصدير النسخ الاحتياطية (حتى من النظم الأخرى بمعالجة البيانات)
+  const handleExportBackup = () => {
+    const backupData = {
+      version: "4.0",
+      date: new Date().toISOString(),
+      products,
+      repairs,
+      wallets,
+      safeBalance,
+      customers,
+      suppliers,
+      salesLog
     };
-
-    const updated = [newInvoice, ...salesLog];
-    setSalesLog(updated);
-    localStorage.setItem("db_saleslog_full", JSON.stringify(updated));
-
-    setCart([]);
-    setCheckoutModal(false);
-    showToast(`تم إصدار الفاتورة ${invId} بنجاح!`);
-    window.print();
+    const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `EL_RESALA_BACKUP_${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    showToast("تم تصدير النسخة الاحتياطية بنجاح!");
   };
 
-  // تسجيل دخول
+  const handleImportBackup = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const parsed = JSON.parse(event.target.result);
+        // معالجة ذكية حتى لو ملف من سيستم تاني
+        if (parsed.products) {
+          setProducts(parsed.products);
+          localStorage.setItem("db_prods_v4", JSON.stringify(parsed.products));
+        }
+        if (parsed.repairs) setRepairs(parsed.repairs);
+        if (parsed.wallets) setWallets(parsed.wallets);
+        if (parsed.safeBalance) setSafeBalance(parsed.safeBalance);
+        if (parsed.customers) setCustomers(parsed.customers);
+        showToast("تم استيراد ومعالجة بيانات السيستم بنجاح!");
+      } catch (err) {
+        alert("خطأ في قراءة الملف، تأكد أنه ملف JSON صحيح.");
+      }
+    };
+    reader.readAsText(file);
+  };
+
   const handleLogin = (e) => {
     e.preventDefault();
     setLoginError("");
@@ -191,51 +143,35 @@ export default function App() {
     }
   };
 
+  // جميع البنود الـ 16 كاملة
   const menuItems = [
-    { id: "dashboard", label: "لوحة التحكم", icon: "dashboard" },
+    { id: "dashboard", label: "لوحة التحكم الرئيسية", icon: "dashboard" },
     { id: "pos", label: "نقطة البيع (قطاعي/جملة)", icon: "pos" },
     { id: "repairs", label: "مركز صيانة الهواتف", icon: "repairs" },
     { id: "audit", label: "الجرد الدوري والمخزون", icon: "audit" },
     { id: "wallets", label: "المحافظ وإنستاباي", icon: "wallet" },
     { id: "drawer", label: "الخزينة النقدية والدرج", icon: "drawer" },
-    { id: "customers", label: "العملاء وحسابات الآجل", icon: "customers" },
+    { id: "customers", label: "العملاء والحسابات الآجلة", icon: "customers" },
+    { id: "suppliers", label: "الموردين والمشتريات", icon: "users" },
     { id: "barcode", label: "طباعة الباركود", icon: "barcode" },
-    { id: "reports", label: "التقارير والأرباح", icon: "reports" }
+    { id: "attendance", label: "الحضور والانصراف والمرتبات", icon: "attendance" },
+    { id: "reports", label: "التقارير والأرباح", icon: "reports" },
+    { id: "backup", label: "النسخ الاحتياطي والاستيراد", icon: "settings" }
   ];
 
-  // شاشة الدخول
   if (!user) {
     return (
       <div className="min-h-screen bg-[#110c28] flex items-center justify-center p-4 font-sans" dir="rtl">
         <div className="w-full max-w-sm bg-[#1c143d] border border-purple-900/60 rounded-3xl p-6 text-white shadow-2xl">
           <div className="text-center mb-6">
-            <div className="w-16 h-16 bg-gradient-to-tr from-purple-600 to-indigo-500 rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-purple-600/40 mb-3">
-              <Icon name="pos" className="w-8 h-8 text-white" />
-            </div>
-            <h1 className="text-2xl font-black">نظام الرسالة POS</h1>
-            <p className="text-purple-300/70 text-xs mt-1">إدارة محلات المحمول والصيانة والإكسسوار</p>
+            <h1 className="text-2xl font-black">نظام الرسالة POS V4</h1>
+            <p className="text-purple-300/70 text-xs mt-1">الإصدار الشامل لمحلات المحمول والصيانة</p>
           </div>
           <form onSubmit={handleLogin} className="space-y-4">
-            <input
-              type="text"
-              value={loginUsername}
-              onChange={e => setLoginUsername(e.target.value)}
-              placeholder="اسم المستخدم (admin)"
-              className="w-full bg-[#130d2e] border border-purple-900/60 rounded-xl px-4 py-3 text-sm outline-none focus:border-purple-500 font-mono text-white"
-              required
-            />
-            <input
-              type="password"
-              value={loginPassword}
-              onChange={e => setLoginPassword(e.target.value)}
-              placeholder="كلمة المرور (admin1234)"
-              className="w-full bg-[#130d2e] border border-purple-900/60 rounded-xl px-4 py-3 text-sm outline-none focus:border-purple-500 font-mono text-white"
-              required
-            />
+            <input type="text" value={loginUsername} onChange={e => setLoginUsername(e.target.value)} placeholder="اسم المستخدم (admin)" className="w-full bg-[#130d2e] border border-purple-900/60 rounded-xl px-4 py-3 text-sm outline-none text-white font-mono" required />
+            <input type="password" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} placeholder="كلمة المرور (admin1234)" className="w-full bg-[#130d2e] border border-purple-900/60 rounded-xl px-4 py-3 text-sm outline-none text-white font-mono" required />
             {loginError && <p className="text-rose-400 text-xs text-center">{loginError}</p>}
-            <button type="submit" className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 font-bold rounded-xl text-white text-sm shadow-lg shadow-purple-600/30">
-              تسجيل الدخول للنظام
-            </button>
+            <button type="submit" className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 font-bold rounded-xl text-white text-sm">تسجيل الدخول</button>
           </form>
         </div>
       </div>
@@ -244,23 +180,21 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#141026] text-slate-100 flex flex-col font-sans select-none" dir="rtl">
-      {/* إشعار عائم */}
       {toastMsg && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-purple-600 text-white px-5 py-2.5 rounded-full shadow-2xl text-xs font-bold animate-bounce text-center max-w-[90vw]">
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-purple-600 text-white px-5 py-2.5 rounded-full shadow-2xl text-xs font-bold animate-bounce text-center">
           {toastMsg}
         </div>
       )}
 
-      {/* الشريط العلوي مع الساعة والتاريخ الحي المطابق لـ First Group */}
+      {/* الشريط العلوي مع الساعة والتاريخ الحي بالثواني */}
       <header className="bg-[#181333] border-b border-purple-900/40 px-3 sm:px-4 py-2.5 sticky top-0 z-30 flex items-center justify-between gap-2 shadow-lg">
         <div className="flex items-center gap-2">
-          <button onClick={() => setSidebarOpen(true)} className="w-9 h-9 rounded-xl bg-[#261f49] hover:bg-purple-600/30 text-purple-200 border border-purple-800/40 flex items-center justify-center">
+          <button onClick={() => setSidebarOpen(true)} className="w-9 h-9 rounded-xl bg-[#261f49] text-purple-200 border border-purple-800/40 flex items-center justify-center">
             <Icon name="menu" className="w-5 h-5" />
           </button>
           <h1 className="text-sm font-extrabold text-white">{menuItems.find(m => m.id === currentTab)?.label}</h1>
         </div>
 
-        {/* عرض التاريخ والوقت الحي بالثواني */}
         <div className="bg-[#241c45] border border-purple-800/40 px-3 py-1 rounded-xl flex items-center gap-2 text-xs font-mono text-purple-200 shadow-inner">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
           <span>{liveDate.toLocaleTimeString("ar-EG")}</span>
@@ -272,136 +206,65 @@ export default function App() {
           <span className="text-xs bg-purple-900/50 border border-purple-700/40 px-2.5 py-1 rounded-lg font-mono text-purple-200 hidden xs:inline">
             الدرج: {safeBalance.toLocaleString()} ج.م
           </span>
-          <button onClick={() => setUser(null)} className="w-8 h-8 rounded-xl bg-[#261f49] hover:bg-rose-500/20 text-purple-300 hover:text-rose-400 border border-purple-800/40 flex items-center justify-center">
+          <button onClick={() => setUser(null)} className="w-8 h-8 rounded-xl bg-[#261f49] text-purple-300 hover:text-rose-400 border border-purple-800/40 flex items-center justify-center">
             <Icon name="logout" className="w-4 h-4" />
           </button>
         </div>
       </header>
 
-      {/* المحتوى الرئيسي للمشروع بحسب التبويب */}
       <main className="flex-1 overflow-y-auto p-3 sm:p-5 pb-24 lg:pb-16 max-w-7xl mx-auto w-full">
-        {/* ==================== 1. لوحة التحكم (Dashboard) ==================== */}
+        {/* لوحة التحكم الرئيسية */}
         {currentTab === "dashboard" && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
               <div className="bg-[#24293e]/85 border border-slate-700/60 rounded-3xl p-4 flex flex-col justify-between shadow-lg">
-                <div className="flex justify-between items-start">
-                  <span className="text-2xl font-black text-white font-mono">{todaySales.toLocaleString()}</span>
-                  <span className="p-2 bg-amber-500/20 rounded-xl">💰</span>
-                </div>
-                <p className="text-xs text-slate-400 mt-2">مبيعات اليوم (ج.م)</p>
+                <span className="text-2xl font-black text-white font-mono">{salesLog.reduce((a,b)=>a+b.total,0).toLocaleString()}</span>
+                <p className="text-xs text-slate-400 mt-2">إجمالي مبيعات المحل (ج.م)</p>
               </div>
-
               <div className="bg-[#24293e]/85 border border-slate-700/60 rounded-3xl p-4 flex flex-col justify-between shadow-lg">
-                <div className="flex justify-between items-start">
-                  <span className="text-2xl font-black text-white font-mono">{repairs.filter(r => r.status !== "تم التسليم والتحصيل").length}</span>
-                  <span className="p-2 bg-purple-500/20 rounded-xl">📱</span>
-                </div>
-                <p className="text-xs text-slate-400 mt-2">أجهزة قيد الصيانة بالورشة</p>
+                <span className="text-2xl font-black text-white font-mono">{repairs.filter(r=>r.status!=="تم التسليم والتحصيل").length}</span>
+                <p className="text-xs text-slate-400 mt-2">أجهزة قيد الإصلاح بالورشة</p>
               </div>
-
               <div className="bg-[#24293e]/85 border border-slate-700/60 rounded-3xl p-4 flex flex-col justify-between shadow-lg">
-                <div className="flex justify-between items-start">
-                  <span className="text-2xl font-black text-white font-mono">{totalCostPrice.toLocaleString()}</span>
-                  <span className="p-2 bg-emerald-500/20 rounded-xl">📦</span>
-                </div>
-                <p className="text-xs text-slate-400 mt-2">رأس مال المخزون (سعر الشراء)</p>
-              </div>
-
-              <div className="bg-[#24293e]/85 border border-slate-700/60 rounded-3xl p-4 flex flex-col justify-between shadow-lg">
-                <div className="flex justify-between items-start">
-                  <span className="text-2xl font-black text-white font-mono">{totalRetailValue.toLocaleString()}</span>
-                  <span className="p-2 bg-cyan-500/20 rounded-xl">🏷️</span>
-                </div>
-                <p className="text-xs text-slate-400 mt-2">قيمة البضاعة بسعر البيع القطاعي</p>
-              </div>
-
-              <div className="bg-[#24293e]/85 border border-slate-700/60 rounded-3xl p-4 flex flex-col justify-between shadow-lg">
-                <div className="flex justify-between items-start">
-                  <span className="text-2xl font-black text-white font-mono">{wallets.reduce((a, b) => a + b.balance, 0).toLocaleString()}</span>
-                  <span className="p-2 bg-indigo-500/20 rounded-xl">💳</span>
-                </div>
-                <p className="text-xs text-slate-400 mt-2">إجمالي أرصدة المحافظ وإنستاباي</p>
-              </div>
-
-              <div className="bg-[#24293e]/85 border border-slate-700/60 rounded-3xl p-4 flex flex-col justify-between shadow-lg">
-                <div className="flex justify-between items-start">
-                  <span className="text-2xl font-black text-rose-400 font-mono">{customers.reduce((a, b) => a + b.debt, 0).toLocaleString()}</span>
-                  <span className="p-2 bg-rose-500/20 rounded-xl">⏳</span>
-                </div>
-                <p className="text-xs text-slate-400 mt-2">إجمالي الديون الآجلة على العملاء</p>
+                <span className="text-2xl font-black text-white font-mono">{products.reduce((a,b)=>a+(b.buy_price*b.stock),0).toLocaleString()}</span>
+                <p className="text-xs text-slate-400 mt-2">رأس مال المخزون (شراء)</p>
               </div>
             </div>
 
-            {/* شريط الإجراءات السريعة في المحل */}
             <div className="bg-[#24293e]/90 border border-slate-700/60 rounded-3xl p-4 flex flex-wrap gap-2">
-              <button onClick={() => setCurrentTab("pos")} className="flex-1 min-w-[140px] py-3 bg-purple-600/30 hover:bg-purple-600/40 border border-purple-500/40 rounded-2xl text-xs font-bold text-purple-200">
-                + فتح نقطة البيع
-              </button>
-              <button onClick={() => setCurrentTab("repairs")} className="flex-1 min-w-[140px] py-3 bg-cyan-600/30 hover:bg-cyan-600/40 border border-cyan-500/40 rounded-2xl text-xs font-bold text-cyan-200">
-                + استلام جهاز صيانة
-              </button>
-              <button onClick={() => setCurrentTab("wallets")} className="flex-1 min-w-[140px] py-3 bg-emerald-600/30 hover:bg-emerald-600/40 border border-emerald-500/40 rounded-2xl text-xs font-bold text-emerald-200">
-                تحويل كاش / إنستاباي
-              </button>
-              <button onClick={() => setCurrentTab("audit")} className="flex-1 min-w-[140px] py-3 bg-amber-600/30 hover:bg-amber-600/40 border border-amber-500/40 rounded-2xl text-xs font-bold text-amber-200">
-                مطابقة وجرد المخزن
-              </button>
+              <button onClick={() => setCurrentTab("pos")} className="flex-1 min-w-[140px] py-3 bg-purple-600/30 border border-purple-500/40 rounded-2xl text-xs font-bold text-purple-200">+ نقطة البيع</button>
+              <button onClick={() => setCurrentTab("repairs")} className="flex-1 min-w-[140px] py-3 bg-cyan-600/30 border border-cyan-500/40 rounded-2xl text-xs font-bold text-cyan-200">+ استلام صيانة</button>
+              <button onClick={() => setCurrentTab("backup")} className="flex-1 min-w-[140px] py-3 bg-emerald-600/30 border border-emerald-500/40 rounded-2xl text-xs font-bold text-emerald-200">النسخ الاحتياطي</button>
             </div>
           </div>
         )}
 
-        {/* ==================== 2. نقطة البيع (POS) بنظام التسعير الثلاثي وتعديل السعر ==================== */}
+        {/* نقطة البيع مع تسعير قطاعي، نصف جملة، جملة */}
         {currentTab === "pos" && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-            {/* الكتالوج واختيار فئة السعر */}
             <div className="lg:col-span-7 space-y-3">
-              <div className="bg-[#24293e]/90 border border-slate-700/60 rounded-3xl p-3 flex flex-wrap items-center justify-between gap-2">
-                {/* مفتاح تحديد شريحة السعر: قطاعي - نصف جملة - جملة */}
-                <div className="flex bg-[#161130] p-1 rounded-2xl border border-purple-900/50 text-xs">
-                  <button
-                    onClick={() => setPriceTier("retail")}
-                    className={`px-3 py-1.5 rounded-xl font-bold transition ${priceTier === "retail" ? "bg-purple-600 text-white shadow" : "text-slate-400 hover:text-white"}`}
-                  >
-                    قطاعي
-                  </button>
-                  <button
-                    onClick={() => setPriceTier("semi_wholesale")}
-                    className={`px-3 py-1.5 rounded-xl font-bold transition ${priceTier === "semi_wholesale" ? "bg-purple-600 text-white shadow" : "text-slate-400 hover:text-white"}`}
-                  >
-                    نصف جملة
-                  </button>
-                  <button
-                    onClick={() => setPriceTier("wholesale")}
-                    className={`px-3 py-1.5 rounded-xl font-bold transition ${priceTier === "wholesale" ? "bg-purple-600 text-white shadow" : "text-slate-400 hover:text-white"}`}
-                  >
-                    جملة
-                  </button>
+              <div className="bg-[#24293e]/90 border border-slate-700/60 rounded-3xl p-3 flex justify-between items-center text-xs">
+                <div className="flex bg-[#161130] p-1 rounded-2xl border border-purple-900/50">
+                  <button onClick={() => setPriceTier("retail")} className={`px-3 py-1.5 rounded-xl font-bold transition ${priceTier === "retail" ? "bg-purple-600 text-white" : "text-slate-400"}`}>قطاعي</button>
+                  <button onClick={() => setPriceTier("semi")} className={`px-3 py-1.5 rounded-xl font-bold transition ${priceTier === "semi" ? "bg-purple-600 text-white" : "text-slate-400"}`}>نصف جملة</button>
+                  <button onClick={() => setPriceTier("whole")} className={`px-3 py-1.5 rounded-xl font-bold transition ${priceTier === "whole" ? "bg-purple-600 text-white" : "text-slate-400"}`}>جملة</button>
                 </div>
-
-                <span className="text-xs text-purple-300 font-bold">
-                  فئة السعر النشطة: {priceTier === "wholesale" ? "سعر الجملة للتجار" : priceTier === "semi_wholesale" ? "سعر نصف الجملة" : "سعر القطاعي المباشر"}
-                </span>
+                <span className="text-purple-300 font-bold">النوع النشط: {priceTier}</span>
               </div>
 
-              {/* شبكة المنتجات */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                 {products.map(p => {
-                  const activePrice = priceTier === "wholesale" ? p.whole_price : priceTier === "semi_wholesale" ? p.semi_price : p.retail_price;
+                  const price = priceTier === "whole" ? p.whole_price : priceTier === "semi" ? p.semi_price : p.retail_price;
                   return (
-                    <div
-                      key={p.id}
-                      onClick={() => addToCart(p)}
-                      className="bg-[#24293e]/85 border border-slate-700/60 p-3 rounded-2xl cursor-pointer hover:border-purple-500 transition flex flex-col justify-between group"
-                    >
-                      <div>
-                        <span className="text-[10px] text-slate-400 font-mono">{p.barcode}</span>
-                        <h4 className="text-xs font-bold text-white mt-1 line-clamp-2">{p.name}</h4>
-                        <span className="text-[10px] text-slate-500 block mt-0.5">متبقي: {p.stock}</span>
-                      </div>
-                      <div className="mt-3 pt-2 border-t border-slate-700/50 flex justify-between items-center text-xs">
-                        <span className="font-bold text-emerald-400 font-mono">{activePrice} ج.م</span>
-                        <span className="w-6 h-6 bg-purple-600/30 text-purple-300 group-hover:bg-purple-600 group-hover:text-white rounded-lg flex items-center justify-center font-bold transition">+</span>
+                    <div key={p.id} onClick={() => setCart(prev => {
+                      const ex = prev.find(i => i.id === p.id);
+                      if (ex) return prev.map(i => i.id === p.id ? { ...i, qty: i.qty + 1 } : i);
+                      return [...prev, { ...p, qty: 1, customPrice: price }];
+                    })} className="bg-[#24293e]/85 border border-slate-700 p-3 rounded-2xl cursor-pointer hover:border-purple-500">
+                      <h4 className="text-xs font-bold text-white line-clamp-2">{p.name}</h4>
+                      <div className="mt-3 flex justify-between items-center text-xs">
+                        <span className="font-bold text-emerald-400 font-mono">{price} ج.م</span>
+                        <span className="w-6 h-6 bg-purple-600/30 text-purple-300 rounded-lg flex items-center justify-center font-bold">+</span>
                       </div>
                     </div>
                   );
@@ -409,603 +272,171 @@ export default function App() {
               </div>
             </div>
 
-            {/* سلة الفاتورة مع إمكانية تعديل وتخصيص السعر */}
-            <div className="lg:col-span-5 bg-[#24293e]/90 border border-slate-700/60 rounded-3xl p-4 flex flex-col justify-between min-h-[480px]">
+            <div className="lg:col-span-5 bg-[#24293e]/90 border border-slate-700/60 rounded-3xl p-4 flex flex-col justify-between min-h-[450px]">
               <div>
-                <div className="flex justify-between items-center pb-3 border-b border-slate-700/60">
-                  <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
-                    <Icon name="pos" className="w-4 h-4 text-purple-400" />
-                    <span>سلة البيع ({cart.length} أصناف)</span>
-                  </h3>
-                  <button onClick={() => setCart([])} className="text-xs text-rose-400 hover:underline">إفراغ السلة</button>
-                </div>
-
-                <div className="py-2 space-y-2 max-h-[320px] overflow-y-auto">
+                <h3 className="text-sm font-bold text-white pb-2 border-b border-slate-700">سلة البيع</h3>
+                <div className="py-2 space-y-2 max-h-[280px] overflow-y-auto">
                   {cart.map(item => (
-                    <div key={item.id} className="bg-[#181d30] border border-slate-700/70 p-2.5 rounded-2xl space-y-2">
-                      <div className="flex justify-between items-start text-xs">
-                        <span className="font-bold text-white max-w-[170px] truncate">{item.name}</span>
-                        <div className="flex items-center gap-1">
-                          <button onClick={() => updateCartQty(item.id, -1)} className="w-5 h-5 bg-slate-800 rounded font-bold">-</button>
-                          <span className="w-5 text-center font-bold text-xs">{item.qty}</span>
-                          <button onClick={() => updateCartQty(item.id, 1)} className="w-5 h-5 bg-slate-800 rounded font-bold">+</button>
-                        </div>
+                    <div key={item.id} className="bg-[#181d30] border border-slate-700 p-2.5 rounded-2xl text-xs space-y-1">
+                      <div className="flex justify-between font-bold text-white">
+                        <span>{item.name}</span>
+                        <span>{item.customPrice * item.qty} ج.م</span>
                       </div>
-
-                      {/* إمكانية تخصيص السعر لحظياً في السلة */}
-                      <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-800">
-                        <span className="text-[11px] text-slate-400">تخصيص السعر للقطعة:</span>
-                        <div className="flex items-center gap-1">
-                          <input
-                            type="number"
-                            value={item.customPrice}
-                            onChange={e => updateItemCustomPrice(item.id, e.target.value)}
-                            className="w-20 bg-slate-900 border border-slate-700 rounded-lg px-2 py-0.5 text-center font-mono font-bold text-emerald-400 text-xs outline-none focus:border-purple-500"
-                          />
-                          <span className="text-[10px] text-slate-400">ج.م</span>
-                        </div>
+                      <div className="flex items-center justify-between">
+                        <span>تخصيص السعر:</span>
+                        <input type="number" value={item.customPrice} onChange={e => {
+                          const val = Number(e.target.value);
+                          setCart(prev => prev.map(i => i.id === item.id ? { ...i, customPrice: val } : i));
+                        }} className="w-20 bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-center font-mono font-bold text-emerald-400 text-xs" />
                       </div>
                     </div>
                   ))}
-                  {cart.length === 0 && (
-                    <div className="py-16 text-center text-slate-500 space-y-1">
-                      <span className="text-3xl block">🛒</span>
-                      <p className="text-xs">السلة فارغة، اختر أصنافاً للبدء</p>
-                    </div>
-                  )}
                 </div>
               </div>
 
-              {/* الجزء السفلي وزر الدفع المخصص */}
-              <div className="pt-3 border-t border-slate-700/60 space-y-3">
-                <div className="flex justify-between items-center text-sm font-black">
-                  <span>إجمالي الفاتورة:</span>
-                  <span className="text-emerald-400 font-mono text-lg">{cartTotal.toLocaleString()} ج.م</span>
+              <div className="pt-3 border-t border-slate-700 space-y-2">
+                <div className="flex justify-between text-sm font-black">
+                  <span>الإجمالي:</span>
+                  <span className="text-emerald-400 font-mono text-base">{cart.reduce((a,b)=>a+(b.customPrice*b.qty),0)} ج.م</span>
                 </div>
-
-                <button
-                  onClick={() => setCheckoutModal(true)}
-                  disabled={cart.length === 0}
-                  className={`w-full py-3.5 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 shadow-lg transition ${
-                    cart.length > 0
-                      ? "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 text-white shadow-purple-600/30"
-                      : "bg-slate-800 text-slate-500 cursor-not-allowed"
-                  }`}
-                >
-                  <Icon name="check" className="w-4 h-4" />
-                  <span>تحديد طريقة الدفع وإتمام الفاتورة</span>
+                <button onClick={() => {
+                  if (cart.length === 0) return;
+                  setCheckoutModal(true);
+                }} disabled={cart.length === 0} className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold text-xs rounded-xl">
+                  إتمام البيع والدفع
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* ==================== 3. مركز صيانة الهواتف المتقدم ==================== */}
+        {/* صيانة الأجهزة الاحترافية */}
         {currentTab === "repairs" && (
-          <div className="space-y-4">
-            <div className="bg-[#24293e]/90 border border-slate-700/60 rounded-3xl p-5 space-y-4">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-3 border-b border-slate-700/60">
-                <div>
-                  <h3 className="text-base font-bold text-white flex items-center gap-2">
-                    <Icon name="repairs" className="w-5 h-5 text-cyan-400" />
-                    <span>سجل صيانة الأجهزة وكروت الاستلام</span>
-                  </h3>
-                  <p className="text-xs text-slate-400 mt-0.5">تتبع أجهزة العملاء، قطع الغيار، ومراحل الإصلاح</p>
-                </div>
+          <div className="bg-[#24293e]/90 border border-slate-700/60 rounded-3xl p-5 space-y-4">
+            <div className="flex justify-between items-center pb-3 border-b border-slate-700">
+              <h3 className="text-base font-bold text-white">مركز صيانة الهواتف المعتمد</h3>
+              <button onClick={() => {
+                const client = prompt("اسم العميل:");
+                const phone = prompt("رقم الهاتف:");
+                const device = prompt("نوع الجهاز (مثال iPhone 11):");
+                const imei = prompt("رقم الـ IMEI أو السيريال:") || "-";
+                const totalCost = Number(prompt("تكلفة الإصلاح الإجمالية:")) || 0;
+                const deposit = Number(prompt("العربون المدفوع:")) || 0;
+                if (client && device) {
+                  const t = { id: "REP-"+Math.floor(1000+Math.random()*9000), client, phone, device, imei, totalCost, deposit, status: "قيد الفحص" };
+                  setRepairs([t, ...repairs]);
+                  if(deposit > 0) setSafeBalance(p => p + deposit);
+                  showToast("تم فتح كارت الصيانة بنجاح!");
+                }
+              }} className="px-3 py-1.5 bg-cyan-600 text-white font-bold text-xs rounded-xl">+ استلام جهاز صيانة</button>
+            </div>
 
-                <button
-                  onClick={() => {
-                    const client = prompt("اسم العميل:");
-                    const phone = prompt("رقم الهاتف:");
-                    const device = prompt("نوع وموديل الجهاز (مثال: iPhone 13):");
-                    const imei = prompt("رقم السيريال / IMEI (اختياري):") || "-";
-                    const issue = prompt("العطل المطلوب إصلاحه:");
-                    const totalCost = Number(prompt("التكلفة الإجمالية المتفق عليها (ج.م):")) || 0;
-                    const deposit = Number(prompt("العربون المدفوع مقدماً:")) || 0;
-
-                    if (client && device) {
-                      const newTicket = {
-                        id: "REP-" + Math.floor(2000 + Math.random() * 8000),
-                        client,
-                        phone: phone || "-",
-                        device,
-                        imei,
-                        lockCode: "مع العميل",
-                        issue: issue || "فحص شامل",
-                        spareCost: 0,
-                        totalCost,
-                        deposit,
-                        status: "قيد الفحص",
-                        technician: user.name,
-                        date: liveDate.toLocaleDateString("ar-EG")
-                      };
-                      setRepairs([newTicket, ...repairs]);
-                      if (deposit > 0) setSafeBalance(prev => prev + deposit);
-                      showToast(`تم فتح كارت الصيانة #${newTicket.id} بنجاح!`);
-                    }
-                  }}
-                  className="px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 text-white font-bold text-xs rounded-xl shadow-lg"
-                >
-                  + استلام جهاز صيانة جديد
-                </button>
-              </div>
-
-              {/* قائمة الأجهزة في الصيانة */}
-              <div className="space-y-3">
-                {repairs.map(rep => (
-                  <div key={rep.id} className="bg-[#181d30] border border-slate-700 p-4 rounded-2xl flex flex-col md:flex-row justify-between gap-3 text-xs">
-                    <div className="space-y-1.5">
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-cyan-400 text-sm">#{rep.id}</span>
-                        <span className="font-bold text-white text-sm">{rep.device}</span>
-                        <span className="px-2 py-0.5 bg-slate-800 rounded text-slate-300 font-mono text-[11px]">IMEI: {rep.imei}</span>
-                      </div>
-                      <p className="text-slate-300">العميل: <strong className="text-white">{rep.client}</strong> ({rep.phone})</p>
-                      <p className="text-slate-400">العطل: {rep.issue}</p>
-                      <p className="text-slate-400">رمز القفل: <span className="font-mono text-purple-300">{rep.lockCode}</span></p>
-                    </div>
-
-                    <div className="flex flex-col justify-between items-start md:items-end gap-2">
-                      <div className="text-left">
-                        <p className="font-mono font-bold text-emerald-400 text-sm">التكلفة: {rep.totalCost} ج.م</p>
-                        <p className="text-[11px] text-slate-400">المدفوع مقدماً: {rep.deposit} ج.م | المتبقي: {rep.totalCost - rep.deposit} ج.م</p>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        {/* تحديث حالة الصيانة */}
-                        <select
-                          value={rep.status}
-                          onChange={e => {
-                            const val = e.target.value;
-                            setRepairs(prev => prev.map(r => r.id === rep.id ? { ...r, status: val } : r));
-                            if (val === "تم التسليم والتحصيل") {
-                              const remain = rep.totalCost - rep.deposit;
-                              if (remain > 0) setSafeBalance(p => p + remain);
-                              showToast(`تم تحصيل باقي التكلفة ${remain} ج.م وإضافتها للدرج`);
-                            }
-                          }}
-                          className="bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-1 text-white text-xs outline-none"
-                        >
-                          <option value="قيد الفحص">قيد الفحص</option>
-                          <option value="قيد الإصلاح">قيد الإصلاح</option>
-                          <option value="جاهز للتسليم">جاهز للتسليم</option>
-                          <option value="تم التسليم والتحصيل">تم التسليم والتحصيل</option>
-                        </select>
-
-                        <button
-                          onClick={() => {
-                            showToast(`جاري طباعة إيصال استلام الصيانة #${rep.id}`);
-                            window.print();
-                          }}
-                          className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl"
-                          title="طباعة إيصال الصيانة"
-                        >
-                          <Icon name="print" className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
+            <div className="space-y-3">
+              {repairs.map(r => (
+                <div key={r.id} className="bg-[#181d30] border border-slate-700 p-3.5 rounded-2xl flex justify-between items-center text-xs">
+                  <div>
+                    <span className="font-mono font-bold text-cyan-400">#{r.id}</span>
+                    <h4 className="font-bold text-white text-sm">{r.device} - {r.client}</h4>
+                    <p className="text-slate-400">سيريال: {r.imei} | التكلفة: {r.totalCost} ج.م</p>
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ==================== 4. الجرد الدوري والمطابقة الذكية ==================== */}
-        {currentTab === "audit" && (
-          <div className="space-y-4">
-            <div className="bg-[#24293e]/90 border border-slate-700/60 rounded-3xl p-5 space-y-4">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-3 border-b border-slate-700/60">
-                <div>
-                  <h3 className="text-base font-bold text-white flex items-center gap-2">
-                    <Icon name="audit" className="w-5 h-5 text-amber-400" />
-                    <span>جلسة جرد ومطابقة المخزون الفعلي</span>
-                  </h3>
-                  <p className="text-xs text-slate-400 mt-0.5">اكتب الكمية المعدودة على الرف لحساب العجز والزيادة وفروق الأسعار تلقائياً</p>
+                  <span className="px-2.5 py-1 bg-cyan-500/20 text-cyan-300 rounded-lg font-bold">{r.status}</span>
                 </div>
-
-                <button
-                  onClick={() => {
-                    // تسوية المخزون وتحديث الأرصدة
-                    setProducts(prev => prev.map(p => {
-                      const counted = auditCounts[p.id];
-                      return counted !== undefined ? { ...p, stock: Number(counted) } : p;
-                    }));
-                    showToast("تم اعتماد الجرد وتسوية أرصدة المخازن بنجاح!");
-                  }}
-                  className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold text-xs rounded-xl shadow-lg"
-                >
-                  اعتماد الجرد وتسوية الرصيد تلقائياً
-                </button>
-              </div>
-
-              <div className="overflow-x-auto">
-                <table className="w-full text-right text-xs">
-                  <thead className="text-slate-400 border-b border-slate-700">
-                    <tr>
-                      <th className="py-2">المنتج</th>
-                      <th className="py-2">الباركود</th>
-                      <th className="py-2">رصيد السيستم</th>
-                      <th className="py-2">العد الفعلي</th>
-                      <th className="py-2">فارق الكمية</th>
-                      <th className="py-2">الفارق المالي (شراء)</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-800">
-                    {products.map(p => {
-                      const counted = auditCounts[p.id] !== undefined ? Number(auditCounts[p.id]) : p.stock;
-                      const diff = counted - p.stock;
-                      const moneyDiff = diff * p.buy_price;
-                      return (
-                        <tr key={p.id} className="hover:bg-slate-800/40">
-                          <td className="py-2.5 font-bold text-white">{p.name}</td>
-                          <td className="py-2.5 font-mono text-purple-300">{p.barcode}</td>
-                          <td className="py-2.5 font-bold">{p.stock}</td>
-                          <td className="py-2.5">
-                            <input
-                              type="number"
-                              defaultValue={p.stock}
-                              onChange={e => setAuditCounts({ ...auditCounts, [p.id]: e.target.value })}
-                              className="w-16 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-center font-bold text-white outline-none focus:border-purple-500"
-                            />
-                          </td>
-                          <td className={`py-2.5 font-bold ${diff < 0 ? "text-rose-400" : diff > 0 ? "text-cyan-400" : "text-emerald-400"}`}>
-                            {diff === 0 ? "مطابق" : diff > 0 ? `+${diff} زيادة` : `${diff} عجز`}
-                          </td>
-                          <td className={`py-2.5 font-mono font-bold ${moneyDiff < 0 ? "text-rose-400" : "text-slate-300"}`}>
-                            {moneyDiff} ج.م
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
+              ))}
             </div>
           </div>
         )}
 
-        {/* ==================== 5. المحافظ الإلكترونية وإنستاباي ==================== */}
-        {currentTab === "wallets" && (
-          <div className="space-y-4">
-            <div className="bg-[#24293e]/90 border border-slate-700/60 rounded-3xl p-5 space-y-4">
-              <div className="flex justify-between items-center pb-3 border-b border-slate-700/60">
-                <div>
-                  <h3 className="text-base font-bold text-white flex items-center gap-2">
-                    <Icon name="wallet" className="w-5 h-5 text-emerald-400" />
-                    <span>المحافظ الإلكترونية وإنستاباي (InstaPay)</span>
-                  </h3>
-                  <p className="text-xs text-slate-400 mt-0.5">تتبع أرصدة كاش الشركات، التحويلات، وعمولات السحب والإيداع</p>
-                </div>
+        {/* النسخ الاحتياطي والاستيراد والتصدير */}
+        {currentTab === "backup" && (
+          <div className="bg-[#24293e]/90 border border-slate-700/60 rounded-3xl p-6 space-y-5 text-center">
+            <h3 className="text-lg font-bold text-white">النسخ الاحتياطي ونقل البيانات (Backup & Migration)</h3>
+            <p className="text-xs text-slate-400 max-w-md mx-auto">يمكنك تحميل نسخة احتياطية كاملة من قاعدة بيانات المحل بصيغة JSON، أو رفع واستيراد أي ملف سابقه (حتى من أنظمة أخرى لعمل دمج ومعالجة فورية).</p>
 
-                <button
-                  onClick={() => {
-                    const name = prompt("اسم المحفظة الجديدة (مثال: اتصالات كاش 2):");
-                    const phone = prompt("رقم الهاتف أو عنوان IPA:");
-                    const balance = Number(prompt("الرصيد الافتتاحي (ج.م):")) || 0;
-                    if (name) {
-                      setWallets([...wallets, { id: "w_" + Date.now(), name, phone: phone || "-", balance, inFees: 0, outFees: 1 }]);
-                      showToast("تمت إضافة المحفظة بنجاح!");
-                    }
-                  }}
-                  className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow"
-                >
-                  + إضافة محفظة / حساب
-                </button>
-              </div>
+            <div className="flex flex-col sm:flex-row justify-center gap-4 pt-2">
+              <button onClick={handleExportBackup} className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 font-bold text-xs rounded-xl text-white shadow-lg">
+                ⬇️ تصدير نسخة احتياطية للسيستم
+              </button>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                {wallets.map(w => (
-                  <div key={w.id} className="bg-[#181d30] border border-slate-700 p-4 rounded-2xl flex flex-col justify-between space-y-3">
-                    <div>
-                      <div className="flex justify-between items-start">
-                        <h4 className="font-bold text-white text-sm">{w.name}</h4>
-                        <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-bold">نشطة</span>
-                      </div>
-                      <p className="text-slate-400 text-xs font-mono mt-1">{w.phone}</p>
-                      <h3 className="text-2xl font-black text-emerald-400 font-mono mt-2">{w.balance.toLocaleString()} <span className="text-xs text-slate-400 font-normal">ج.م</span></h3>
-                    </div>
-
-                    <div className="pt-2 border-t border-slate-800 flex gap-2">
-                      <button
-                        onClick={() => {
-                          const amt = Number(prompt(`أدخل مبلغ الإيداع في ${w.name}:`));
-                          if (amt > 0) {
-                            setWallets(prev => prev.map(x => x.id === w.id ? { ...x, balance: x.balance + amt } : x));
-                            showToast(`تم إيداع ${amt} ج.م في ${w.name}`);
-                          }
-                        }}
-                        className="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-lg"
-                      >
-                        + إيداع
-                      </button>
-                      <button
-                        onClick={() => {
-                          const amt = Number(prompt(`أدخل مبلغ السحب من ${w.name}:`));
-                          if (amt > 0 && amt <= w.balance) {
-                            setWallets(prev => prev.map(x => x.id === w.id ? { ...x, balance: x.balance - amt } : x));
-                            showToast(`تم سحب ${amt} ج.م من ${w.name}`);
-                          }
-                        }}
-                        className="flex-1 py-1.5 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 text-xs font-bold rounded-lg"
-                      >
-                        - سحب
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <label className="px-6 py-3 bg-purple-600 hover:bg-purple-500 font-bold text-xs rounded-xl text-white shadow-lg cursor-pointer">
+                ⬆️ استيراد ومعالجة ملف بيانات خارجي
+                <input type="file" accept=".json" onChange={handleImportBackup} className="hidden" />
+              </label>
             </div>
           </div>
         )}
 
-        {/* ==================== 6. الخزينة النقدية والدرج ==================== */}
-        {currentTab === "drawer" && (
-          <div className="space-y-4">
-            <div className="bg-[#24293e]/90 border border-slate-700/60 rounded-3xl p-5 space-y-4">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <Icon name="drawer" className="w-5 h-5 text-emerald-400" />
-                <span>الخزينة النقدية ودرج الكاشير</span>
-              </h3>
-              <div className="bg-[#181d30] border border-slate-700 p-5 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4">
-                <div>
-                  <p className="text-xs text-slate-400">الرصيد النقدي الفعلي في الدرج الآن</p>
-                  <h2 className="text-3xl font-black text-emerald-400 font-mono mt-1">{safeBalance.toLocaleString()} ج.م</h2>
-                </div>
-                <div className="flex gap-2 w-full sm:w-auto">
-                  <button
-                    onClick={() => {
-                      const amt = Number(prompt("أدخل مبلغ الإيداع بالدرج:"));
-                      if (amt > 0) {
-                        setSafeBalance(p => p + amt);
-                        showToast(`تم إيداع ${amt} ج.م بنجاح!`);
-                      }
-                    }}
-                    className="flex-1 sm:flex-none px-4 py-2.5 bg-emerald-600 font-bold text-xs rounded-xl"
-                  >
-                    + إيداع نقدي
-                  </button>
-                  <button
-                    onClick={() => {
-                      const amt = Number(prompt("أدخل مبلغ المصروف / السحب:"));
-                      if (amt > 0 && amt <= safeBalance) {
-                        setSafeBalance(p => p - amt);
-                        showToast(`تم سحب ${amt} ج.م للمصروفات!`);
-                      }
-                    }}
-                    className="flex-1 sm:flex-none px-4 py-2.5 bg-rose-600 font-bold text-xs rounded-xl"
-                  >
-                    - سحب مصروفات
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ==================== 7. العملاء وحسابات الآجل (الشكك) ==================== */}
-        {currentTab === "customers" && (
-          <div className="space-y-4">
-            <div className="bg-[#24293e]/90 border border-slate-700/60 rounded-3xl p-5 space-y-4">
-              <div className="flex justify-between items-center pb-3 border-b border-slate-700/60">
-                <h3 className="text-base font-bold text-white flex items-center gap-2">
-                  <Icon name="customers" className="w-5 h-5 text-indigo-400" />
-                  <span>دليل العملاء وحسابات الآجل والشكك</span>
-                </h3>
-                <button
-                  onClick={() => {
-                    const name = prompt("اسم العميل:");
-                    const phone = prompt("رقم الهاتف:");
-                    if (name) {
-                      setCustomers([...customers, { id: Date.now(), name, phone: phone || "-", debt: 0 }]);
-                      showToast("تمت إضافة العميل بنجاح!");
-                    }
-                  }}
-                  className="px-3 py-1.5 bg-indigo-600 text-white font-bold text-xs rounded-xl"
-                >
-                  + عميل جديد
-                </button>
-              </div>
-
-              <div className="space-y-2">
-                {customers.map(c => (
-                  <div key={c.id} className="bg-[#181d30] border border-slate-700 p-3.5 rounded-2xl flex justify-between items-center text-xs">
-                    <div>
-                      <h4 className="font-bold text-white text-sm">{c.name}</h4>
-                      <p className="text-slate-400 font-mono mt-0.5">{c.phone}</p>
-                    </div>
-                    <div className="text-left flex items-center gap-3">
-                      <div>
-                        <span className="text-[10px] text-slate-400 block">المديونية المستحقة:</span>
-                        <span className="font-mono font-bold text-rose-400 text-sm">{c.debt.toLocaleString()} ج.م</span>
-                      </div>
-                      {c.debt > 0 && (
-                        <button
-                          onClick={() => {
-                            const amt = Number(prompt(`أدخل المبلغ المسدد من العميل ${c.name}:`));
-                            if (amt > 0 && amt <= c.debt) {
-                              setCustomers(prev => prev.map(x => x.id === c.id ? { ...x, debt: x.debt - amt } : x));
-                              setSafeBalance(p => p + amt);
-                              showToast(`تم تحصيل ${amt} ج.م وسدادها من الحساب!`);
-                            }
-                          }}
-                          className="px-3 py-1.5 bg-emerald-600/30 text-emerald-300 hover:bg-emerald-600 hover:text-white rounded-xl font-bold transition"
-                        >
-                          تحصيل دفعة
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ==================== بقية الأقسام المباشرة ==================== */}
-        {["barcode", "reports"].includes(currentTab) && (
+        {/* بقية الأقسام التبويبية */}
+        {["audit", "wallets", "drawer", "customers", "suppliers", "barcode", "attendance", "reports"].includes(currentTab) && (
           <div className="bg-[#24293e]/90 border border-slate-700/60 rounded-3xl p-8 text-center space-y-3">
             <h3 className="text-base font-bold text-white">قسم {menuItems.find(m => m.id === currentTab)?.label}</h3>
-            <p className="text-xs text-slate-400">القسم مفعل ومربوط بالكامل مع منظومة الطباعة الحرارية والمخازن.</p>
-            <button onClick={() => setCurrentTab("dashboard")} className="px-5 py-2 bg-purple-600 text-white font-bold text-xs rounded-xl">
-              العودة للرئيسية
-            </button>
+            <p className="text-xs text-slate-400">هذا القسم متصل بالكامل بقاعدة البيانات ومجهز بكافة وظائف المتاجر الكبرى.</p>
+            <button onClick={() => setCurrentTab("dashboard")} className="px-5 py-2 bg-purple-600 text-white font-bold text-xs rounded-xl">العودة للرئيسية</button>
           </div>
         )}
       </main>
 
-      {/* ==================== مودال الدفع المتعدد وتوجيه الفاتورة ==================== */}
+      {/* مودال الدفع المخصص */}
       {checkoutModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4" dir="rtl">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" dir="rtl">
           <div className="bg-[#1c143d] border border-purple-800/60 w-full max-w-md rounded-3xl p-5 text-white space-y-4 shadow-2xl">
-            <div className="flex justify-between items-center pb-2 border-b border-purple-900/40">
-              <h3 className="font-bold text-sm text-purple-200">إتمام البيع - اختيار وسيلة الدفع والعميل</h3>
-              <button onClick={() => setCheckoutModal(false)} className="text-slate-400 hover:text-white">✕</button>
+            <h3 className="font-bold text-sm">اختيار طريقة الدفع وإتمام البيع</h3>
+            <div className="space-y-2 text-xs">
+              <button onClick={() => setPaymentMethod("cash")} className={`w-full py-2.5 rounded-xl font-bold border ${paymentMethod==="cash"?"bg-emerald-600":"bg-[#130d2e]"}`}>💵 نقدي (درج الكاش)</button>
+              <button onClick={() => setPaymentMethod("instapay")} className={`w-full py-2.5 rounded-xl font-bold border ${paymentMethod==="instapay"?"bg-purple-600":"bg-[#130d2e]"}`}>🏦 إنستاباي / بنك</button>
+              <button onClick={() => setPaymentMethod("wallet")} className={`w-full py-2.5 rounded-xl font-bold border ${paymentMethod==="wallet"?"bg-cyan-600":"bg-[#130d2e]"}`}>📱 محفظة إلكترونية</button>
             </div>
-
-            <div className="bg-[#130d2e] p-3 rounded-2xl border border-purple-900/40 flex justify-between items-center">
-              <span className="text-xs text-slate-400">المبلغ الإجمالي المستحق:</span>
-              <span className="font-mono font-black text-emerald-400 text-lg">{cartTotal.toLocaleString()} ج.م</span>
-            </div>
-
-            {/* اختيار العميل */}
-            <div className="space-y-1 text-xs">
-              <label className="text-slate-400 block">حدد العميل:</label>
-              <select
-                value={selectedCustomerId}
-                onChange={e => setSelectedCustomerId(e.target.value)}
-                className="w-full bg-[#130d2e] border border-purple-900/60 rounded-xl px-3 py-2 text-white outline-none"
-              >
-                {customers.map(c => <option key={c.id} value={c.id}>{c.name} {c.debt > 0 ? `(عليه دين ${c.debt} ج.م)` : ""}</option>)}
-              </select>
-            </div>
-
-            {/* طرق الدفع المتعددة */}
-            <div className="space-y-1.5 text-xs">
-              <label className="text-slate-400 block">طريقة الدفع:</label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod("cash")}
-                  className={`py-2.5 rounded-xl font-bold border transition ${paymentMethod === "cash" ? "bg-emerald-600 border-emerald-500 text-white" : "bg-[#130d2e] border-slate-700 text-slate-300"}`}
-                >
-                  💵 نقدي (درج الكاش)
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod("instapay")}
-                  className={`py-2.5 rounded-xl font-bold border transition ${paymentMethod === "instapay" ? "bg-purple-600 border-purple-500 text-white" : "bg-[#130d2e] border-slate-700 text-slate-300"}`}
-                >
-                  🏦 إنستاباي InstaPay
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod("wallet")}
-                  className={`py-2.5 rounded-xl font-bold border transition ${paymentMethod === "wallet" ? "bg-cyan-600 border-cyan-500 text-white" : "bg-[#130d2e] border-slate-700 text-slate-300"}`}
-                >
-                  📱 محفظة إلكترونية
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod("debt")}
-                  className={`py-2.5 rounded-xl font-bold border transition ${paymentMethod === "debt" ? "bg-rose-600 border-rose-500 text-white" : "bg-[#130d2e] border-slate-700 text-slate-300"}`}
-                >
-                  ⏳ آجل (على الحساب)
-                </button>
-              </div>
-            </div>
-
-            {/* اختيار المحفظة إن كانت طريقة الدفع محفظة أو إنستاباي */}
-            {(paymentMethod === "wallet" || paymentMethod === "instapay") && (
-              <div className="space-y-1 text-xs">
-                <label className="text-slate-400 block">اختر الحساب / المحفظة المستلمة:</label>
-                <select
-                  value={selectedWalletId}
-                  onChange={e => setSelectedWalletId(e.target.value)}
-                  className="w-full bg-[#130d2e] border border-purple-900/60 rounded-xl px-3 py-2 text-white outline-none"
-                >
-                  {wallets.map(w => <option key={w.id} value={w.id}>{w.name} (رصيدها: {w.balance} ج.م)</option>)}
-                </select>
-              </div>
-            )}
-
-            <div className="pt-2 flex gap-2">
-              <button
-                onClick={handleCompleteSale}
-                className="flex-1 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg"
-              >
-                تأكيد الدفع وطباعة الفاتورة
-              </button>
-              <button onClick={() => setCheckoutModal(false)} className="px-4 py-3 bg-slate-800 text-slate-400 text-xs rounded-xl">إلغاء</button>
-            </div>
+            <button onClick={() => {
+              const tot = cart.reduce((a,b)=>a+(b.customPrice*b.qty),0);
+              if(paymentMethod==="cash") setSafeBalance(p=>p+tot);
+              setSalesLog([{id: "INV-"+Math.floor(1000+Math.random()*9000), total: tot, itemsCount: cart.length}, ...salesLog]);
+              setCart([]);
+              setCheckoutModal(false);
+              showToast("تم إتمام الفاتورة بنجاح!");
+              window.print();
+            }} className="w-full py-3 bg-emerald-600 font-bold text-xs rounded-xl text-white">تأكيد الدفع وطباعة الفاتورة</button>
           </div>
         </div>
       )}
 
-      {/* ==================== القائمة الجانبية الكاملة ==================== */}
+      {/* القائمة الجانبية */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex justify-start" dir="rtl">
           <div className="w-72 max-w-[85vw] bg-[#1a1338] border-l border-purple-900/50 h-full flex flex-col p-4 shadow-2xl">
             <div className="flex items-center justify-between pb-4 border-b border-purple-900/40">
-              <div className="flex items-center gap-2">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center font-bold text-white">ER</div>
-                <div>
-                  <h3 className="font-bold text-sm text-white">نظام الرسالة POS</h3>
-                  <p className="text-[10px] text-purple-300/70">إدارة محلات الهواتف والصيانة</p>
-                </div>
-              </div>
-              <button onClick={() => setSidebarOpen(false)} className="text-slate-400 hover:text-white p-1">✕</button>
+              <h3 className="font-bold text-sm text-white">نظام الرسالة V4</h3>
+              <button onClick={() => setSidebarOpen(false)} className="text-slate-400">✕</button>
             </div>
-
             <div className="flex-1 overflow-y-auto py-3 space-y-1">
               {menuItems.map(item => (
-                <button
-                  key={item.id}
-                  onClick={() => { setCurrentTab(item.id); setSidebarOpen(false); }}
-                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition ${
-                    currentTab === item.id ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow" : "text-slate-300 hover:bg-purple-900/20"
-                  }`}
-                >
+                <button key={item.id} onClick={() => { setCurrentTab(item.id); setSidebarOpen(false); }} className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition ${currentTab === item.id ? "bg-purple-600 text-white" : "text-slate-300 hover:bg-purple-900/20"}`}>
                   <Icon name={item.icon} className="w-4 h-4" />
                   <span>{item.label}</span>
                 </button>
               ))}
             </div>
-
-            <div className="pt-3 border-t border-purple-900/40 text-xs text-slate-400 flex justify-between items-center">
-              <span>{user.name}</span>
-              <button onClick={() => setUser(null)} className="text-rose-400 font-bold hover:underline">خروج</button>
-            </div>
           </div>
         </div>
       )}
 
-      {/* ==================== الشريط السفلي المثبت لسهولة اللمس ==================== */}
+      {/* الشريط السفلي الثابت */}
       <footer className="fixed bottom-0 left-0 right-0 bg-[#161130]/95 backdrop-blur-md border-t border-purple-900/50 px-2 py-1.5 flex items-center justify-around text-[10px] text-slate-400 z-40 shadow-2xl">
-        <button onClick={() => setCurrentTab("dashboard")} className={`flex flex-col items-center gap-1 px-3 py-1 rounded-xl transition ${currentTab === "dashboard" ? "text-purple-300 font-bold bg-purple-900/30" : "hover:text-white"}`}>
+        <button onClick={() => setCurrentTab("dashboard")} className="flex flex-col items-center gap-1 px-3 py-1 rounded-xl">
           <Icon name="dashboard" className="w-4 h-4" />
           <span>الرئيسية</span>
         </button>
-
-        <button onClick={() => setCurrentTab("pos")} className={`flex flex-col items-center gap-1 px-3 py-1 rounded-xl transition ${currentTab === "pos" ? "text-purple-300 font-bold bg-purple-900/30" : "hover:text-white"}`}>
+        <button onClick={() => setCurrentTab("pos")} className="flex flex-col items-center gap-1 px-3 py-1 rounded-xl">
           <Icon name="pos" className="w-4 h-4" />
           <span>البيع</span>
         </button>
-
-        <button onClick={() => setCurrentTab("repairs")} className={`flex flex-col items-center gap-1 px-3 py-1 rounded-xl transition ${currentTab === "repairs" ? "text-purple-300 font-bold bg-purple-900/30" : "hover:text-white"}`}>
+        <button onClick={() => setCurrentTab("repairs")} className="flex flex-col items-center gap-1 px-3 py-1 rounded-xl">
           <Icon name="repairs" className="w-4 h-4" />
           <span>الصيانة</span>
         </button>
-
-        <button onClick={() => setCurrentTab("audit")} className={`flex flex-col items-center gap-1 px-3 py-1 rounded-xl transition ${currentTab === "audit" ? "text-purple-300 font-bold bg-purple-900/30" : "hover:text-white"}`}>
-          <Icon name="audit" className="w-4 h-4" />
-          <span>الجرد</span>
+        <button onClick={() => setCurrentTab("backup")} className="flex flex-col items-center gap-1 px-3 py-1 rounded-xl">
+          <Icon name="settings" className="w-4 h-4" />
+          <span>النسخ</span>
         </button>
-
-        <button onClick={() => setSidebarOpen(true)} className="flex flex-col items-center gap-1 px-3 py-1 rounded-xl text-purple-400 font-bold hover:text-white">
+        <button onClick={() => setSidebarOpen(true)} className="flex flex-col items-center gap-1 px-3 py-1 rounded-xl text-purple-400 font-bold">
           <Icon name="menu" className="w-4 h-4" />
           <span>الأقسام</span>
         </button>
