@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 
-// --- أيقونات النظام الاحترافية ---
+// --- أيقونات النظام ---
 const Icon = ({ name, className = "w-5 h-5" }) => {
   const icons = {
     menu: <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>,
@@ -11,16 +11,12 @@ const Icon = ({ name, className = "w-5 h-5" }) => {
     audit: <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-7 2h5v2h-5V5zm-4 4h9v2H8V9zm0 4h9v2H8v-2zm0 4h6v2H8v-2z"/>,
     repairs: <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/>,
     wallet: <path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>,
-    bank: <path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>,
-    barcode: <path d="M2 4h2v16H2zm4 0h1v16H6zm3 0h2v16H9zm4 0h1v16h-1zm3 0h2v16h-2zm4 0h2v16h-2z"/>,
     customers: <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>,
     users: <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>,
     reports: <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>,
-    settings: <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c-.5.38 1.03.7 1.62.94l.36 2.54c-.05.24.24.41.48.41h3.84c-.24 0 .44-.17.47-.41l.36-2.54c-.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>,
+    settings: <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c-.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c-.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>,
     print: <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/>,
-    check: <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>,
-    logout: <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>,
-    attendance: <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+    logout: <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
   };
   return <svg className={className} fill="currentColor" viewBox="0 0 24 24">{icons[name] || icons.dashboard}</svg>;
 };
@@ -44,73 +40,62 @@ export default function App() {
   const [toastMsg, setToastMsg] = useState("");
   const [checkoutModal, setCheckoutModal] = useState(false);
 
-  // مبيعات وتسعير
+  // تسعير المبيعات
   const [priceTier, setPriceTier] = useState("retail");
   const [paymentMethod, setPaymentMethod] = useState("cash");
-  const [selectedWalletId, setSelectedWalletId] = useState("voda");
+  const [selectedWalletId, setSelectedWalletId] = useState("");
   const [selectedCustomerId, setSelectedCustomerId] = useState(1);
 
-  // قواعد البيانات الكاملة
-  const [products, setProducts] = useState(() => JSON.parse(localStorage.getItem("db_prods_v5") || JSON.stringify([
-    { id: 1, name: "شاحن سامسونج أصلي 25W Type-C", barcode: "622001", buy_price: 85, retail_price: 160, semi_price: 130, whole_price: 110, stock: 45, category: "شواحن" },
+  // قواعد البيانات القابلة للتعديل والتحكم الكامل
+  const [products, setProducts] = useState(() => JSON.parse(localStorage.getItem("db_prods_v6") || JSON.stringify([
+    { id: 1, name: "شاحن سامسونج أصلي 25W", barcode: "622001", buy_price: 85, retail_price: 160, semi_price: 130, whole_price: 110, stock: 45, category: "شواحن" },
     { id: 2, name: "كابل شحن سريع قماش Type-C", barcode: "622002", buy_price: 22, retail_price: 55, semi_price: 40, whole_price: 32, stock: 95, category: "كابلات" },
-    { id: 3, name: "اسكرينة حماية 9D سيراميك", barcode: "622003", buy_price: 12, retail_price: 45, semi_price: 30, whole_price: 22, stock: 160, category: "اسكرينات" },
-    { id: 4, name: "سماعة ايربودز Pro لاسلكية", barcode: "622004", buy_price: 210, retail_price: 390, semi_price: 330, whole_price: 290, stock: 18, category: "سماعات" },
-    { id: 5, name: "شاشة كاملة Samsung A12", barcode: "622005", buy_price: 450, retail_price: 750, semi_price: 650, whole_price: 580, stock: 8, category: "قطع غيار" }
+    { id: 3, name: "اسكرينة حماية 9D سيراميك", barcode: "622003", buy_price: 12, retail_price: 45, semi_price: 30, whole_price: 22, stock: 160, category: "اسكرينات" }
   ])));
 
   const [cart, setCart] = useState([]);
-  const [repairs, setRepairs] = useState(() => JSON.parse(localStorage.getItem("db_repairs_v5") || "[]"));
-  const [wallets, setWallets] = useState(() => JSON.parse(localStorage.getItem("db_wallets_v5") || JSON.stringify([
+  const [repairs, setRepairs] = useState(() => JSON.parse(localStorage.getItem("db_repairs_v6") || "[]"));
+  const [wallets, setWallets] = useState(() => JSON.parse(localStorage.getItem("db_wallets_v6") || JSON.stringify([
     { id: "voda", name: "فودافون كاش الرئيسية", phone: "01002345678", balance: 5400 },
     { id: "insta", name: "إنستاباي InstaPay", phone: "elresala@instapay", balance: 12400 }
   ])));
-  const [safeBalance, setSafeBalance] = useState(() => Number(localStorage.getItem("db_safe_v5") || 8500));
-  const [customers, setCustomers] = useState(() => JSON.parse(localStorage.getItem("db_cust_v5") || JSON.stringify([
+  const [safeBalance, setSafeBalance] = useState(() => Number(localStorage.getItem("db_safe_v6") || 8500));
+  const [customers, setCustomers] = useState(() => JSON.parse(localStorage.getItem("db_cust_v6") || JSON.stringify([
     { id: 1, name: "عميل نقدي سريع", phone: "-", debt: 0 },
     { id: 2, name: "محل الهدى للموبايل", phone: "01144556677", debt: 3400 }
   ])));
-  const [suppliers, setSuppliers] = useState(() => JSON.parse(localStorage.getItem("db_supp_v5") || JSON.stringify([
+  const [suppliers, setSuppliers] = useState(() => JSON.parse(localStorage.getItem("db_supp_v6") || JSON.stringify([
     { id: 1, name: "شركة النور لقطع الغيار", phone: "01011223344", dues: 2500 }
   ])));
-  const [attendance, setAttendance] = useState(() => JSON.parse(localStorage.getItem("db_att_v5") || JSON.stringify([
-    { id: 1, name: "أحمد كاشير", time: "09:00 ص", status: "حاضر" }
-  ])));
-  const [salesLog, setSalesLog] = useState(() => JSON.parse(localStorage.getItem("db_sales_v5") || "[]"));
+  const [salesLog, setSalesLog] = useState(() => JSON.parse(localStorage.getItem("db_sales_v6") || "[]"));
 
   const showToast = (msg) => {
     setToastMsg(msg);
     setTimeout(() => setToastMsg(""), 3000);
   };
 
-  // النسخ الاحتياطي والاستيراد الذكي
-  const handleExportBackup = () => {
-    const data = { version: "5.0", date: new Date().toISOString(), products, repairs, wallets, safeBalance, customers, suppliers, salesLog };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `EL_RESALA_BACKUP_${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    showToast("تم تصدير النسخة الاحتياطية بنجاح!");
-  };
+  // حفظ التغييرات تلقائياً في LocalStorage
+  useEffect(() => { localStorage.setItem("db_prods_v6", JSON.stringify(products)); }, [products]);
+  useEffect(() => { localStorage.setItem("db_repairs_v6", JSON.stringify(repairs)); }, [repairs]);
+  useEffect(() => { localStorage.setItem("db_wallets_v6", JSON.stringify(wallets)); }, [wallets]);
+  useEffect(() => { localStorage.setItem("db_safe_v6", String(safeBalance)); }, [safeBalance]);
+  useEffect(() => { localStorage.setItem("db_cust_v6", JSON.stringify(customers)); }, [customers]);
+  useEffect(() => { localStorage.setItem("db_supp_v6", JSON.stringify(suppliers)); }, [suppliers]);
+  useEffect(() => { localStorage.setItem("db_sales_v6", JSON.stringify(salesLog)); }, [salesLog]);
 
-  const handleImportBackup = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      try {
-        const parsed = JSON.parse(event.target.result);
-        if (parsed.products) { setProducts(parsed.products); localStorage.setItem("db_prods_v5", JSON.stringify(parsed.products)); }
-        if (parsed.repairs) setRepairs(parsed.repairs);
-        if (parsed.wallets) setWallets(parsed.wallets);
-        if (parsed.safeBalance) setSafeBalance(parsed.safeBalance);
-        if (parsed.customers) setCustomers(parsed.customers);
-        showToast("تم استيراد ومعالجة البيانات بنجاح!");
-      } catch (err) { alert("ملف غير صالح"); }
-    };
-    reader.readAsText(file);
+  // تصدير إلى Excel / CSV
+  const exportToCSV = (filename, rows) => {
+    if (!rows || rows.length === 0) { alert("لا توجد بيانات للتصدير"); return; }
+    const keys = Object.keys(rows[0]);
+    const csvContent = "data:text/csv;charset=utf-8," + [keys.join(","), ...rows.map(r => keys.map(k => JSON.stringify(r[k] || "")).join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `${filename}_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast("تم تصدير الملف بنجاح!");
   };
 
   const handleLogin = (e) => {
@@ -125,27 +110,24 @@ export default function App() {
     }
   };
 
-  // الأقسام الـ 12 الكاملة بدون أي شاشات فارغة
   const menuItems = [
     { id: "dashboard", label: "لوحة التحكم الرئيسية", icon: "dashboard" },
     { id: "pos", label: "نقطة البيع (قطاعي/جملة)", icon: "pos" },
     { id: "repairs", label: "مركز صيانة الهواتف", icon: "repairs" },
-    { id: "audit", label: "الجرد الدوري والمخزون", icon: "audit" },
+    { id: "audit", label: "إدارة المخزون والأصناف", icon: "audit" },
     { id: "wallets", label: "المحافظ وإنستاباي", icon: "wallet" },
     { id: "drawer", label: "الخزينة النقدية والدرج", icon: "drawer" },
     { id: "customers", label: "العملاء والحسابات الآجلة", icon: "customers" },
     { id: "suppliers", label: "الموردين والمشتريات", icon: "users" },
-    { id: "barcode", label: "طباعة الباركود", icon: "barcode" },
-    { id: "attendance", label: "الحضور والانصراف والمرتبات", icon: "attendance" },
-    { id: "reports", label: "التقارير والأرباح", icon: "reports" },
-    { id: "backup", label: "النسخ الاحتياطي والاستيراد", icon: "settings" }
+    { id: "reports", label: "سجل المبيعات والأرباح", icon: "reports" },
+    { id: "backup", label: "النسخ الاحتياطي والتصدير", icon: "settings" }
   ];
 
   if (!user) {
     return (
       <div className="min-h-screen bg-[#110c28] flex items-center justify-center p-4 font-sans" dir="rtl">
         <div className="w-full max-w-sm bg-[#1c143d] border border-purple-900/60 rounded-3xl p-6 text-white shadow-2xl">
-          <h1 className="text-2xl font-black text-center mb-4">نظام الرسالة POS V5</h1>
+          <h1 className="text-2xl font-black text-center mb-4">نظام الرسالة POS V6</h1>
           <form onSubmit={handleLogin} className="space-y-4">
             <input type="text" value={loginUsername} onChange={e => setLoginUsername(e.target.value)} placeholder="admin" className="w-full bg-[#130d2e] border border-purple-900/60 rounded-xl px-4 py-3 text-sm outline-none text-white font-mono" required />
             <input type="password" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} placeholder="admin1234" className="w-full bg-[#130d2e] border border-purple-900/60 rounded-xl px-4 py-3 text-sm outline-none text-white font-mono" required />
@@ -283,36 +265,52 @@ export default function App() {
           </div>
         )}
 
-        {/* 3. مركز الصيانة */}
+        {/* 3. مركز الصيانة المتطور (إضافة، تعديل، حذف، تغيير حالة) */}
         {currentTab === "repairs" && (
           <div className="bg-[#24293e]/90 border border-slate-700/60 rounded-3xl p-5 space-y-4">
             <div className="flex justify-between items-center pb-3 border-b border-slate-700">
-              <h3 className="text-base font-bold text-white">مركز صيانة الهواتف المعتمد</h3>
-              <button onClick={() => {
-                const client = prompt("اسم العميل:");
-                const phone = prompt("رقم الهاتف:");
-                const device = prompt("نوع الجهاز (مثال iPhone 11):");
-                const imei = prompt("رقم الـ IMEI أو السيريال:") || "-";
-                const totalCost = Number(prompt("تكلفة الإصلاح الإجمالية:")) || 0;
-                const deposit = Number(prompt("العربون المدفوع:")) || 0;
-                if (client && device) {
-                  const t = { id: "REP-"+Math.floor(1000+Math.random()*9000), client, phone, device, imei, totalCost, deposit, status: "قيد الفحص" };
-                  setRepairs([t, ...repairs]);
-                  if(deposit > 0) setSafeBalance(p => p + deposit);
-                  showToast("تم فتح كارت الصيانة بنجاح!");
-                }
-              }} className="px-3 py-1.5 bg-cyan-600 text-white font-bold text-xs rounded-xl">+ استلام جهاز صيانة</button>
+              <h3 className="text-base font-bold text-white">مركز صيانة الهواتف (تحكم كامل)</h3>
+              <div className="flex gap-2">
+                <button onClick={() => exportToCSV("repairs_report", repairs)} className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-purple-300 font-bold text-xs rounded-xl">تصدير Excel</button>
+                <button onClick={() => {
+                  const client = prompt("اسم العميل:");
+                  const phone = prompt("رقم الهاتف:");
+                  const device = prompt("نوع الجهاز (مثال iPhone 11):");
+                  const imei = prompt("رقم السيريال IMEI:") || "-";
+                  const totalCost = Number(prompt("تكلفة الإصلاح:")) || 0;
+                  const deposit = Number(prompt("العربون المدفوع:")) || 0;
+                  if (client && device) {
+                    const t = { id: "REP-"+Math.floor(1000+Math.random()*9000), client, phone, device, imei, totalCost, deposit, status: "قيد الفحص" };
+                    setRepairs([t, ...repairs]);
+                    if(deposit > 0) setSafeBalance(p => p + deposit);
+                    showToast("تم إضافة كارت الصيانة بنجاح!");
+                  }
+                }} className="px-3 py-1.5 bg-cyan-600 text-white font-bold text-xs rounded-xl">+ استلام جهاز جديد</button>
+              </div>
             </div>
 
             <div className="space-y-3">
               {repairs.map(r => (
-                <div key={r.id} className="bg-[#181d30] border border-slate-700 p-3.5 rounded-2xl flex justify-between items-center text-xs">
+                <div key={r.id} className="bg-[#181d30] border border-slate-700 p-3.5 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs">
                   <div>
                     <span className="font-mono font-bold text-cyan-400">#{r.id}</span>
-                    <h4 className="font-bold text-white text-sm">{r.device} - {r.client}</h4>
-                    <p className="text-slate-400">سيريال: {r.imei} | التكلفة: {r.totalCost} ج.م</p>
+                    <h4 className="font-bold text-white text-sm">{r.device} - {r.client} ({r.phone})</h4>
+                    <p className="text-slate-400">سيريال: {r.imei} | التكلفة: {r.totalCost} ج.م | المدفوع: {r.deposit} ج.م</p>
                   </div>
-                  <span className="px-2.5 py-1 bg-cyan-500/20 text-cyan-300 rounded-lg font-bold">{r.status}</span>
+                  <div className="flex items-center gap-2">
+                    <select value={r.status} onChange={e => {
+                      const st = e.target.value;
+                      setRepairs(repairs.map(x => x.id === r.id ? { ...x, status: st } : x));
+                    }} className="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-white text-xs">
+                      <option value="قيد الفحص">قيد الفحص</option>
+                      <option value="قيد الإصلاح">قيد الإصلاح</option>
+                      <option value="جاهز للتسليم">جاهز للتسليم</option>
+                      <option value="تم التسليم والتحصيل">تم التسليم والتحصيل</option>
+                    </select>
+                    <button onClick={() => {
+                      if(confirm("هل تريد حذف كارت الصيانة؟")) setRepairs(repairs.filter(x => x.id !== r.id));
+                    }} className="px-2.5 py-1 bg-rose-600/30 text-rose-300 rounded-lg font-bold">حذف</button>
+                  </div>
                 </div>
               ))}
               {repairs.length === 0 && <p className="text-center text-slate-500 py-10">لا توجد أجهزة في الصيانة</p>}
@@ -320,45 +318,97 @@ export default function App() {
           </div>
         )}
 
-        {/* 4. الجرد والمخزون */}
+        {/* 4. إدارة المخزون والأصناف (إضافة، تعديل، حذف) */}
         {currentTab === "audit" && (
           <div className="bg-[#24293e]/90 border border-slate-700/60 rounded-3xl p-5 space-y-4">
-            <h3 className="text-base font-bold text-white">الجرد الدوري والمخزون</h3>
-            <table className="w-full text-right text-xs">
-              <thead className="text-slate-400 border-b border-slate-700">
-                <tr>
-                  <th className="py-2">المنتج</th>
-                  <th className="py-2">الباركود</th>
-                  <th className="py-2">الرصيد</th>
-                  <th className="py-2">سعر القطاعي</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800">
-                {products.map(p => (
-                  <tr key={p.id}>
-                    <td className="py-2.5 font-bold text-white">{p.name}</td>
-                    <td className="py-2.5 font-mono text-purple-300">{p.barcode}</td>
-                    <td className="py-2.5 font-bold">{p.stock}</td>
-                    <td className="py-2.5 text-emerald-400">{p.retail_price} ج.م</td>
+            <div className="flex justify-between items-center pb-3 border-b border-slate-700">
+              <h3 className="text-base font-bold text-white">إدارة المخزون والأصناف</h3>
+              <div className="flex gap-2">
+                <button onClick={() => exportToCSV("inventory_report", products)} className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-purple-300 font-bold text-xs rounded-xl">تصدير Excel</button>
+                <button onClick={() => {
+                  const name = prompt("اسم الصنف أو المنتج الجديد:");
+                  const barcode = prompt("الباركود:") || "622" + Math.floor(100 + Math.random() * 900);
+                  const buy_price = Number(prompt("سعر الشراء:")) || 0;
+                  const retail_price = Number(prompt("سعر القطاعي:")) || 0;
+                  const semi_price = Number(prompt("سعر نصف الجملة:")) || retail_price;
+                  const whole_price = Number(prompt("سعر الجملة:")) || retail_price;
+                  const stock = Number(prompt("الكمية بالمخزن:")) || 0;
+                  if (name) {
+                    const np = { id: Date.now(), name, barcode, buy_price, retail_price, semi_price, whole_price, stock, category: "إكسسوارات" };
+                    setProducts([...products, np]);
+                    showToast("تمت إضافة المنتج بنجاح للمخزن!");
+                  }
+                }} className="px-3 py-1.5 bg-emerald-600 text-white font-bold text-xs rounded-xl">+ إضافة منتج جديد</button>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-right text-xs">
+                <thead className="text-slate-400 border-b border-slate-700">
+                  <tr>
+                    <th className="py-2">المنتج</th>
+                    <th className="py-2">باركود</th>
+                    <th className="py-2">شراء</th>
+                    <th className="py-2">قطاعي</th>
+                    <th className="py-2">الكمية</th>
+                    <th className="py-2">تحكم</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-800">
+                  {products.map(p => (
+                    <tr key={p.id}>
+                      <td className="py-2.5 font-bold text-white">{p.name}</td>
+                      <td className="py-2.5 font-mono text-purple-300">{p.barcode}</td>
+                      <td className="py-2.5">{p.buy_price} ج.م</td>
+                      <td className="py-2.5 text-emerald-400 font-bold">{p.retail_price} ج.م</td>
+                      <td className="py-2.5 font-bold">{p.stock}</td>
+                      <td className="py-2.5">
+                        <button onClick={() => {
+                          if(confirm(`هل تريد حذف ${p.name}؟`)) setProducts(products.filter(x => x.id !== p.id));
+                        }} className="text-rose-400 font-bold hover:underline">حذف</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
-        {/* 5. المحافظ */}
+        {/* 5. المحافظ (إضافة محفظة، إيداع، سحب، تحكم كامل) */}
         {currentTab === "wallets" && (
           <div className="bg-[#24293e]/90 border border-slate-700/60 rounded-3xl p-5 space-y-4">
-            <h3 className="text-base font-bold text-white">المحافظ الإلكترونية وإنستاباي</h3>
+            <div className="flex justify-between items-center pb-3 border-b border-slate-700">
+              <h3 className="text-base font-bold text-white">المحافظ الإلكترونية وإنستاباي (تحكم كامل)</h3>
+              <button onClick={() => {
+                const name = prompt("اسم المحفظة أو البنك (مثل: أورنج كاش):");
+                const phone = prompt("رقم الهاتف أو عنوان IPA:");
+                const balance = Number(prompt("الرصيد الابتدائي:")) || 0;
+                if(name) {
+                  setWallets([...wallets, { id: "w_"+Date.now(), name, phone: phone||"-", balance }]);
+                  showToast("تمت إضافة المحفظة بنجاح!");
+                }
+              }} className="px-3 py-1.5 bg-cyan-600 text-white font-bold text-xs rounded-xl">+ إضافة محفظة أو بنك</button>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {wallets.map(w => (
-                <div key={w.id} className="bg-[#181d30] border border-slate-700 p-4 rounded-2xl flex justify-between items-center text-xs">
+                <div key={w.id} className="bg-[#181d30] border border-slate-700 p-4 rounded-2xl flex flex-col justify-between space-y-3">
                   <div>
                     <h4 className="font-bold text-white text-sm">{w.name}</h4>
-                    <p className="text-slate-400 font-mono mt-1">{w.phone}</p>
+                    <p className="text-slate-400 text-xs font-mono mt-0.5">{w.phone}</p>
+                    <h3 className="text-2xl font-black text-cyan-400 font-mono mt-2">{w.balance.toLocaleString()} ج.م</h3>
                   </div>
-                  <span className="font-mono font-black text-cyan-400 text-base">{w.balance.toLocaleString()} ج.م</span>
+                  <div className="pt-2 border-t border-slate-800 flex gap-2">
+                    <button onClick={() => {
+                      const amt = Number(prompt(`مبلغ الإيداع في ${w.name}:`));
+                      if(amt > 0) setWallets(wallets.map(x => x.id === w.id ? { ...x, balance: x.balance + amt } : x));
+                    }} className="flex-1 py-1.5 bg-slate-800 text-xs font-bold rounded-lg">+ إيداع</button>
+                    <button onClick={() => {
+                      const amt = Number(prompt(`مبلغ السحب من ${w.name}:`));
+                      if(amt > 0 && amt <= w.balance) setWallets(wallets.map(x => x.id === w.id ? { ...x, balance: x.balance - amt } : x));
+                    }} className="flex-1 py-1.5 bg-rose-600/30 text-rose-300 text-xs font-bold rounded-lg">- سحب</button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -371,21 +421,34 @@ export default function App() {
             <h3 className="text-base font-bold text-white">الخزينة النقدية ودرج الكاشير</h3>
             <div className="bg-[#181d30] border border-slate-700 p-5 rounded-2xl flex justify-between items-center">
               <div>
-                <p className="text-xs text-slate-400">الرصيد النقدي الفعلي بالدرج</p>
+                <p className="text-xs text-slate-400">الرصيد النقدي بالدرج</p>
                 <h2 className="text-3xl font-black text-emerald-400 font-mono mt-1">{safeBalance.toLocaleString()} ج.م</h2>
               </div>
-              <button onClick={() => {
-                const amt = Number(prompt("أدخل مبلغ الإيداع بالدرج:"));
-                if(amt > 0) setSafeBalance(p => p + amt);
-              }} className="px-4 py-2.5 bg-emerald-600 font-bold text-xs rounded-xl text-white">+ إيداع</button>
+              <div className="flex gap-2">
+                <button onClick={() => {
+                  const amt = Number(prompt("إيداع نقدي بالدرج:"));
+                  if(amt > 0) setSafeBalance(p => p + amt);
+                }} className="px-3.5 py-2 bg-emerald-600 font-bold text-xs rounded-xl text-white">+ إيداع</button>
+                <button onClick={() => {
+                  const amt = Number(prompt("سحب مصروفات من الدرج:"));
+                  if(amt > 0 && amt <= safeBalance) setSafeBalance(p => p - amt);
+                }} className="px-3.5 py-2 bg-rose-600 font-bold text-xs rounded-xl text-white">- سحب</button>
+              </div>
             </div>
           </div>
         )}
 
-        {/* 7. العملاء */}
+        {/* 7. العملاء والآجل */}
         {currentTab === "customers" && (
           <div className="bg-[#24293e]/90 border border-slate-700/60 rounded-3xl p-5 space-y-4">
-            <h3 className="text-base font-bold text-white">دليل العملاء وحسابات الآجل</h3>
+            <div className="flex justify-between items-center pb-3 border-b border-slate-700">
+              <h3 className="text-base font-bold text-white">العملاء وحسابات الآجل</h3>
+              <button onClick={() => {
+                const name = prompt("اسم العميل:");
+                const phone = prompt("رقم الهاتف:");
+                if(name) setCustomers([...customers, { id: Date.now(), name, phone: phone||"-", debt: 0 }]);
+              }} className="px-3 py-1.5 bg-indigo-600 text-white font-bold text-xs rounded-xl">+ عميل جديد</button>
+            </div>
             <div className="space-y-2">
               {customers.map(c => (
                 <div key={c.id} className="bg-[#181d30] border border-slate-700 p-3.5 rounded-2xl flex justify-between items-center text-xs">
@@ -403,7 +466,14 @@ export default function App() {
         {/* 8. الموردين */}
         {currentTab === "suppliers" && (
           <div className="bg-[#24293e]/90 border border-slate-700/60 rounded-3xl p-5 space-y-4">
-            <h3 className="text-base font-bold text-white">إدارة الموردين والمشتريات</h3>
+            <div className="flex justify-between items-center pb-3 border-b border-slate-700">
+              <h3 className="text-base font-bold text-white">الموردين والمشتريات</h3>
+              <button onClick={() => {
+                const name = prompt("اسم المورد:");
+                const phone = prompt("الهاتف:");
+                if(name) setSuppliers([...suppliers, { id: Date.now(), name, phone: phone||"-", dues: 0 }]);
+              }} className="px-3 py-1.5 bg-purple-600 text-white font-bold text-xs rounded-xl">+ مورد جديد</button>
+            </div>
             <div className="space-y-2">
               {suppliers.map(s => (
                 <div key={s.id} className="bg-[#181d30] border border-slate-700 p-3.5 rounded-2xl flex justify-between items-center text-xs">
@@ -418,55 +488,39 @@ export default function App() {
           </div>
         )}
 
-        {/* 9. الباركود */}
-        {currentTab === "barcode" && (
-          <div className="bg-[#24293e]/90 border border-slate-700/60 rounded-3xl p-6 text-center space-y-4">
-            <h3 className="text-base font-bold text-white">طباعة ملصقات الباركود</h3>
-            <div className="bg-white text-black p-4 rounded-xl max-w-xs mx-auto space-y-1">
-              <p className="font-bold text-xs">الرسالة للإلكترونيات</p>
-              <p className="text-[11px]">كابل فودفي تيب سي</p>
-              <div className="font-mono text-xl font-bold">|||| | ||||| ||</div>
-              <p className="font-mono text-xs font-bold">120 ج.م</p>
-            </div>
-            <button onClick={() => window.print()} className="px-5 py-2.5 bg-purple-600 font-bold text-xs rounded-xl text-white">طباعة الملصقات الآن</button>
-          </div>
-        )}
-
-        {/* 10. الحضور والانصراف */}
-        {currentTab === "attendance" && (
+        {/* 9. التقارير */}
+        {currentTab === "reports" && (
           <div className="bg-[#24293e]/90 border border-slate-700/60 rounded-3xl p-5 space-y-4">
-            <h3 className="text-base font-bold text-white">الحضور والانصراف والمرتبات</h3>
+            <div className="flex justify-between items-center pb-3 border-b border-slate-700">
+              <h3 className="text-base font-bold text-white">سجل المبيعات والفواتير</h3>
+              <button onClick={() => exportToCSV("sales_report", salesLog)} className="px-3 py-1.5 bg-slate-800 text-purple-300 font-bold text-xs rounded-xl">تصدير Excel</button>
+            </div>
             <div className="space-y-2">
-              {attendance.map(a => (
-                <div key={a.id} className="bg-[#181d30] border border-slate-700 p-3.5 rounded-2xl flex justify-between items-center text-xs">
-                  <span className="font-bold text-white">{a.name}</span>
-                  <span className="text-emerald-400 font-mono">{a.time} - {a.status}</span>
+              {salesLog.map(s => (
+                <div key={s.id} className="bg-[#181d30] border border-slate-700 p-3 rounded-2xl flex justify-between items-center text-xs">
+                  <span className="font-mono text-purple-300 font-bold">{s.id}</span>
+                  <span className="text-slate-300">{s.itemsCount} أصناف</span>
+                  <span className="font-mono text-emerald-400 font-bold">{s.total} ج.م</span>
                 </div>
               ))}
-              {attendance.length === 0 && <p className="text-center text-slate-500 py-6">لم يتم تسجيل حضور اليوم بعد</p>}
+              {salesLog.length === 0 && <p className="text-center text-slate-500 py-10">لا توجد مبيعات مسجلة</p>}
             </div>
           </div>
         )}
 
-        {/* 11. التقارير */}
-        {currentTab === "reports" && (
-          <div className="bg-[#24293e]/90 border border-slate-700/60 rounded-3xl p-5 space-y-4 text-center">
-            <h3 className="text-base font-bold text-white">التقارير المالية والأرباح</h3>
-            <p className="text-xs text-slate-400">إجمالي إيرادات المبيعات: <strong className="text-emerald-400">{salesLog.reduce((a,b)=>a+b.total,0)} ج.م</strong></p>
-          </div>
-        )}
-
-        {/* 12. النسخ الاحتياطي والاستيراد والتصدير */}
+        {/* 10. النسخ الاحتياطي */}
         {currentTab === "backup" && (
           <div className="bg-[#24293e]/90 border border-slate-700/60 rounded-3xl p-6 space-y-5 text-center">
-            <h3 className="text-lg font-bold text-white">النسخ الاحتياطي ونقل البيانات (Backup & Migration)</h3>
-            <p className="text-xs text-slate-400 max-w-md mx-auto">تصدير قاعدة البيانات أو استيراد ملف خارجي ومعالجته فوراً دون فقدان أي بيانات.</p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4 pt-2">
-              <button onClick={handleExportBackup} className="px-6 py-3 bg-emerald-600 font-bold text-xs rounded-xl text-white shadow-lg">⬇️ تصدير نسخة احتياطية</button>
-              <label className="px-6 py-3 bg-purple-600 font-bold text-xs rounded-xl text-white shadow-lg cursor-pointer">
-                ⬆️ استيراد ومعالجة ملف خارجي
-                <input type="file" accept=".json" onChange={handleImportBackup} className="hidden" />
-              </label>
+            <h3 className="text-lg font-bold text-white">النسخ الاحتياطي وتصدير الملفات</h3>
+            <div className="flex justify-center gap-4">
+              <button onClick={() => {
+                const data = { products, repairs, wallets, safeBalance, customers, suppliers, salesLog };
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url; a.download = `backup_${Date.now()}.json`; a.click();
+                showToast("تم التصدير بنجاح!");
+              }} className="px-6 py-3 bg-emerald-600 font-bold text-xs rounded-xl text-white">⬇️ تصدير نسخة احتياطية JSON</button>
             </div>
           </div>
         )}
@@ -499,7 +553,7 @@ export default function App() {
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex justify-start" dir="rtl">
           <div className="w-72 max-w-[85vw] bg-[#1a1338] border-l border-purple-900/50 h-full flex flex-col p-4 shadow-2xl">
             <div className="flex items-center justify-between pb-4 border-b border-purple-900/40">
-              <h3 className="font-bold text-sm text-white">نظام الرسالة V5</h3>
+              <h3 className="font-bold text-sm text-white">نظام الرسالة V6</h3>
               <button onClick={() => setSidebarOpen(false)} className="text-slate-400">✕</button>
             </div>
             <div className="flex-1 overflow-y-auto py-3 space-y-1">
@@ -528,9 +582,9 @@ export default function App() {
           <Icon name="repairs" className="w-4 h-4" />
           <span>الصيانة</span>
         </button>
-        <button onClick={() => setCurrentTab("backup")} className="flex flex-col items-center gap-1 px-3 py-1 rounded-xl">
-          <Icon name="settings" className="w-4 h-4" />
-          <span>النسخ</span>
+        <button onClick={() => setCurrentTab("reports")} className="flex flex-col items-center gap-1 px-3 py-1 rounded-xl">
+          <Icon name="reports" className="w-4 h-4" />
+          <span>التقارير</span>
         </button>
         <button onClick={() => setSidebarOpen(true)} className="flex flex-col items-center gap-1 px-3 py-1 rounded-xl text-purple-400 font-bold">
           <Icon name="menu" className="w-4 h-4" />
