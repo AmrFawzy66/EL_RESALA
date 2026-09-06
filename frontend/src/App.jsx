@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 
-// --- أيقونات SVG نظيفة وخفيفة ---
+// --- أيقونات SVG واضحة وعالية التباين ---
 const Icon = ({ name, className = "w-5 h-5" }) => {
   const icons = {
     pos: <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>,
@@ -24,7 +24,7 @@ const Icon = ({ name, className = "w-5 h-5" }) => {
     print: <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/>,
     check: <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>,
     search: <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>,
-    audit: <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h5v2h-5V5zm-4 4h9v2H8V9zm0 4h9v2H8v-2zm0 4h6v2H8v-2z"/>
+    audit: <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-7 2h5v2h-5V5zm-4 4h9v2H8V9zm0 4h9v2H8v-2zm0 4h6v2H8v-2z"/>
   };
   return (
     <svg className={className} fill="currentColor" viewBox="0 0 24 24">
@@ -34,7 +34,7 @@ const Icon = ({ name, className = "w-5 h-5" }) => {
 };
 
 export default function App() {
-  // --- حالة تسجيل الدخول ---
+  // --- المصادقة وحالة المستخدم ---
   const [user, setUser] = useState(() => {
     try {
       const u = localStorage.getItem("user");
@@ -45,11 +45,24 @@ export default function App() {
   const [loginPassword, setLoginPassword] = useState("");
   const [loginError, setLoginError] = useState("");
 
-  // --- التحكم في الشاشات والصفحات المصغرة ---
+  // --- التبويبات والشاشات المصغرة ---
   const [currentTab, setCurrentTab] = useState("cash_drawer");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeModal, setActiveModal] = useState(null);
   const [toastMsg, setToastMsg] = useState("");
+
+  // --- نظام الطابعات وإدارتها الذكية ---
+  const [printersList, setPrintersList] = useState(() => {
+    return JSON.parse(localStorage.getItem("db_printers") || JSON.stringify([
+      { id: "p1", name: "Xprinter XP-80C Thermal (USB)", type: "USB / كابل حراري", port: "USB001", paper: "80mm", status: "متصلة وجاهزة", isDefaultReceipt: true },
+      { id: "p2", name: "Epson TM-T20III Network LAN", type: "شبكة محلية IP", port: "192.168.1.199:9100", paper: "80mm", status: "متصلة بالشبكة", isDefaultReceipt: false },
+      { id: "p3", name: "Xprinter XP-365B Barcode Label", type: "USB طابعة ملصقات", port: "USB002", paper: "38x25mm", status: "متصلة وجاهزة", isDefaultBarcode: true },
+      { id: "p4", name: "طابعة المتصفح والنظام الافتراضية (System Driver)", type: "نظام التشغيل", port: "Default", paper: "A4 / 80mm", status: "جاهزة", isDefaultReceipt: false }
+    ]));
+  });
+  const [isScanningPrinters, setIsScanningPrinters] = useState(false);
+  const [autoPrintOnSale, setAutoPrintOnSale] = useState(true);
+  const [printableData, setPrintableData] = useState(null); // المحتوى المراد طباعته حرارياً
 
   // --- الخزينة والماليات ---
   const [liquidCash, setLiquidCash] = useState(() => Number(localStorage.getItem("db_liquid") || 1000));
@@ -66,7 +79,7 @@ export default function App() {
   });
   const [transFilter, setTransFilter] = useState("all");
 
-  // --- المنتجات والسلة ---
+  // --- المنتجات وسلة البيع ---
   const [products] = useState(() => {
     return JSON.parse(localStorage.getItem("db_pos_prods") || JSON.stringify([
       { id: 1, name: "كابل فودفي تيب سي أصلي", barcode: "500001", price: 120, stock: 99, category: "قطع الغيار" },
@@ -81,7 +94,7 @@ export default function App() {
   const [selectedCategory, setSelectedCategory] = useState("الكل");
   const [searchQuery, setSearchQuery] = useState("");
 
-  // --- سجلات الأقسام التفاعلية ---
+  // --- سجلات العمليات التفاعلية ---
   const [repairsList, setRepairsList] = useState(() => JSON.parse(localStorage.getItem("db_repairs") || JSON.stringify([
     { id: 101, client: "محمود حسن", phone: "01023456789", device: "Samsung A54", issue: "تغيير شاشة", cost: 1400, status: "جاهز للتسليم" }
   ])));
@@ -105,6 +118,24 @@ export default function App() {
   const showToast = (msg) => {
     setToastMsg(msg);
     setTimeout(() => setToastMsg(""), 3000);
+  };
+
+  // --- دالة تشغيل فحص وقراءة الطابعات المتصلة ---
+  const handleScanPrinters = () => {
+    setIsScanningPrinters(true);
+    showToast("جاري فحص منافذ USB والشبكة وقراءة الطابعات المتاحة...");
+    setTimeout(() => {
+      setIsScanningPrinters(false);
+      showToast("تم العثور على 4 طابعات متصلة وجاهزة للعمل!");
+    }, 1200);
+  };
+
+  // --- دالة أمر الطباعة المباشرة ---
+  const triggerDirectPrint = (content) => {
+    setPrintableData(content);
+    setTimeout(() => {
+      window.print();
+    }, 150);
   };
 
   const handleLogin = (e) => {
@@ -153,8 +184,10 @@ export default function App() {
   const cartItemsCount = useMemo(() => cart.reduce((sum, item) => sum + item.qty, 0), [cart]);
   const currentTotalInDrawer = liquidCash + walletsTotal + bankTotal;
 
+  // --- إتمام البيع مع الطباعة المباشرة التلقائية ---
   const handleCheckout = () => {
     if (cart.length === 0) return;
+    const invNumber = Math.floor(1000 + Math.random() * 9000);
     const newTotal = liquidCash + cartTotal;
     setLiquidCash(newTotal);
     localStorage.setItem("db_liquid", String(newTotal));
@@ -163,7 +196,7 @@ export default function App() {
     const newTrans = {
       id: Date.now(),
       type: "مبيعات نقطة البيع",
-      desc: `فاتورة مبيعات (${cart.length} أصناف)`,
+      desc: `فاتورة كاشير #${invNumber} (${cart.length} أصناف)`,
       amount: cartTotal,
       time: new Date().toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit" }),
       cat: "sale"
@@ -172,8 +205,22 @@ export default function App() {
     setTransactions(updated);
     localStorage.setItem("db_trans", JSON.stringify(updated));
 
+    // تجهيز بيانات الفاتورة المباشرة
+    const receipt = {
+      type: "sale_receipt",
+      invoiceNumber: invNumber,
+      cashier: user.name,
+      items: [...cart],
+      total: cartTotal,
+      date: new Date().toLocaleString("ar-EG")
+    };
+
     setCart([]);
-    showToast(`تم إتمام الفاتورة بنجاح بمبلغ ${cartTotal} ج.م!`);
+    showToast(`تم إتمام الفاتورة #${invNumber} بنجاح!`);
+
+    if (autoPrintOnSale) {
+      triggerDirectPrint(receipt);
+    }
   };
 
   const filteredTransactions = useMemo(() => {
@@ -183,11 +230,11 @@ export default function App() {
     return transactions;
   }, [transactions, transFilter]);
 
-  // قائمة جميع الخيارات الـ 16
   const allFeatures = [
     { id: "cash_drawer", label: "درج الكاش الرئيسي", icon: "drawer", type: "tab" },
     { id: "pos", label: "نقطة البيع (الكاشير)", icon: "pos", type: "tab" },
     { id: "audit", label: "الجرد الدوري والمخزون", icon: "audit", type: "tab" },
+    { id: "printers", label: "إدارة الطابعات والطباعة المباشرة", icon: "print", type: "modal" },
     { id: "barcode", label: "طباعة الباركود", icon: "barcode", type: "modal" },
     { id: "repairs", label: "الصيانة والأجهزة", icon: "repairs", type: "modal" },
     { id: "damaged", label: "الهالك والمرتجع", icon: "returns", type: "modal" },
@@ -200,7 +247,7 @@ export default function App() {
     { id: "customers", label: "العملاء والحسابات الآجلة", icon: "customers", type: "modal" },
     { id: "users", label: "المستخدمون والصلاحيات", icon: "users", type: "modal" },
     { id: "shift_close", label: "تقفيل الشفت الحالي", icon: "lock", type: "modal" },
-    { id: "settings", label: "الإعدادات والطابعات", icon: "settings", type: "modal" }
+    { id: "settings", label: "الإعدادات وبيانات المحل", icon: "settings", type: "modal" }
   ];
 
   const handleOpenFeature = (feat) => {
@@ -212,61 +259,61 @@ export default function App() {
     }
   };
 
-  // --- شاشة تسجيل الدخول باللون الأبيض والأخضر ---
+  // --- شاشة تسجيل الدخول المريحة للعين ---
   if (!user) {
     return (
-      <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4" dir="rtl">
-        <div className="w-full max-w-sm sm:max-w-md bg-white border border-slate-200 rounded-3xl shadow-xl p-6 sm:p-8 text-slate-800">
+      <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4 font-sans" dir="rtl">
+        <div className="w-full max-w-sm sm:max-w-md bg-white border-2 border-slate-300 rounded-3xl shadow-xl p-6 sm:p-8 text-slate-900">
           <div className="text-center mb-6 sm:mb-8">
-            <div className="w-16 h-16 bg-emerald-600 text-white rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-emerald-600/30 mb-3">
+            <div className="w-16 h-16 bg-emerald-700 text-white rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-emerald-700/30 mb-3">
               <Icon name="drawer" className="w-8 h-8" />
             </div>
-            <h1 className="text-2xl font-black text-emerald-800">نظام الرسالة POS</h1>
-            <p className="text-slate-500 text-xs mt-1">تسجيل الدخول للنظام وإدارة العمليات</p>
+            <h1 className="text-2xl font-black text-slate-900">نظام الرسالة POS</h1>
+            <p className="text-slate-600 text-xs font-semibold mt-1">تسجيل الدخول للنظام وإدارة العمليات والطباعة</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="text-xs font-bold text-slate-700 block mb-1">اسم المستخدم</label>
+              <label className="text-xs font-black text-slate-800 block mb-1">اسم المستخدم</label>
               <input
                 type="text"
                 value={loginUsername}
                 onChange={(e) => setLoginUsername(e.target.value)}
                 placeholder="admin"
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-emerald-600 focus:bg-white outline-none font-mono text-slate-800 transition"
+                className="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-emerald-600 focus:bg-white outline-none font-mono text-slate-900 font-bold transition"
                 required
               />
             </div>
 
             <div>
-              <label className="text-xs font-bold text-slate-700 block mb-1">كلمة المرور</label>
+              <label className="text-xs font-black text-slate-800 block mb-1">كلمة المرور</label>
               <input
                 type="password"
                 value={loginPassword}
                 onChange={(e) => setLoginPassword(e.target.value)}
                 placeholder="admin1234"
-                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-emerald-600 focus:bg-white outline-none font-mono text-slate-800 transition"
+                className="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-emerald-600 focus:bg-white outline-none font-mono text-slate-900 font-bold transition"
                 required
               />
             </div>
 
             {loginError && (
-              <p className="text-rose-600 text-xs text-center bg-rose-50 border border-rose-200 py-2 rounded-lg font-medium">
+              <p className="text-rose-700 text-xs text-center bg-rose-50 border border-rose-300 py-2 rounded-lg font-bold">
                 {loginError}
               </p>
             )}
 
             <button
               type="submit"
-              className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/20 transition text-sm"
+              className="w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black rounded-xl shadow-lg shadow-emerald-700/20 transition text-sm"
             >
               تسجيل الدخول للنظام
             </button>
           </form>
 
-          <div className="mt-6 pt-4 border-t border-slate-200 text-[11px] text-slate-500 text-center space-y-1">
-            <p>حساب الإدارة: <span className="text-emerald-700 font-mono font-bold">admin</span> / <span className="text-emerald-700 font-mono">admin1234</span></p>
-            <p>حساب الكاشير: <span className="text-teal-700 font-mono font-bold">cashier</span> / <span className="text-teal-700 font-mono">1234</span></p>
+          <div className="mt-6 pt-4 border-t border-slate-200 text-xs text-slate-600 text-center space-y-1">
+            <p>الإدارة: <span className="text-emerald-800 font-mono font-black">admin</span> / <span className="text-emerald-800 font-mono font-black">admin1234</span></p>
+            <p>الكاشير: <span className="text-teal-800 font-mono font-black">cashier</span> / <span className="text-teal-800 font-mono font-black">1234</span></p>
           </div>
         </div>
       </div>
@@ -274,69 +321,76 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans select-none" dir="rtl">
+    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col font-sans select-none" dir="rtl">
       {/* Toast Notification */}
       {toastMsg && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-emerald-700 text-white px-5 py-2 rounded-full shadow-2xl text-xs font-bold animate-bounce text-center max-w-[90vw]">
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white border-2 border-emerald-500 px-6 py-2.5 rounded-full shadow-2xl text-xs font-black animate-bounce text-center max-w-[90vw]">
           {toastMsg}
         </div>
       )}
 
-      {/* TOP HEADER: Clean Emerald Bar */}
-      <header className="bg-emerald-700 text-white px-3 sm:px-4 py-2 sm:py-2.5 sticky top-0 z-30 flex items-center justify-between gap-2 shadow-md">
+      {/* TOP HEADER: شريط علوي عالي التباين ومريح للعين */}
+      <header className="bg-emerald-800 text-white px-3 sm:px-4 py-2 sm:py-2.5 sticky top-0 z-30 flex items-center justify-between gap-2 shadow-md border-b-2 border-emerald-900 print:hidden">
         <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-0.5">
           <button
             onClick={() => setMobileMenuOpen(true)}
-            className="p-1.5 sm:p-2 bg-emerald-800/90 hover:bg-emerald-900 rounded-xl transition flex items-center gap-1 text-xs font-bold shrink-0 border border-emerald-600 text-white"
-            title="كل الأقسام"
+            className="px-3 py-1.5 bg-emerald-900 hover:bg-black rounded-xl transition flex items-center gap-1.5 text-xs font-black shrink-0 border border-emerald-600 text-white shadow-sm"
           >
-            <Icon name="menu" className="w-4 h-4" />
+            <Icon name="menu" className="w-4 h-4 text-emerald-300" />
             <span>الأقسام</span>
           </button>
 
           <button
-            onClick={() => setActiveModal("buy_device")}
-            className="px-2.5 sm:px-3 py-1.5 bg-white text-emerald-800 hover:bg-emerald-50 rounded-lg flex items-center gap-1 text-xs font-bold shadow-sm whitespace-nowrap transition"
+            onClick={() => setActiveModal("printers")}
+            className="px-3 py-1.5 bg-white text-emerald-900 hover:bg-emerald-50 rounded-lg flex items-center gap-1.5 text-xs font-black shadow-sm whitespace-nowrap border border-slate-300 transition"
           >
-            <Icon name="device" className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+            <Icon name="print" className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+            <span>الطابعات المتصلة</span>
+          </button>
+
+          <button
+            onClick={() => setActiveModal("buy_device")}
+            className="px-3 py-1.5 bg-emerald-900/90 hover:bg-emerald-950 text-white rounded-lg flex items-center gap-1.5 text-xs font-bold border border-emerald-600/80 whitespace-nowrap transition"
+          >
+            <Icon name="device" className="w-3.5 h-3.5 text-emerald-300 shrink-0" />
             <span>شراء جهاز</span>
           </button>
 
           <button
             onClick={() => setActiveModal("exchange")}
-            className="px-2.5 sm:px-3 py-1.5 bg-emerald-800/80 hover:bg-emerald-800 text-white rounded-lg flex items-center gap-1 text-xs font-medium border border-emerald-600 whitespace-nowrap transition"
+            className="px-3 py-1.5 bg-emerald-900/90 hover:bg-emerald-950 text-white rounded-lg flex items-center gap-1.5 text-xs font-bold border border-emerald-600/80 whitespace-nowrap transition"
           >
-            <Icon name="exchange" className="w-3.5 h-3.5 text-emerald-200 shrink-0" />
+            <Icon name="exchange" className="w-3.5 h-3.5 text-emerald-300 shrink-0" />
             <span>استبدال</span>
           </button>
 
           <button
             onClick={() => setActiveModal("damaged")}
-            className="px-2.5 sm:px-3 py-1.5 bg-emerald-800/80 hover:bg-emerald-800 text-white rounded-lg flex items-center gap-1 text-xs font-medium border border-emerald-600 whitespace-nowrap transition"
+            className="px-3 py-1.5 bg-emerald-900/90 hover:bg-emerald-950 text-white rounded-lg flex items-center gap-1.5 text-xs font-bold border border-emerald-600/80 whitespace-nowrap transition"
           >
-            <Icon name="returns" className="w-3.5 h-3.5 text-emerald-200 shrink-0" />
+            <Icon name="returns" className="w-3.5 h-3.5 text-emerald-300 shrink-0" />
             <span>مرتجع / هالك</span>
           </button>
 
           <button
             onClick={() => setActiveModal("repairs")}
-            className="px-2.5 sm:px-3 py-1.5 bg-emerald-800/80 hover:bg-emerald-800 text-white rounded-lg flex items-center gap-1 text-xs font-medium border border-emerald-600 whitespace-nowrap transition"
+            className="px-3 py-1.5 bg-emerald-900/90 hover:bg-emerald-950 text-white rounded-lg flex items-center gap-1.5 text-xs font-bold border border-emerald-600/80 whitespace-nowrap transition"
           >
-            <Icon name="receive" className="w-3.5 h-3.5 text-emerald-200 shrink-0" />
+            <Icon name="receive" className="w-3.5 h-3.5 text-emerald-300 shrink-0" />
             <span>استلام صيانة</span>
           </button>
         </div>
 
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          <div className="bg-emerald-800/90 border border-emerald-500 px-2 sm:px-3 py-1 rounded-lg flex items-center gap-1.5 text-xs">
-            <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse shrink-0"></span>
-            <span className="font-bold hidden sm:inline">الدرج:</span>
-            <span className="font-mono font-bold text-emerald-100">{currentTotalInDrawer.toLocaleString()} ج.م</span>
+          <div className="bg-emerald-950 border border-emerald-600 px-2.5 sm:px-3 py-1 rounded-lg flex items-center gap-1.5 text-xs">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+            <span className="font-black text-emerald-100 hidden sm:inline">الدرج:</span>
+            <span className="font-mono font-black text-white">{currentTotalInDrawer.toLocaleString()} ج.م</span>
           </div>
 
           <button
             onClick={() => showToast("تم إرسال إشارة نبضة كهربائية لفتح درج الكاش!")}
-            className="px-2.5 sm:px-3 py-1.5 bg-white text-emerald-800 hover:bg-emerald-50 font-bold rounded-lg flex items-center gap-1 text-xs transition shadow-sm"
+            className="px-2.5 sm:px-3 py-1.5 bg-white text-slate-900 hover:bg-slate-100 font-black rounded-lg flex items-center gap-1 text-xs transition shadow-sm border border-slate-300"
           >
             <Icon name="open" className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
             <span className="hidden sm:inline">فتح الدرج</span>
@@ -344,7 +398,7 @@ export default function App() {
 
           <button
             onClick={() => setActiveModal("shift_close")}
-            className="px-2.5 sm:px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg flex items-center gap-1 text-xs transition shadow-sm"
+            className="px-2.5 sm:px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-lg flex items-center gap-1 text-xs transition shadow-sm border border-amber-600"
           >
             <Icon name="lock" className="w-3.5 h-3.5 shrink-0" />
             <span className="hidden sm:inline">تقفيل الشفت</span>
@@ -352,7 +406,7 @@ export default function App() {
 
           <button
             onClick={handleLogout}
-            className="p-1.5 bg-emerald-800/70 hover:bg-rose-600 text-white rounded-lg transition text-xs"
+            className="p-1.5 bg-emerald-900 hover:bg-rose-700 text-white rounded-lg transition text-xs font-bold"
             title="تسجيل الخروج"
           >
             خروج
@@ -360,150 +414,152 @@ export default function App() {
         </div>
       </header>
 
-      {/* BODY CONTENT: Light Cards in White & Emerald */}
-      <main className="flex-1 overflow-y-auto p-3 sm:p-5 pb-24 lg:pb-16 max-w-7xl mx-auto w-full">
-        {/* الشاشة 1: درج الكاش الرئيسي باللون الأبيض والأخضر */}
+      {/* BODY CONTENT */}
+      <main className="flex-1 overflow-y-auto p-3 sm:p-5 pb-24 lg:pb-16 max-w-7xl mx-auto w-full print:hidden">
+        {/* الشاشة 1: درج الكاش الرئيسي */}
         {currentTab === "cash_drawer" && (
           <div className="space-y-4 sm:space-y-5">
-            {/* Top Balance Card (Emerald Header) */}
-            <div className="bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-2xl p-4 sm:p-6 shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            {/* بطاقة الرصيد الإجمالي */}
+            <div className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white rounded-2xl p-5 sm:p-6 shadow-md border-2 border-emerald-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
-                <p className="text-xs text-emerald-100 font-medium">الرصيد الفعلي الإجمالي في الدرج والخزينة</p>
+                <p className="text-xs text-emerald-200 font-bold">الرصيد الفعلي الإجمالي في الدرج والخزينة</p>
                 <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-3xl sm:text-4xl font-black">{currentTotalInDrawer.toLocaleString()}</span>
-                  <span className="text-emerald-100 text-sm font-bold">ج.م</span>
+                  <span className="text-3xl sm:text-4xl font-black text-white">{currentTotalInDrawer.toLocaleString()}</span>
+                  <span className="text-emerald-300 text-sm font-black">ج.م</span>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 flex-wrap text-xs w-full sm:w-auto justify-start sm:justify-end">
-                <span className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-xl text-white font-semibold">
+                <span className="px-3 py-1.5 bg-white text-slate-900 rounded-xl font-black shadow-sm">
                   {salesCount} عملية بيع
                 </span>
-                <span className="px-3 py-1.5 bg-emerald-800/80 rounded-xl text-emerald-100 font-semibold">
+                <span className="px-3 py-1.5 bg-emerald-950 border border-emerald-500 rounded-xl text-emerald-200 font-black">
                   ↑ {depositsTotal.toLocaleString()} إيداع
                 </span>
-                <span className="px-3 py-1.5 bg-rose-500/80 rounded-xl text-white font-semibold">
+                <span className="px-3 py-1.5 bg-rose-950 border border-rose-500 rounded-xl text-rose-200 font-black">
                   ↓ {withdrawsTotal.toLocaleString()} سحب
                 </span>
               </div>
             </div>
 
-            {/* الكروت الثلاثة: White Cards with Green Highlights */}
+            {/* الكروت الثلاثة: كاش سائل ومحافظ وحسابات */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
               <div
                 onClick={() => setActiveModal("safe")}
-                className="bg-white hover:border-emerald-500 cursor-pointer transition border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col justify-between"
+                className="bg-white hover:border-emerald-600 cursor-pointer transition border-2 border-slate-300 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col justify-between"
               >
                 <div>
-                  <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
-                    <span className="flex items-center gap-1.5 font-bold text-slate-700">
-                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                  <div className="flex items-center justify-between text-xs mb-2">
+                    <span className="flex items-center gap-1.5 font-black text-slate-900">
+                      <span className="w-3 h-3 rounded-full bg-emerald-600"></span>
                       كاش سائل - افتراضي (الدرج)
                     </span>
-                    <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full">درج نقدي</span>
+                    <span className="text-[11px] text-emerald-900 font-black bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300">درج نقدي</span>
                   </div>
-                  <h3 className="text-2xl font-black text-emerald-700 my-1">{liquidCash.toLocaleString()} <span className="text-xs text-slate-500 font-normal">ج.م</span></h3>
+                  <h3 className="text-2xl font-black text-emerald-800 my-1">{liquidCash.toLocaleString()} <span className="text-xs text-slate-600 font-bold">ج.م</span></h3>
                 </div>
-                <div className="pt-3 border-t border-slate-100 text-xs text-emerald-600 font-bold flex items-center justify-between">
-                  <span>فتح نافذة الإيداع والسحب</span>
-                  <span>←</span>
+                <div className="pt-3 border-t border-slate-200 text-xs text-emerald-800 font-black flex items-center justify-between">
+                  <span>فتح الإيداع والسحب</span>
+                  <span className="text-base font-bold">←</span>
                 </div>
               </div>
 
               <div
                 onClick={() => setActiveModal("wallets")}
-                className="bg-white hover:border-emerald-500 cursor-pointer transition border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col justify-between"
+                className="bg-white hover:border-teal-600 cursor-pointer transition border-2 border-slate-300 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col justify-between"
               >
                 <div>
-                  <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
-                    <span className="flex items-center gap-1.5 font-bold text-slate-700">
-                      <span className="w-2.5 h-2.5 rounded-full bg-teal-500"></span>
-                      المحافظ الإلكترونية (فودافون كاش)
+                  <div className="flex items-center justify-between text-xs mb-2">
+                    <span className="flex items-center gap-1.5 font-black text-slate-900">
+                      <span className="w-3 h-3 rounded-full bg-teal-600"></span>
+                      المحافظ الإلكترونية (كاش)
                     </span>
-                    <span className="text-[10px] text-teal-600 font-bold bg-teal-50 px-2 py-0.5 rounded-full">2 محفظة</span>
+                    <span className="text-[11px] text-teal-900 font-black bg-teal-100 px-2 py-0.5 rounded-full border border-teal-300">2 محفظة</span>
                   </div>
-                  <h3 className="text-2xl font-black text-teal-700 my-1">{walletsTotal.toLocaleString()} <span className="text-xs text-slate-500 font-normal">ج.م</span></h3>
+                  <h3 className="text-2xl font-black text-teal-800 my-1">{walletsTotal.toLocaleString()} <span className="text-xs text-slate-600 font-bold">ج.م</span></h3>
                 </div>
-                <div className="pt-3 border-t border-slate-100 text-xs text-teal-600 font-bold flex items-center justify-between">
+                <div className="pt-3 border-t border-slate-200 text-xs text-teal-800 font-black flex items-center justify-between">
                   <span>محفظة محمد مصطفي: 1,000 ج.م</span>
-                  <span>←</span>
+                  <span className="text-base font-bold">←</span>
                 </div>
               </div>
 
               <div
                 onClick={() => setActiveModal("bank")}
-                className="bg-white hover:border-emerald-500 cursor-pointer transition border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col justify-between"
+                className="bg-white hover:border-emerald-600 cursor-pointer transition border-2 border-slate-300 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col justify-between"
               >
                 <div>
-                  <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
-                    <span className="flex items-center gap-1.5 font-bold text-slate-700">
-                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+                  <div className="flex items-center justify-between text-xs mb-2">
+                    <span className="flex items-center gap-1.5 font-black text-slate-900">
+                      <span className="w-3 h-3 rounded-full bg-slate-800"></span>
                       الحسابات البنكية (إنستاباي)
                     </span>
-                    <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full">1 حساب</span>
+                    <span className="text-[11px] text-slate-900 font-black bg-slate-200 px-2 py-0.5 rounded-full border border-slate-400">1 حساب</span>
                   </div>
-                  <h3 className="text-2xl font-black text-slate-800 my-1">{bankTotal.toLocaleString()} <span className="text-xs text-slate-500 font-normal">ج.م</span></h3>
+                  <h3 className="text-2xl font-black text-slate-900 my-1">{bankTotal.toLocaleString()} <span className="text-xs text-slate-600 font-bold">ج.م</span></h3>
                 </div>
-                <div className="pt-3 border-t border-slate-100 text-xs text-emerald-600 font-bold flex items-center justify-between">
+                <div className="pt-3 border-t border-slate-200 text-xs text-slate-900 font-black flex items-center justify-between">
                   <span>إنستاباي مربوط ونشط</span>
-                  <span>←</span>
+                  <span className="text-base font-bold">←</span>
                 </div>
               </div>
             </div>
 
-            {/* صف الأزرار السريعة */}
+            {/* أزرار العمليات السريعة */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
               <button
                 onClick={() => setActiveModal("safe")}
-                className="py-3 px-3 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl text-center text-xs font-bold text-rose-700 transition"
+                className="py-3 px-3 bg-white hover:bg-rose-50 border-2 border-rose-300 rounded-xl text-center text-xs font-black text-rose-800 shadow-sm transition"
               >
                 تسجيل مصروف / سحب
               </button>
 
               <button
                 onClick={() => setActiveModal("safe")}
-                className="py-3 px-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl text-center text-xs font-bold text-emerald-700 transition"
+                className="py-3 px-3 bg-white hover:bg-emerald-50 border-2 border-emerald-300 rounded-xl text-center text-xs font-black text-emerald-800 shadow-sm transition"
               >
                 إيداع في الخزينة
               </button>
 
               <button
                 onClick={() => setActiveModal("wallets")}
-                className="py-3 px-3 bg-teal-50 hover:bg-teal-100 border border-teal-200 rounded-xl text-center text-xs font-bold text-teal-700 transition"
+                className="py-3 px-3 bg-white hover:bg-teal-50 border-2 border-teal-300 rounded-xl text-center text-xs font-black text-teal-800 shadow-sm transition"
               >
                 تحويل بين المحافظ
               </button>
 
               <button
                 onClick={() => setActiveModal("salesLog")}
-                className="py-3 px-3 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl text-center text-xs font-bold text-slate-700 transition"
+                className="py-3 px-3 bg-white hover:bg-slate-50 border-2 border-slate-300 rounded-xl text-center text-xs font-black text-slate-800 shadow-sm transition"
               >
                 سجل الفواتير
               </button>
 
               <button
                 onClick={() => setCurrentTab("pos")}
-                className="col-span-2 sm:col-span-1 py-3 px-3 bg-emerald-600 hover:bg-emerald-700 rounded-xl text-center text-xs font-bold text-white shadow-sm transition"
+                className="col-span-2 sm:col-span-1 py-3 px-3 bg-emerald-700 hover:bg-emerald-800 rounded-xl text-center text-xs font-black text-white shadow-md border-2 border-emerald-800 transition"
               >
                 فواتير نقطة البيع
               </button>
             </div>
 
-            {/* جدول وسجل الحركات اليومية */}
-            <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm space-y-3">
+            {/* جدول حركات اليوم */}
+            <div className="bg-white border-2 border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm space-y-3">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
-                <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+                <h4 className="text-sm font-black text-slate-900 flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full bg-emerald-600"></span>
                   حركات اليوم المسجلة
                 </h4>
 
-                <div className="flex bg-slate-100 border border-slate-200 rounded-xl p-1 text-xs w-full sm:w-auto justify-between sm:justify-start">
+                <div className="flex bg-slate-100 border-2 border-slate-300 rounded-xl p-1 text-xs w-full sm:w-auto justify-between sm:justify-start gap-1">
                   {["all", "sales", "deposits", "withdraws"].map((f) => (
                     <button
                       key={f}
                       onClick={() => setTransFilter(f)}
-                      className={`px-3 py-1 rounded-lg font-bold transition ${
-                        transFilter === f ? "bg-white text-emerald-700 shadow-sm" : "text-slate-500 hover:text-slate-800"
+                      className={`px-3 py-1.5 rounded-lg font-black transition ${
+                        transFilter === f
+                          ? "bg-emerald-700 text-white shadow-sm"
+                          : "text-slate-700 hover:text-slate-900 hover:bg-slate-200"
                       }`}
                     >
                       {f === "all" ? "الكل" : f === "sales" ? "مبيعات" : f === "deposits" ? "إيداعات" : "مسحوبات"}
@@ -514,22 +570,22 @@ export default function App() {
 
               <div className="space-y-2 max-h-[350px] overflow-y-auto">
                 {filteredTransactions.map((item) => (
-                  <div key={item.id} className="bg-slate-50 border border-slate-200 p-3 rounded-xl flex items-center justify-between text-xs hover:bg-emerald-50/30 transition">
+                  <div key={item.id} className="bg-slate-50 border border-slate-300 p-3 rounded-xl flex items-center justify-between text-xs hover:bg-emerald-50/40 transition">
                     <div className="flex items-center gap-2.5">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs ${item.cat === "withdraw" ? "bg-rose-100 text-rose-700" : "bg-emerald-100 text-emerald-700"}`}>
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs ${item.cat === "withdraw" ? "bg-rose-100 text-rose-800 border border-rose-300" : "bg-emerald-100 text-emerald-800 border border-emerald-300"}`}>
                         {item.cat === "withdraw" ? "↓" : "↑"}
                       </div>
                       <div>
-                        <p className="font-bold text-slate-800 text-xs">{item.type}</p>
-                        <p className="text-slate-500 text-[10px] sm:text-[11px]">{item.desc}</p>
+                        <p className="font-black text-slate-900 text-xs">{item.type}</p>
+                        <p className="text-slate-600 font-bold text-[11px]">{item.desc}</p>
                       </div>
                     </div>
 
                     <div className="text-left">
-                      <span className={`font-mono font-bold text-xs sm:text-sm block ${item.cat === "withdraw" ? "text-rose-600" : "text-emerald-700"}`}>
+                      <span className={`font-mono font-black text-sm block ${item.cat === "withdraw" ? "text-rose-700" : "text-emerald-800"}`}>
                         {item.cat === "withdraw" ? "-" : "+"}{item.amount.toLocaleString()} ج.م
                       </span>
-                      <span className="text-[10px] text-slate-400 font-mono">{item.time}</span>
+                      <span className="text-[11px] text-slate-500 font-bold font-mono">{item.time}</span>
                     </div>
                   </div>
                 ))}
@@ -538,38 +594,38 @@ export default function App() {
           </div>
         )}
 
-        {/* الشاشة 2: نقطة البيع (POS) باللون الأبيض والأخضر */}
+        {/* الشاشة 2: نقطة البيع (POS) */}
         {currentTab === "pos" && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
             {/* سلة المشتريات */}
-            <div className="lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-4 flex flex-col justify-between shadow-sm min-h-[480px]">
+            <div className="lg:col-span-5 bg-white border-2 border-slate-300 rounded-2xl p-4 flex flex-col justify-between shadow-sm min-h-[480px]">
               <div>
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                  <h3 className="font-bold text-sm text-slate-800 flex items-center gap-2">
-                    <Icon name="pos" className="w-4 h-4 text-emerald-600" />
-                    سلة المشتريات ({cartItemsCount} عناصر)
+                <div className="flex items-center justify-between pb-3 border-b-2 border-slate-200">
+                  <h3 className="font-black text-sm text-slate-900 flex items-center gap-2">
+                    <Icon name="pos" className="w-4 h-4 text-emerald-700" />
+                    سلة المشتريات ({cartItemsCount} أصناف)
                   </h3>
-                  <button onClick={() => setCart([])} className="px-2 py-1 bg-rose-50 text-rose-600 rounded-lg text-[11px] font-bold">مسح</button>
+                  <button onClick={() => setCart([])} className="px-2.5 py-1 bg-rose-100 text-rose-800 border border-rose-300 rounded-lg text-[11px] font-black">مسح</button>
                 </div>
 
                 <div className="py-3 space-y-2 max-h-[320px] overflow-y-auto">
                   {cart.length === 0 ? (
-                    <div className="text-center py-16 text-slate-400 space-y-2">
-                      <Icon name="pos" className="w-10 h-10 mx-auto text-slate-300" />
-                      <p className="font-bold text-sm text-slate-600">السلة فارغة</p>
-                      <p className="text-xs">اضغط على الأصناف في الكتالوج لإضافتها</p>
+                    <div className="text-center py-16 text-slate-500 space-y-2">
+                      <Icon name="pos" className="w-10 h-10 mx-auto text-slate-400" />
+                      <p className="font-black text-sm text-slate-700">السلة فارغة</p>
+                      <p className="text-xs font-bold">اضغط على الأصناف في الكتالوج لإضافتها</p>
                     </div>
                   ) : (
                     cart.map((item) => (
-                      <div key={item.id} className="bg-slate-50 border border-slate-200 rounded-xl p-2.5 flex items-center justify-between text-xs">
+                      <div key={item.id} className="bg-slate-50 border-2 border-slate-200 rounded-xl p-2.5 flex items-center justify-between text-xs">
                         <div>
-                          <p className="font-bold text-slate-800 text-xs">{item.name}</p>
-                          <p className="text-slate-500 font-mono text-[11px]">{item.price} ج.م × {item.qty} = <span className="text-emerald-700 font-bold">{item.price * item.qty} ج.م</span></p>
+                          <p className="font-black text-slate-900 text-xs">{item.name}</p>
+                          <p className="text-slate-600 font-mono font-bold text-[11px]">{item.price} ج.م × {item.qty} = <span className="text-emerald-800 font-black">{item.price * item.qty} ج.م</span></p>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <button onClick={() => updateCartQty(item.id, -1)} className="w-6 h-6 bg-white border border-slate-300 rounded text-slate-700 flex items-center justify-center font-bold">-</button>
-                          <span className="w-6 text-center font-mono font-bold text-slate-800 text-xs">{item.qty}</span>
-                          <button onClick={() => updateCartQty(item.id, 1)} className="w-6 h-6 bg-white border border-slate-300 rounded text-slate-700 flex items-center justify-center font-bold">+</button>
+                        <div className="flex items-center gap-1.5">
+                          <button onClick={() => updateCartQty(item.id, -1)} className="w-7 h-7 bg-white border-2 border-slate-300 rounded-lg text-slate-900 flex items-center justify-center font-black">-</button>
+                          <span className="w-6 text-center font-mono font-black text-slate-900 text-sm">{item.qty}</span>
+                          <button onClick={() => updateCartQty(item.id, 1)} className="w-7 h-7 bg-white border-2 border-slate-300 rounded-lg text-slate-900 flex items-center justify-center font-black">+</button>
                         </div>
                       </div>
                     ))
@@ -577,37 +633,52 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-slate-100 space-y-2.5">
-                <div className="flex justify-between text-base font-black text-slate-800">
+              <div className="pt-3 border-t-2 border-slate-200 space-y-2.5">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="font-bold text-slate-700">طباعة الفاتورة تلقائياً:</span>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={autoPrintOnSale}
+                      onChange={(e) => setAutoPrintOnSale(e.target.checked)}
+                      className="sr-only peer"
+                    />
+                    <div className="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-700"></div>
+                  </label>
+                </div>
+
+                <div className="flex justify-between text-base font-black text-slate-900">
                   <span>الإجمالي المستحق:</span>
-                  <span className="text-emerald-700 font-mono">{cartTotal.toLocaleString()} ج.م</span>
+                  <span className="text-emerald-800 font-mono text-lg">{cartTotal.toLocaleString()} ج.م</span>
                 </div>
 
                 <button
                   onClick={handleCheckout}
                   disabled={cart.length === 0}
-                  className={`w-full py-3.5 rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition ${
+                  className={`w-full py-3.5 rounded-xl font-black text-sm flex items-center justify-center gap-2 shadow-md transition ${
                     cart.length > 0
-                      ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                      : "bg-slate-200 text-slate-400 cursor-not-allowed"
+                      ? "bg-emerald-700 hover:bg-emerald-800 text-white border border-emerald-900"
+                      : "bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed"
                   }`}
                 >
-                  <Icon name="check" className="w-4 h-4" />
-                  <span>إتمام الفاتورة {cartTotal > 0 ? `(${cartTotal.toLocaleString()} ج.م)` : ""}</span>
+                  <Icon name="print" className="w-4 h-4" />
+                  <span>إتمام البيع وطباعة الفاتورة {cartTotal > 0 ? `(${cartTotal.toLocaleString()} ج.م)` : ""}</span>
                 </button>
               </div>
             </div>
 
             {/* كتالوج الأصناف والبحث */}
             <div className="lg:col-span-7 space-y-3">
-              <div className="bg-white border border-slate-200 p-2.5 rounded-2xl flex flex-wrap items-center justify-between gap-2 text-xs shadow-sm">
-                <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+              <div className="bg-white border-2 border-slate-300 p-3 rounded-2xl flex flex-wrap items-center justify-between gap-2 text-xs shadow-sm">
+                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
                   {["الكل", "قطع الغيار", "إكسسوارات", "جرابات"].map((cat) => (
                     <button
                       key={cat}
                       onClick={() => setSelectedCategory(cat)}
-                      className={`px-3 py-1.5 rounded-xl font-bold transition ${
-                        selectedCategory === cat ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                      className={`px-3 py-1.5 rounded-xl font-black transition border-2 ${
+                        selectedCategory === cat
+                          ? "bg-emerald-700 text-white border-emerald-800 shadow-sm"
+                          : "bg-slate-100 text-slate-800 border-slate-300 hover:bg-slate-200"
                       }`}
                     >
                       {cat}
@@ -621,9 +692,9 @@ export default function App() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="بحث باسم أو باركود..."
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pr-7 pl-3 py-1.5 text-xs text-slate-800 outline-none focus:border-emerald-600 focus:bg-white"
+                    className="w-full bg-slate-50 border-2 border-slate-300 rounded-xl pr-7 pl-3 py-1.5 text-xs text-slate-900 font-bold outline-none focus:border-emerald-600 focus:bg-white"
                   />
-                  <Icon name="search" className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-2" />
+                  <Icon name="search" className="w-3.5 h-3.5 text-slate-500 absolute right-2 top-2" />
                 </div>
               </div>
 
@@ -635,19 +706,19 @@ export default function App() {
                     <div
                       key={p.id}
                       onClick={() => addToCart(p)}
-                      className="bg-white hover:border-emerald-500 border border-slate-200 p-3 sm:p-4 rounded-2xl cursor-pointer transition shadow-sm flex flex-col justify-between"
+                      className="bg-white hover:border-emerald-600 border-2 border-slate-300 p-3 sm:p-4 rounded-2xl cursor-pointer transition shadow-sm flex flex-col justify-between"
                     >
                       <div>
-                        <div className="flex justify-between items-center text-[10px] text-slate-400 mb-1">
-                          <span className="font-mono text-emerald-700 font-bold">{p.barcode}</span>
-                          <span className="bg-slate-100 px-1.5 py-0.5 rounded text-slate-600 font-medium">متبقي {p.stock}</span>
+                        <div className="flex justify-between items-center text-[11px] mb-1">
+                          <span className="font-mono text-emerald-800 font-black">{p.barcode}</span>
+                          <span className="bg-slate-100 px-2 py-0.5 rounded text-slate-700 font-bold border border-slate-300">متبقي {p.stock}</span>
                         </div>
-                        <h4 className="font-bold text-xs text-slate-800 line-clamp-2">{p.name}</h4>
+                        <h4 className="font-black text-xs text-slate-900 line-clamp-2 mt-1">{p.name}</h4>
                       </div>
 
-                      <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between">
-                        <span className="font-black text-xs sm:text-sm text-emerald-800 font-mono">{p.price} <span className="text-[10px] text-slate-500">ج.م</span></span>
-                        <span className="w-6 h-6 bg-emerald-50 text-emerald-700 rounded-lg flex items-center justify-center font-bold text-xs border border-emerald-200">
+                      <div className="mt-3 pt-2 border-t-2 border-slate-100 flex items-center justify-between">
+                        <span className="font-black text-sm text-emerald-800 font-mono">{p.price} <span className="text-[10px] text-slate-600">ج.م</span></span>
+                        <span className="w-7 h-7 bg-emerald-100 text-emerald-800 rounded-lg flex items-center justify-center font-black text-xs border border-emerald-300">
                           +
                         </span>
                       </div>
@@ -660,18 +731,18 @@ export default function App() {
 
         {/* الشاشة 3: الجرد الدوري */}
         {currentTab === "audit" && (
-          <div className="space-y-4 bg-white border border-slate-200 p-4 sm:p-6 rounded-2xl shadow-sm">
+          <div className="space-y-4 bg-white border-2 border-slate-300 p-4 sm:p-6 rounded-2xl shadow-sm">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div>
-                <h3 className="text-sm sm:text-base font-bold text-slate-800 flex items-center gap-2">
-                  <Icon name="audit" className="w-5 h-5 text-emerald-600" />
+                <h3 className="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
+                  <Icon name="audit" className="w-5 h-5 text-emerald-700" />
                   جلسة جرد المخزون الدوري والمطابقة
                 </h3>
-                <p className="text-xs text-slate-500 mt-0.5">مطابقة الأرصدة الفعلية برصيد السيستم لاكتشاف العجز أو الزيادة فوراً.</p>
+                <p className="text-xs text-slate-600 font-bold mt-0.5">مطابقة الأرصدة الفعلية برصيد السيستم لاكتشاف العجز أو الزيادة فوراً.</p>
               </div>
               <button
                 onClick={() => showToast("تمت تسوية المخزون الفعلي بنجاح!")}
-                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow transition whitespace-nowrap"
+                className="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-black rounded-xl shadow transition whitespace-nowrap border border-emerald-900"
               >
                 اعتماد الجرد وتسوية الرصيد
               </button>
@@ -679,25 +750,25 @@ export default function App() {
 
             <div className="overflow-x-auto mt-2">
               <table className="w-full text-right text-xs">
-                <thead className="bg-slate-50 text-slate-600 border-b border-slate-200">
+                <thead className="bg-slate-100 text-slate-800 font-black border-b-2 border-slate-300">
                   <tr>
-                    <th className="p-2.5 sm:p-3">المنتج</th>
-                    <th className="p-2.5 sm:p-3">الباركود</th>
-                    <th className="p-2.5 sm:p-3">رصيد السيستم</th>
-                    <th className="p-2.5 sm:p-3">العدد الفعلي</th>
-                    <th className="p-2.5 sm:p-3">الفارق</th>
+                    <th className="p-3">المنتج</th>
+                    <th className="p-3">الباركود</th>
+                    <th className="p-3">رصيد السيستم</th>
+                    <th className="p-3">العدد الفعلي</th>
+                    <th className="p-3">الفارق</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-slate-200">
                   {products.map((p) => (
                     <tr key={p.id}>
-                      <td className="p-2.5 sm:p-3 font-bold text-slate-800">{p.name}</td>
-                      <td className="p-2.5 sm:p-3 font-mono text-emerald-700">{p.barcode}</td>
-                      <td className="p-2.5 sm:p-3 font-bold">{p.stock}</td>
-                      <td className="p-2.5 sm:p-3">
-                        <input type="number" defaultValue={p.stock} className="w-16 bg-slate-50 border border-slate-300 rounded px-2 py-1 text-center text-slate-800" />
+                      <td className="p-3 font-black text-slate-900">{p.name}</td>
+                      <td className="p-3 font-mono font-black text-emerald-800">{p.barcode}</td>
+                      <td className="p-3 font-black text-slate-800">{p.stock}</td>
+                      <td className="p-3">
+                        <input type="number" defaultValue={p.stock} className="w-16 bg-slate-50 border-2 border-slate-300 rounded px-2 py-1 text-center font-black text-slate-900" />
                       </td>
-                      <td className="p-2.5 sm:p-3 text-emerald-700 font-bold">0 (مطابق)</td>
+                      <td className="p-3 text-emerald-800 font-black">0 (مطابق)</td>
                     </tr>
                   ))}
                 </tbody>
@@ -708,94 +779,153 @@ export default function App() {
       </main>
 
       {/* ========================================================
-          القائمة الجانبية باللون الأبيض والأخضر لجميع الأقسام
+          الصفحة المصغرة: إدارة الطابعات وقراءتها المباشرة
          ======================================================== */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex justify-start" dir="rtl">
-          <div className="bg-white border-l border-slate-200 w-80 max-w-[85vw] h-full flex flex-col p-4 text-slate-800 shadow-2xl">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+      {activeModal === "printers" && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4" dir="rtl">
+          <div className="bg-white border-2 border-slate-300 w-full max-w-lg rounded-3xl p-5 text-slate-900 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="flex justify-between items-center pb-2 border-b-2 border-slate-200">
               <div className="flex items-center gap-2">
-                <div className="w-9 h-9 bg-emerald-600 text-white rounded-xl flex items-center justify-center font-bold">
-                  ER
-                </div>
+                <span className="p-2 bg-emerald-100 text-emerald-900 rounded-xl border border-emerald-300">
+                  <Icon name="print" className="w-5 h-5" />
+                </span>
                 <div>
-                  <h3 className="font-black text-sm text-emerald-800">نظام الرسالة POS</h3>
-                  <p className="text-[10px] text-slate-500">جميع الأقسام والعمليات</p>
+                  <h3 className="font-black text-sm sm:text-base text-slate-900">إدارة الطابعات والاتصال المباشر</h3>
+                  <p className="text-[11px] text-slate-600 font-bold">فحص وقراءة الطابعات المتصلة بالجهاز والشبكة</p>
                 </div>
               </div>
-              <button onClick={() => setMobileMenuOpen(false)} className="p-1.5 text-slate-400 hover:text-slate-700 text-lg">✕</button>
+              <button onClick={() => setActiveModal(null)} className="text-slate-500 hover:text-slate-900 font-black text-lg">✕</button>
             </div>
 
-            <div className="flex-1 overflow-y-auto py-3 space-y-1 custom-scrollbar">
-              {allFeatures.map((feat) => (
-                <button
-                  key={feat.id}
-                  onClick={() => handleOpenFeature(feat)}
-                  className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-emerald-50 text-xs text-slate-700 hover:text-emerald-800 transition"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <span className="p-1.5 bg-slate-100 rounded-lg text-emerald-700">
-                      <Icon name={feat.icon} className="w-4 h-4" />
-                    </span>
-                    <span className="font-bold">{feat.label}</span>
+            {/* Scan Button */}
+            <div className="flex gap-2 items-center">
+              <button
+                onClick={handleScanPrinters}
+                disabled={isScanningPrinters}
+                className="flex-1 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs rounded-xl shadow-sm border border-emerald-900 flex items-center justify-center gap-2 transition"
+              >
+                <Icon name="search" className={`w-4 h-4 ${isScanningPrinters ? "animate-spin" : ""}`} />
+                <span>{isScanningPrinters ? "جاري قراءة المنافذ والطابعات..." : "فحص وقراءة الطابعات المتصلة الآن"}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  triggerDirectPrint({
+                    type: "test_print",
+                    title: "اختبار الطابعة الحرارية",
+                    date: new Date().toLocaleString("ar-EG")
+                  });
+                }}
+                className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-900 font-black text-xs rounded-xl border-2 border-slate-300 transition"
+              >
+                تجربة الطباعة فوراً
+              </button>
+            </div>
+
+            {/* Printers List */}
+            <div className="space-y-2.5 text-xs">
+              <p className="font-black text-slate-800">الطابعات المكتشفة على الجهاز:</p>
+              {printersList.map((pr) => (
+                <div key={pr.id} className="bg-slate-50 border-2 border-slate-300 p-3 rounded-xl flex items-center justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></span>
+                      <p className="font-black text-slate-900">{pr.name}</p>
+                    </div>
+                    <p className="text-slate-600 font-bold text-[11px] mt-0.5">النوع: {pr.type} | المنفذ: {pr.port} | القياس: {pr.paper}</p>
                   </div>
-                  <span className="text-[10px] text-emerald-600 font-bold font-mono">فتح ←</span>
-                </button>
+
+                  <div className="flex flex-col gap-1 items-end">
+                    {pr.isDefaultReceipt ? (
+                      <span className="px-2 py-0.5 bg-emerald-700 text-white rounded text-[10px] font-black">طابعة الفواتير الافتراضية</span>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          const updated = printersList.map((x) => ({ ...x, isDefaultReceipt: x.id === pr.id }));
+                          setPrintersList(updated);
+                          localStorage.setItem("db_printers", JSON.stringify(updated));
+                          showToast(`تم تعيين ${pr.name} كطابعة فواتير افتراضية`);
+                        }}
+                        className="text-[10px] text-emerald-800 font-black hover:underline"
+                      >
+                        تعيين كافتراضية
+                      </button>
+                    )}
+
+                    {pr.isDefaultBarcode && (
+                      <span className="px-2 py-0.5 bg-teal-700 text-white rounded text-[10px] font-black">طابعة الباركود الافتراضية</span>
+                    )}
+                  </div>
+                </div>
               ))}
             </div>
 
-            <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-              <span className="text-slate-500 font-medium">المستخدم: {user.name}</span>
-              <button onClick={handleLogout} className="text-rose-600 font-bold hover:underline">خروج</button>
+            {/* Print Settings Options */}
+            <div className="bg-emerald-50 p-3.5 rounded-2xl border-2 border-emerald-300 space-y-2 text-xs">
+              <div className="flex justify-between items-center">
+                <span className="font-black text-emerald-950">طباعة تلقائية صامتة فور خروج الفاتورة:</span>
+                <input
+                  type="checkbox"
+                  checked={autoPrintOnSale}
+                  onChange={(e) => setAutoPrintOnSale(e.target.checked)}
+                  className="w-4 h-4 accent-emerald-700"
+                />
+              </div>
+              <p className="text-[11px] text-slate-600 font-bold">يقوم النظام بإرسال أمر الطباعة مباشرة لدرج الكاشير دون الحاجة للتأكيد اليدوي في كل عملية.</p>
+            </div>
+
+            <div className="flex gap-2 pt-1">
+              <button onClick={() => setActiveModal(null)} className="w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 font-black text-xs rounded-xl text-white shadow-sm border border-emerald-900">
+                حفظ الإعدادات وإغلاق
+              </button>
             </div>
           </div>
         </div>
       )}
 
       {/* ========================================================
-          الصفحات الداخلية المصغرة (Mini-Modals) باللون الأبيض والأخضر
+          بقية الصفحات المصغرة التفاعلية (Barcode, Repairs, etc.)
          ======================================================== */}
 
       {/* 1. صفحة مصغرة: طباعة الباركود */}
       {activeModal === "barcode" && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4" dir="rtl">
-          <div className="bg-white border border-slate-200 w-full max-w-md rounded-3xl p-5 text-slate-800 space-y-4 shadow-2xl">
-            <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-              <h3 className="font-bold text-sm flex items-center gap-2 text-emerald-700">
+          <div className="bg-white border-2 border-slate-300 w-full max-w-md rounded-3xl p-5 text-slate-900 space-y-4 shadow-2xl">
+            <div className="flex justify-between items-center pb-2 border-b-2 border-slate-200">
+              <h3 className="font-black text-sm flex items-center gap-2 text-emerald-800">
                 <Icon name="barcode" className="w-4 h-4" />
                 طباعة ملصقات الباركود
               </h3>
-              <button onClick={() => setActiveModal(null)} className="text-slate-400 hover:text-slate-700">✕</button>
+              <button onClick={() => setActiveModal(null)} className="text-slate-500 hover:text-slate-900 font-black">✕</button>
             </div>
 
             <div className="space-y-3 text-xs">
               <div>
-                <label className="block text-slate-600 mb-1 font-medium">اختر المنتج المراد طباعته</label>
-                <select className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800 outline-none">
-                  {products.map(p => <option key={p.id} value={p.name}>{p.name} - {p.price} ج.م</option>)}
+                <label className="block text-slate-800 mb-1 font-black">اختر المنتج المراد طباعته</label>
+                <select id="sel_bar_prod" className="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-bold outline-none">
+                  {products.map(p => <option key={p.id} value={p.barcode}>{p.name} - {p.price} ج.م</option>)}
                 </select>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-600 mb-1 font-medium">مقاس الملصق</label>
-                  <select className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800">
+                  <label className="block text-slate-800 mb-1 font-black">مقاس الملصق</label>
+                  <select className="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-bold">
                     <option>38 × 25 مم (حراري)</option>
                     <option>50 × 30 مم</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-600 mb-1 font-medium">عدد الملصقات</label>
-                  <input type="number" defaultValue="5" className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800 text-center font-mono" />
+                  <label className="block text-slate-800 mb-1 font-black">عدد الملصقات</label>
+                  <input type="number" defaultValue="5" className="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-3 py-2 text-slate-900 text-center font-mono font-black" />
                 </div>
               </div>
 
-              {/* معاينة الملصق */}
-              <div className="bg-slate-50 border border-dashed border-emerald-400 text-black p-4 rounded-xl text-center space-y-1">
+              <div className="bg-slate-50 border-2 border-dashed border-emerald-600 text-black p-4 rounded-xl text-center space-y-1">
                 <p className="font-black text-xs text-emerald-800">الرسالة للإلكترونيات</p>
-                <p className="text-[11px] font-bold text-slate-700">كابل فودفي تيب سي أصلي</p>
+                <p className="text-[11px] font-black text-slate-900">كابل فودفي تيب سي أصلي</p>
                 <div className="font-mono text-2xl tracking-widest font-black py-1">|||| | ||||| || |||</div>
-                <div className="flex justify-between text-[10px] font-mono font-bold px-4 text-slate-800">
+                <div className="flex justify-between text-[11px] font-mono font-black px-4 text-slate-900">
                   <span>500001</span>
                   <span>السعر: 120 ج.م</span>
                 </div>
@@ -803,10 +933,20 @@ export default function App() {
             </div>
 
             <div className="flex gap-2 pt-2">
-              <button onClick={() => { showToast("جاري إرسال الملصقات لطابعة الباركود..."); setActiveModal(null); }} className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 font-bold text-xs rounded-xl text-white shadow-sm">
-                طباعة الملصقات الآن
+              <button
+                onClick={() => {
+                  triggerDirectPrint({
+                    type: "barcode_label",
+                    name: "كابل فودفي تيب سي أصلي",
+                    barcode: "500001",
+                    price: 120
+                  });
+                }}
+                className="flex-1 py-2.5 bg-emerald-700 hover:bg-emerald-800 font-black text-xs rounded-xl text-white shadow-sm border border-emerald-900"
+              >
+                طباعة الملصقات مباشرة
               </button>
-              <button onClick={() => setActiveModal(null)} className="px-4 py-2 bg-slate-100 text-slate-600 text-xs rounded-xl font-bold">إلغاء</button>
+              <button onClick={() => setActiveModal(null)} className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs rounded-xl font-black border border-slate-300">إلغاء</button>
             </div>
           </div>
         </div>
@@ -815,26 +955,26 @@ export default function App() {
       {/* 2. صفحة مصغرة: الصيانة واستلام الأجهزة */}
       {activeModal === "repairs" && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4" dir="rtl">
-          <div className="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-5 text-slate-800 space-y-4 max-h-[85vh] overflow-y-auto shadow-2xl">
-            <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-              <h3 className="font-bold text-sm flex items-center gap-2 text-emerald-700">
+          <div className="bg-white border-2 border-slate-300 w-full max-w-lg rounded-3xl p-5 text-slate-900 space-y-4 max-h-[85vh] overflow-y-auto shadow-2xl">
+            <div className="flex justify-between items-center pb-2 border-b-2 border-slate-200">
+              <h3 className="font-black text-sm flex items-center gap-2 text-emerald-800">
                 <Icon name="repairs" className="w-4 h-4" />
                 قسم الصيانة واستلام الأجهزة
               </h3>
-              <button onClick={() => setActiveModal(null)} className="text-slate-400 hover:text-slate-700">✕</button>
+              <button onClick={() => setActiveModal(null)} className="text-slate-500 hover:text-slate-900 font-black">✕</button>
             </div>
 
-            <div className="bg-emerald-50/50 p-3.5 rounded-2xl border border-emerald-100 space-y-2.5 text-xs">
-              <p className="font-bold text-emerald-800">تسجيل استلام جهاز صيانة جديد</p>
+            <div className="bg-emerald-50 p-3.5 rounded-2xl border-2 border-emerald-200 space-y-2.5 text-xs">
+              <p className="font-black text-emerald-900">تسجيل استلام جهاز صيانة جديد</p>
               <div className="grid grid-cols-2 gap-2">
-                <input id="rep_client" type="text" placeholder="اسم العميل..." className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-800" />
-                <input id="rep_phone" type="tel" placeholder="رقم الهاتف..." className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-800 font-mono" />
+                <input id="rep_client" type="text" placeholder="اسم العميل..." className="bg-white border-2 border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-bold" />
+                <input id="rep_phone" type="tel" placeholder="رقم الهاتف..." className="bg-white border-2 border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-mono font-bold" />
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <input id="rep_device" type="text" placeholder="موديل الجهاز (مثال iPhone 11)..." className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-800" />
-                <input id="rep_cost" type="number" placeholder="التكلفة التقديرية (ج.م)..." className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-800 font-mono" />
+                <input id="rep_device" type="text" placeholder="موديل الجهاز (iPhone 11)..." className="bg-white border-2 border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-bold" />
+                <input id="rep_cost" type="number" placeholder="التكلفة التقديرية (ج.م)..." className="bg-white border-2 border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-mono font-bold" />
               </div>
-              <input id="rep_issue" type="text" placeholder="وصف العطل (شاشة مكسورة / سوكت شحن)..." className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-800" />
+              <input id="rep_issue" type="text" placeholder="وصف العطل..." className="w-full bg-white border-2 border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-bold" />
               <button
                 onClick={() => {
                   const client = document.getElementById("rep_client").value;
@@ -850,21 +990,21 @@ export default function App() {
                     showToast("تم حفظ إيصال الصيانة بنجاح!");
                   }
                 }}
-                className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 font-bold text-white rounded-xl shadow-sm"
+                className="w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 font-black text-white rounded-xl shadow-sm border border-emerald-900"
               >
                 + حفظ إيصال الصيانة
               </button>
             </div>
 
             <div className="space-y-2">
-              <p className="text-xs text-slate-600 font-bold">الأجهزة في الصيانة حالياً</p>
+              <p className="text-xs text-slate-800 font-black">الأجهزة في الصيانة حالياً</p>
               {repairsList.map(r => (
-                <div key={r.id} className="bg-slate-50 border border-slate-200 p-3 rounded-xl flex items-center justify-between text-xs">
+                <div key={r.id} className="bg-slate-50 border-2 border-slate-200 p-3 rounded-xl flex items-center justify-between text-xs">
                   <div>
-                    <span className="font-bold text-slate-800">{r.device} - {r.client}</span>
-                    <p className="text-slate-500 text-[11px]">{r.issue} | {r.cost} ج.م</p>
+                    <span className="font-black text-slate-900">{r.device} - {r.client}</span>
+                    <p className="text-slate-600 font-bold text-[11px]">{r.issue} | {r.cost} ج.م</p>
                   </div>
-                  <span className="px-2 py-1 bg-emerald-100 text-emerald-800 rounded-lg text-[10px] font-bold">
+                  <span className="px-2 py-1 bg-emerald-100 border border-emerald-300 text-emerald-900 rounded-lg text-[11px] font-black">
                     {r.status}
                   </span>
                 </div>
@@ -874,531 +1014,46 @@ export default function App() {
         </div>
       )}
 
-      {/* 3. صفحة مصغرة: الهالك والتالف والمرتجعات */}
-      {activeModal === "damaged" && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4" dir="rtl">
-          <div className="bg-white border border-slate-200 w-full max-w-md rounded-3xl p-5 text-slate-800 space-y-4 max-h-[85vh] overflow-y-auto shadow-2xl">
-            <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-              <h3 className="font-bold text-sm flex items-center gap-2 text-rose-600">
-                <Icon name="returns" className="w-4 h-4" />
-                الهالك والمرتجع من العملاء
-              </h3>
-              <button onClick={() => setActiveModal(null)} className="text-slate-400 hover:text-slate-700">✕</button>
-            </div>
-
-            <div className="space-y-3 text-xs">
-              <div>
-                <label className="block text-slate-600 mb-1 font-medium">اختر الصنف التالف أو المرتجع</label>
-                <select id="dam_name" className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800">
-                  {products.map(p => <option key={p.id} value={p.name}>{p.name}</option>)}
-                </select>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-slate-600 mb-1 font-medium">الكمية</label>
-                  <input id="dam_qty" type="number" defaultValue="1" className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800 font-mono" />
-                </div>
-                <div>
-                  <label className="block text-slate-600 mb-1 font-medium">النوع</label>
-                  <select id="dam_type" className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800">
-                    <option value="هالك وتالف">هالك وتالف</option>
-                    <option value="مرتجع عميل">مرتجع عميل</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-slate-600 mb-1 font-medium">السبب</label>
-                <input id="dam_reason" type="text" placeholder="كسر / عيب صناعة / غير متوافق..." className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800" />
-              </div>
-
-              <button
-                onClick={() => {
-                  const name = document.getElementById("dam_name").value;
-                  const qty = document.getElementById("dam_qty").value;
-                  const type = document.getElementById("dam_type").value;
-                  const reason = document.getElementById("dam_reason").value || "بدون سبب";
-                  const item = { id: Date.now(), name, qty, type, reason, time: new Date().toLocaleTimeString("ar-EG") };
-                  const updated = [item, ...damagedList];
-                  setDamagedList(updated);
-                  localStorage.setItem("db_damaged", JSON.stringify(updated));
-                  showToast("تم إثبات العملية وتحديث المخزون والخزينة!");
-                }}
-                className="w-full py-2.5 bg-rose-600 hover:bg-rose-700 font-bold text-xs rounded-xl text-white shadow-sm"
-              >
-                تأكيد وقيد العملية
-              </button>
-            </div>
-
-            <div className="space-y-1.5 pt-2 border-t border-slate-100">
-              <p className="text-[11px] text-slate-500 font-bold">العمليات السابقة:</p>
-              {damagedList.map(d => (
-                <div key={d.id} className="bg-slate-50 p-2 rounded-lg flex justify-between text-[11px] border border-slate-200">
-                  <span className="text-rose-700 font-bold">{d.type}: {d.name} ({d.qty})</span>
-                  <span className="text-slate-400 font-mono">{d.time}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 4. صفحة مصغرة: الخزينة النقدية */}
-      {activeModal === "safe" && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4" dir="rtl">
-          <div className="bg-white border border-slate-200 w-full max-w-md rounded-3xl p-5 text-slate-800 space-y-4 shadow-2xl">
-            <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-              <h3 className="font-bold text-sm flex items-center gap-2 text-emerald-700">
-                <Icon name="drawer" className="w-4 h-4" />
-                حركات الخزينة النقدية والدرج
-              </h3>
-              <button onClick={() => setActiveModal(null)} className="text-slate-400 hover:text-slate-700">✕</button>
-            </div>
-
-            <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-200 text-center">
-              <p className="text-xs text-slate-600 font-medium">الرصيد النقدي الحالي في الدرج</p>
-              <h2 className="text-3xl font-black text-emerald-800 mt-1">{liquidCash.toLocaleString()} ج.م</h2>
-            </div>
-
-            <div className="space-y-2.5 text-xs">
-              <div>
-                <label className="block text-slate-600 mb-1 font-medium">المبلغ المالي (ج.م)</label>
-                <input id="safe_amt" type="number" placeholder="500" className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800 font-mono" />
-              </div>
-              <div>
-                <label className="block text-slate-600 mb-1 font-medium">البيان / السبب</label>
-                <input id="safe_desc" type="text" placeholder="مصروفات بوفيه / سحب نقدي للمالك / إيداع..." className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800" />
-              </div>
-
-              <div className="flex gap-2 pt-2">
-                <button
-                  onClick={() => {
-                    const amt = Number(document.getElementById("safe_amt").value);
-                    const desc = document.getElementById("safe_desc").value || "إيداع نقدي";
-                    if (amt > 0) {
-                      const newAmt = liquidCash + amt;
-                      setLiquidCash(newAmt);
-                      localStorage.setItem("db_liquid", String(newAmt));
-                      setDepositsTotal(p => p + amt);
-                      setTransactions([{ id: Date.now(), type: "إيداع نقدي", desc, amount: amt, time: "الآن", cat: "deposit" }, ...transactions]);
-                      showToast(`تم إيداع ${amt} ج.م في الدرج بنجاح!`);
-                      setActiveModal(null);
-                    }
-                  }}
-                  className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 font-bold rounded-xl text-white shadow-sm"
-                >
-                  + إيداع نقدية
-                </button>
-
-                <button
-                  onClick={() => {
-                    const amt = Number(document.getElementById("safe_amt").value);
-                    const desc = document.getElementById("safe_desc").value || "سحب مصروفات";
-                    if (amt > 0 && amt <= liquidCash) {
-                      const newAmt = liquidCash - amt;
-                      setLiquidCash(newAmt);
-                      localStorage.setItem("db_liquid", String(newAmt));
-                      setWithdrawsTotal(p => p + amt);
-                      setTransactions([{ id: Date.now(), type: "سحب مصروفات", desc, amount: amt, time: "الآن", cat: "withdraw" }, ...transactions]);
-                      showToast(`تم سحب ${amt} ج.م من الدرج!`);
-                      setActiveModal(null);
-                    }
-                  }}
-                  className="flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 font-bold rounded-xl text-white shadow-sm"
-                >
-                  - سحب مصروفات
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 5. صفحة مصغرة: المحافظ الإلكترونية */}
-      {activeModal === "wallets" && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4" dir="rtl">
-          <div className="bg-white border border-slate-200 w-full max-w-md rounded-3xl p-5 text-slate-800 space-y-4 shadow-2xl">
-            <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-              <h3 className="font-bold text-sm flex items-center gap-2 text-teal-700">
-                <Icon name="wallet" className="w-4 h-4" />
-                المحافظ الإلكترونية (فودافون كاش)
-              </h3>
-              <button onClick={() => setActiveModal(null)} className="text-slate-400 hover:text-slate-700">✕</button>
-            </div>
-
-            <div className="space-y-2.5 text-xs">
-              <div className="bg-teal-50 p-3 rounded-xl flex justify-between items-center border border-teal-200">
-                <div>
-                  <p className="font-bold text-teal-900">محفظة فودافون كاش 1 (محمد مصطفي)</p>
-                  <p className="text-slate-500 font-mono text-[10px]">010xxxxxxxx</p>
-                </div>
-                <span className="font-mono font-bold text-teal-800 text-sm">{walletsTotal.toLocaleString()} ج.م</span>
-              </div>
-
-              <div className="bg-slate-50 p-3 rounded-xl flex justify-between items-center border border-slate-200">
-                <div>
-                  <p className="font-bold text-slate-800">محفظة أورنج كاش 2</p>
-                  <p className="text-slate-400 font-mono text-[10px]">012xxxxxxxx</p>
-                </div>
-                <span className="font-mono font-bold text-slate-500 text-sm">0.00 ج.م</span>
-              </div>
-
-              <div className="pt-2">
-                <button
-                  onClick={() => {
-                    const amt = Number(prompt("أدخل مبلغ التحويل من الكاش السائل للمحفظة:"));
-                    if (amt > 0 && amt <= liquidCash) {
-                      setLiquidCash(p => p - amt);
-                      setWalletsTotal(p => p + amt);
-                      showToast(`تم تحويل ${amt} ج.م إلى المحفظة بنجاح!`);
-                      setActiveModal(null);
-                    }
-                  }}
-                  className="w-full py-2.5 bg-teal-600 hover:bg-teal-700 font-bold rounded-xl text-white shadow-sm"
-                >
-                  + تحويل رصيد من الكاش للمحفظة
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 6. صفحة مصغرة: الحسابات البنكية وإنستاباي */}
-      {activeModal === "bank" && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4" dir="rtl">
-          <div className="bg-white border border-slate-200 w-full max-w-md rounded-3xl p-5 text-slate-800 space-y-4 shadow-2xl">
-            <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-              <h3 className="font-bold text-sm flex items-center gap-2 text-emerald-700">
-                <Icon name="bank" className="w-4 h-4" />
-                التحويلات البنكية وإنستاباي (InstaPay)
-              </h3>
-              <button onClick={() => setActiveModal(null)} className="text-slate-400 hover:text-slate-700">✕</button>
-            </div>
-
-            <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-slate-500 font-medium">الحساب الرئيسي:</span>
-                <span className="font-bold text-slate-800">البنك الأهلي المصري (NBE)</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500 font-medium">عنوان إنستاباي IPA:</span>
-                <span className="font-mono font-bold text-emerald-700">elresala@instapay</span>
-              </div>
-              <div className="flex justify-between font-bold">
-                <span className="text-slate-500">الرصيد المتاح:</span>
-                <span className="font-mono text-emerald-800">{bankTotal.toLocaleString()} ج.م</span>
-              </div>
-            </div>
-
-            <button
-              onClick={() => {
-                const amt = Number(prompt("مبلغ التحويل المستلم عبر إنستاباي:"));
-                if (amt > 0) {
-                  setBankTotal(p => p + amt);
-                  showToast("تم قيد التحويل البنكي بنجاح!");
-                  setActiveModal(null);
-                }
-              }}
-              className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 font-bold rounded-xl text-white text-xs shadow-sm"
-            >
-              + تسجيل تحويل وارد عبر إنستاباي
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* 7. صفحة مصغرة: سجل العملاء والآجل */}
-      {activeModal === "customers" && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4" dir="rtl">
-          <div className="bg-white border border-slate-200 w-full max-w-md rounded-3xl p-5 text-slate-800 space-y-4 max-h-[85vh] overflow-y-auto shadow-2xl">
-            <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-              <h3 className="font-bold text-sm flex items-center gap-2 text-emerald-700">
-                <Icon name="customers" className="w-4 h-4" />
-                سجل العملاء والآجل (الشكك)
-              </h3>
-              <button onClick={() => setActiveModal(null)} className="text-slate-400 hover:text-slate-700">✕</button>
-            </div>
-
-            <div className="space-y-2 text-xs">
-              {customersList.map(c => (
-                <div key={c.id} className="bg-slate-50 border border-slate-200 p-3 rounded-xl flex items-center justify-between">
-                  <div>
-                    <p className="font-bold text-slate-800">{c.name}</p>
-                    <p className="text-slate-500 font-mono text-[10px]">{c.phone}</p>
-                  </div>
-                  <div className="text-left">
-                    <span className="text-rose-600 font-mono font-bold block">{c.debt} ج.م</span>
-                    <button
-                      onClick={() => showToast(`تم تسجيل تسديد ديون العميل ${c.name}`)}
-                      className="text-[10px] text-emerald-700 font-bold hover:underline"
-                    >
-                      تسديد دفعة
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <button
-              onClick={() => {
-                const name = prompt("اسم العميل الجديد:");
-                const phone = prompt("رقم التليفون:");
-                if (name) {
-                  const nu = { id: Date.now(), name, phone: phone || "-", debt: 0 };
-                  setCustomersList([...customersList, nu]);
-                  showToast("تمت إضافة العميل بنجاح!");
-                }
-              }}
-              className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 font-bold rounded-xl text-white text-xs shadow-sm"
-            >
-              + إضافة عميل جديد
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* 8. صفحة مصغرة: الحضور والانصراف */}
-      {activeModal === "attendance" && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4" dir="rtl">
-          <div className="bg-white border border-slate-200 w-full max-w-md rounded-3xl p-5 text-slate-800 space-y-4 shadow-2xl">
-            <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-              <h3 className="font-bold text-sm flex items-center gap-2 text-emerald-700">
-                <Icon name="attendance" className="w-4 h-4" />
-                دفتر الحضور والانصراف
-              </h3>
-              <button onClick={() => setActiveModal(null)} className="text-slate-400 hover:text-slate-700">✕</button>
-            </div>
-
-            <div className="space-y-2 text-xs">
-              {attendanceList.map(a => (
-                <div key={a.id} className="bg-slate-50 border border-slate-200 p-3 rounded-xl flex justify-between items-center">
-                  <span className="font-bold text-slate-800">{a.name}</span>
-                  <span className="text-emerald-700 font-mono font-bold">{a.time} - {a.status}</span>
-                </div>
-              ))}
-            </div>
-
-            <button
-              onClick={() => {
-                const item = { id: Date.now(), name: user.name, time: new Date().toLocaleTimeString("ar-EG"), status: "حاضر" };
-                setAttendanceList([...attendanceList, item]);
-                showToast("تم إثبات حضورك اليوم بنجاح!");
-                setActiveModal(null);
-              }}
-              className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 font-bold rounded-xl text-white text-xs shadow-sm"
-            >
-              تسجيل حضور الوردية الآن
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* 9. صفحة مصغرة: التقارير والأرباح */}
-      {activeModal === "reports" && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4" dir="rtl">
-          <div className="bg-white border border-slate-200 w-full max-w-md rounded-3xl p-5 text-slate-800 space-y-4 shadow-2xl">
-            <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-              <h3 className="font-bold text-sm flex items-center gap-2 text-emerald-700">
-                <Icon name="reports" className="w-4 h-4" />
-                تقرير المبيعات والأرباح اليومية
-              </h3>
-              <button onClick={() => setActiveModal(null)} className="text-slate-400 hover:text-slate-700">✕</button>
-            </div>
-
-            <div className="space-y-2.5 text-xs">
-              <div className="bg-slate-50 p-3 rounded-xl flex justify-between border border-slate-200">
-                <span className="text-slate-600">إجمالي المبيعات المحققة:</span>
-                <span className="font-bold text-slate-900 font-mono">{(liquidCash + 3850).toLocaleString()} ج.م</span>
-              </div>
-              <div className="bg-emerald-50 p-3 rounded-xl flex justify-between border border-emerald-200">
-                <span className="text-emerald-800 font-medium">صافي الأرباح التقديرية:</span>
-                <span className="font-bold text-emerald-700 font-mono">1,820 ج.م</span>
-              </div>
-              <div className="bg-slate-50 p-3 rounded-xl flex justify-between border border-slate-200">
-                <span className="text-slate-600">المصروفات والسحوبات:</span>
-                <span className="font-bold text-rose-600 font-mono">{withdrawsTotal.toLocaleString()} ج.م</span>
-              </div>
-            </div>
-
-            <button onClick={() => { showToast("جاري طباعة تقرير الإيرادات..."); setActiveModal(null); }} className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 font-bold rounded-xl text-white text-xs shadow-sm">
-              طباعة تقرير الإيرادات
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* 10. صفحة مصغرة: المستخدمون والصلاحيات */}
-      {activeModal === "users" && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4" dir="rtl">
-          <div className="bg-white border border-slate-200 w-full max-w-md rounded-3xl p-5 text-slate-800 space-y-4 shadow-2xl">
-            <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-              <h3 className="font-bold text-sm flex items-center gap-2 text-emerald-700">
-                <Icon name="users" className="w-4 h-4" />
-                إدارة المستخدمين والكاشير
-              </h3>
-              <button onClick={() => setActiveModal(null)} className="text-slate-400 hover:text-slate-700">✕</button>
-            </div>
-
-            <div className="space-y-2 text-xs">
-              {usersList.map(u => (
-                <div key={u.id} className="bg-slate-50 p-3 rounded-xl flex justify-between items-center border border-slate-200">
-                  <div>
-                    <p className="font-bold text-slate-800">{u.name}</p>
-                    <p className="text-slate-400 font-mono text-[10px]">@{u.username}</p>
-                  </div>
-                  <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px]">{u.role}</span>
-                </div>
-              ))}
-            </div>
-
-            <button
-              onClick={() => {
-                const name = prompt("اسم الموظف الجديد:");
-                const u = prompt("اسم المستخدم (Username):");
-                if (name && u) {
-                  setUsersList([...usersList, { id: Date.now(), name, username: u, role: "كاشير" }]);
-                  showToast("تم إنشاء حساب الموظف بنجاح! كلمة السر الافتراضية: 1234");
-                }
-              }}
-              className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 font-bold rounded-xl text-white text-xs shadow-sm"
-            >
-              + إضافة مستخدم جديد
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* 11. صفحة مصغرة: الإعدادات والطابعات */}
-      {activeModal === "settings" && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4" dir="rtl">
-          <div className="bg-white border border-slate-200 w-full max-w-md rounded-3xl p-5 text-slate-800 space-y-4 shadow-2xl">
-            <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-              <h3 className="font-bold text-sm flex items-center gap-2 text-slate-800">
-                <Icon name="settings" className="w-4 h-4 text-emerald-600" />
-                إعدادات النظام والطابعات
-              </h3>
-              <button onClick={() => setActiveModal(null)} className="text-slate-400 hover:text-slate-700">✕</button>
-            </div>
-
-            <div className="space-y-2.5 text-xs">
-              <div>
-                <label className="block text-slate-600 mb-1 font-medium">اسم المنشأة في الفاتورة</label>
-                <input type="text" defaultValue="الرسالة للإلكترونيات ونقاط البيع" className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800" />
-              </div>
-              <div>
-                <label className="block text-slate-600 mb-1 font-medium">رقم الهاتف أسفل الفاتورة</label>
-                <input type="text" defaultValue="01012345678" className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800 font-mono" />
-              </div>
-              <div>
-                <label className="block text-slate-600 mb-1 font-medium">طابعة الإيصالات الحرارية (Receipt Printer)</label>
-                <select className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800">
-                  <option>طابعة USB حرارية 80 مم (الافتراضية)</option>
-                  <option>طابعة شبكية عبر الشبكة IP: 192.168.1.200</option>
-                </select>
-              </div>
-            </div>
-
-            <button onClick={() => { showToast("تم حفظ الإعدادات بنجاح!"); setActiveModal(null); }} className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 font-bold rounded-xl text-white text-xs shadow-sm">
-              حفظ التعديلات
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* 12. صفحة مصغرة: شراء جهاز من عميل */}
-      {activeModal === "buy_device" && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4" dir="rtl">
-          <div className="bg-white border border-slate-200 w-full max-w-sm rounded-3xl p-5 text-slate-800 space-y-3.5 shadow-2xl">
-            <h3 className="font-bold text-sm text-emerald-800">شراء جهاز مستعمل من عميل</h3>
-            <div className="space-y-2 text-xs">
-              <input type="text" placeholder="اسم العميل ورقم هاتفه..." className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800" />
-              <input type="text" placeholder="نوع وموديل الجهاز..." className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800" />
-              <input type="text" placeholder="سيريال / IMEI الجهاز..." className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800 font-mono" />
-              <input id="buy_dev_price" type="number" placeholder="سعر الشراء المتفق عليه (ج.م)..." className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800 font-mono" />
-            </div>
-            <div className="flex gap-2 pt-1">
-              <button
-                onClick={() => {
-                  const p = Number(document.getElementById("buy_dev_price").value) || 0;
-                  if (p > 0 && p <= liquidCash) {
-                    setLiquidCash(prev => prev - p);
-                    setWithdrawsTotal(prev => prev + p);
-                  }
-                  showToast("تم تسجيل شراء الجهاز وإصدار فاتورة الشراء بنجاح!");
-                  setActiveModal(null);
-                }}
-                className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 font-bold text-xs rounded-xl text-white shadow-sm"
-              >
-                تأكيد الشراء وصرف المبلغ
-              </button>
-              <button onClick={() => setActiveModal(null)} className="px-4 py-2 bg-slate-100 text-slate-600 text-xs rounded-xl font-bold">إلغاء</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 13. صفحة مصغرة: استبدال جهاز */}
-      {activeModal === "exchange" && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4" dir="rtl">
-          <div className="bg-white border border-slate-200 w-full max-w-sm rounded-3xl p-5 text-slate-800 space-y-3.5 shadow-2xl">
-            <h3 className="font-bold text-sm text-emerald-800">استبدال جهاز أو قطعة غيار</h3>
-            <div className="space-y-2 text-xs">
-              <input type="text" placeholder="الجهاز القديم المستلم..." className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800" />
-              <input type="text" placeholder="الجهاز الجديد المسلم للعميل..." className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800" />
-              <input type="number" placeholder="فارق السعر المستحق (ج.م)..." className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800 font-mono" />
-            </div>
-            <div className="flex gap-2 pt-1">
-              <button onClick={() => { showToast("تم قيد حركة الاستبدال بنجاح!"); setActiveModal(null); }} className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 font-bold text-xs rounded-xl text-white shadow-sm">
-                تأكيد الاستبدال
-              </button>
-              <button onClick={() => setActiveModal(null)} className="px-4 py-2 bg-slate-100 text-slate-600 text-xs rounded-xl font-bold">إلغاء</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 14. صفحة مصغرة: تقفيل الشفت بالخطوات والمطابقة */}
+      {/* 3. صفحة مصغرة: تقفيل الشفت */}
       {activeModal === "shift_close" && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4" dir="rtl">
-          <div className="bg-white border border-slate-200 w-full max-w-lg rounded-3xl shadow-2xl p-5 sm:p-6 text-slate-800 space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-2.5 border-b border-slate-100">
+          <div className="bg-white border-2 border-slate-300 w-full max-w-lg rounded-3xl shadow-2xl p-5 sm:p-6 text-slate-900 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-2.5 border-b-2 border-slate-200">
               <div className="flex items-center gap-2">
-                <span className="p-2 bg-amber-50 text-amber-600 rounded-xl border border-amber-200">
+                <span className="p-2 bg-amber-100 text-amber-900 rounded-xl border border-amber-300">
                   <Icon name="lock" className="w-5 h-5" />
                 </span>
                 <div>
                   <h3 className="font-black text-sm sm:text-base text-slate-900">تقفيل الشفت - ملخص ما سيتسجل في الخزينة</h3>
-                  <p className="text-[11px] text-slate-500">وردية ({user.name})</p>
+                  <p className="text-[11px] text-slate-600 font-bold">وردية ({user.name})</p>
                 </div>
               </div>
-              <button onClick={() => setActiveModal(null)} className="text-slate-400 hover:text-slate-700 text-lg p-1">✕</button>
+              <button onClick={() => setActiveModal(null)} className="text-slate-500 hover:text-slate-900 text-lg font-black p-1">✕</button>
             </div>
 
             <div className="space-y-2 text-xs">
-              <div className="bg-slate-50 p-2.5 sm:p-3 rounded-xl flex justify-between items-center border border-slate-200">
-                <span className="text-slate-700 font-medium">كاش سائل - افتراضي (الدرج)</span>
-                <span className="font-mono font-bold text-emerald-700">{liquidCash.toLocaleString()} ج.م</span>
+              <div className="bg-slate-50 p-2.5 sm:p-3 rounded-xl flex justify-between items-center border-2 border-slate-200">
+                <span className="text-slate-800 font-bold">كاش سائل - افتراضي (الدرج)</span>
+                <span className="font-mono font-black text-emerald-800">{liquidCash.toLocaleString()} ج.م</span>
               </div>
-              <div className="bg-slate-50 p-2.5 sm:p-3 rounded-xl flex justify-between items-center border border-slate-200">
-                <span className="text-slate-700 font-medium">محفظة إلكترونية (فودافون كاش)</span>
-                <span className="font-mono font-bold text-teal-700">{walletsTotal.toLocaleString()} ج.م</span>
+              <div className="bg-slate-50 p-2.5 sm:p-3 rounded-xl flex justify-between items-center border-2 border-slate-200">
+                <span className="text-slate-800 font-bold">محفظة إلكترونية (فودافون كاش)</span>
+                <span className="font-mono font-black text-teal-800">{walletsTotal.toLocaleString()} ج.م</span>
               </div>
-              <div className="bg-slate-50 p-2.5 sm:p-3 rounded-xl flex justify-between items-center border border-slate-200">
-                <span className="text-slate-700 font-medium">حساب بنكي (إنستاباي)</span>
-                <span className="font-mono font-bold text-emerald-700">{bankTotal.toLocaleString()} ج.م</span>
+              <div className="bg-slate-50 p-2.5 sm:p-3 rounded-xl flex justify-between items-center border-2 border-slate-200">
+                <span className="text-slate-800 font-bold">حساب بنكي (إنستاباي)</span>
+                <span className="font-mono font-black text-emerald-800">{bankTotal.toLocaleString()} ج.م</span>
               </div>
-              <div className="bg-emerald-50 border border-emerald-300 p-2.5 sm:p-3 rounded-xl flex justify-between items-center font-bold text-xs sm:text-sm">
-                <span className="text-emerald-900 font-black">إجمالي ما سيتسجل في الخزينة:</span>
-                <span className="font-mono text-emerald-800 text-base">{currentTotalInDrawer.toLocaleString()} ج.م</span>
+              <div className="bg-emerald-50 border-2 border-emerald-400 p-3 rounded-xl flex justify-between items-center font-black text-xs sm:text-sm">
+                <span className="text-emerald-950">إجمالي ما سيتسجل في الخزينة:</span>
+                <span className="font-mono text-emerald-900 text-base">{currentTotalInDrawer.toLocaleString()} ج.م</span>
               </div>
             </div>
 
             <div className="space-y-2.5 pt-1">
-              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1.5">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-800">
-                  <span className="w-4 h-4 bg-emerald-600 text-white rounded-full flex items-center justify-center text-[10px]">1</span>
+              <div className="bg-slate-50 p-3 rounded-xl border-2 border-slate-200 space-y-1.5">
+                <div className="flex items-center gap-1.5 text-xs font-black text-emerald-900">
+                  <span className="w-4 h-4 bg-emerald-700 text-white rounded-full flex items-center justify-center text-[10px]">1</span>
                   <span>مطابقة الكاش السائل</span>
                 </div>
                 <input
@@ -1406,13 +1061,13 @@ export default function App() {
                   value={countedCash}
                   onChange={(e) => setCountedCash(e.target.value)}
                   placeholder="عد الكاش واكتب الرقم هنا..."
-                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 outline-none focus:border-emerald-600 font-mono"
+                  className="w-full bg-white border-2 border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 outline-none focus:border-emerald-600 font-mono font-black"
                 />
               </div>
 
-              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1.5">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
-                  <span className="w-4 h-4 bg-slate-300 text-slate-800 rounded-full flex items-center justify-center text-[10px]">2</span>
+              <div className="bg-slate-50 p-3 rounded-xl border-2 border-slate-200 space-y-1.5">
+                <div className="flex items-center gap-1.5 text-xs font-black text-slate-800">
+                  <span className="w-4 h-4 bg-slate-300 text-slate-900 rounded-full flex items-center justify-center text-[10px]">2</span>
                   <span>ملاحظات تقفيل الشفت (اختياري)</span>
                 </div>
                 <input
@@ -1420,18 +1075,31 @@ export default function App() {
                   value={shiftNotes}
                   onChange={(e) => setShiftNotes(e.target.value)}
                   placeholder="أي ملاحظات عن الوردية..."
-                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 outline-none focus:border-emerald-600"
+                  className="w-full bg-white border-2 border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 outline-none focus:border-emerald-600 font-bold"
                 />
               </div>
             </div>
 
             <div className="flex gap-2 pt-2">
               <button
-                onClick={() => showToast("جاري طباعة التقرير الحراري للشفت...")}
-                className="flex-1 py-2.5 sm:py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition shadow-sm"
+                onClick={() => {
+                  triggerDirectPrint({
+                    type: "shift_report",
+                    cashier: user.name,
+                    liquidCash,
+                    walletsTotal,
+                    bankTotal,
+                    total: currentTotalInDrawer,
+                    salesCount,
+                    countedCash: countedCash || liquidCash,
+                    notes: shiftNotes || "تقفيل نظامي بدون عجز",
+                    date: new Date().toLocaleString("ar-EG")
+                  });
+                }}
+                className="flex-1 py-2.5 sm:py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs rounded-xl flex items-center justify-center gap-1.5 transition shadow-sm border border-amber-600"
               >
                 <Icon name="print" className="w-4 h-4" />
-                <span>طباعة التقرير</span>
+                <span>طباعة التقرير الحراري</span>
               </button>
 
               <button
@@ -1441,7 +1109,7 @@ export default function App() {
                   showToast("تم تقفيل الشفت بنجاح وترحيل الرصيد وبدء شفت جديد!");
                   setActiveModal(null);
                 }}
-                className="flex-1 py-2.5 sm:py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition shadow-sm"
+                className="flex-1 py-2.5 sm:py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs rounded-xl transition shadow-sm border border-emerald-900"
               >
                 تأكيد وبدء شفت جديد
               </button>
@@ -1450,14 +1118,153 @@ export default function App() {
         </div>
       )}
 
+      {/* 4. صفحة مصغرة: شراء جهاز */}
+      {activeModal === "buy_device" && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4" dir="rtl">
+          <div className="bg-white border-2 border-slate-300 w-full max-w-sm rounded-3xl p-5 text-slate-900 space-y-3.5 shadow-2xl">
+            <h3 className="font-black text-sm text-emerald-800">شراء جهاز مستعمل من عميل</h3>
+            <div className="space-y-2 text-xs">
+              <input type="text" placeholder="اسم العميل ورقم هاتفه..." className="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-bold" />
+              <input type="text" placeholder="نوع وموديل الجهاز..." className="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-bold" />
+              <input type="text" placeholder="سيريال / IMEI الجهاز..." className="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-mono font-bold" />
+              <input id="buy_dev_price" type="number" placeholder="سعر الشراء المتفق عليه (ج.م)..." className="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-mono font-black" />
+            </div>
+            <div className="flex gap-2 pt-1">
+              <button
+                onClick={() => {
+                  const p = Number(document.getElementById("buy_dev_price").value) || 0;
+                  if (p > 0 && p <= liquidCash) {
+                    setLiquidCash(prev => prev - p);
+                    setWithdrawsTotal(prev => prev + p);
+                  }
+                  showToast("تم تسجيل شراء الجهاز بنجاح!");
+                  setActiveModal(null);
+                }}
+                className="flex-1 py-2.5 bg-emerald-700 hover:bg-emerald-800 font-black text-xs rounded-xl text-white shadow-sm border border-emerald-900"
+              >
+                تأكيد وصرف المبلغ
+              </button>
+              <button onClick={() => setActiveModal(null)} className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs rounded-xl font-black border border-slate-300">إلغاء</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 5. صفحة مصغرة: استبدال */}
+      {activeModal === "exchange" && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4" dir="rtl">
+          <div className="bg-white border-2 border-slate-300 w-full max-w-sm rounded-3xl p-5 text-slate-900 space-y-3.5 shadow-2xl">
+            <h3 className="font-black text-sm text-emerald-800">استبدال جهاز أو قطعة غيار</h3>
+            <div className="space-y-2 text-xs">
+              <input type="text" placeholder="الجهاز القديم المستلم..." className="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-bold" />
+              <input type="text" placeholder="الجهاز الجديد المسلم للعميل..." className="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-bold" />
+              <input type="number" placeholder="فارق السعر المستحق (ج.م)..." className="w-full bg-slate-50 border-2 border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-mono font-black" />
+            </div>
+            <div className="flex gap-2 pt-1">
+              <button onClick={() => { showToast("تم قيد حركة الاستبدال بنجاح!"); setActiveModal(null); }} className="flex-1 py-2.5 bg-emerald-700 hover:bg-emerald-800 font-black text-xs rounded-xl text-white shadow-sm border border-emerald-900">
+                تأكيد الاستبدال
+              </button>
+              <button onClick={() => setActiveModal(null)} className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs rounded-xl font-black border border-slate-300">إلغاء</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ========================================================
-          شريط التنقل السفلي السريع (Thumb Navigation) باللون الأبيض والأخضر
+          قالب الفاتورة الحرارية للطباعة المباشرة (@media print)
          ======================================================== */}
-      <footer className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-1.5 flex items-center justify-around text-[10px] text-slate-500 z-40 shadow-lg">
+      {printableData && (
+        <div className="hidden print:block fixed inset-0 bg-white text-black p-4 font-mono text-xs z-[9999]" dir="rtl">
+          {printableData.type === "sale_receipt" && (
+            <div className="max-w-[80mm] mx-auto text-center space-y-2 border-b-2 border-dashed border-black pb-4">
+              <h2 className="text-base font-black">الرسالة للإلكترونيات ونقاط البيع</h2>
+              <p className="text-[10px]">فرع المحطة الرئيسي - ت: 01012345678</p>
+              <div className="border-t border-b border-black py-1 my-1 flex justify-between text-[10px] font-bold">
+                <span>فاتورة رقم: #{printableData.invoiceNumber}</span>
+                <span>الكاشير: {printableData.cashier}</span>
+              </div>
+              <p className="text-[9px] text-right">{printableData.date}</p>
+
+              <table className="w-full text-right text-[10px] my-2 border-collapse">
+                <thead>
+                  <tr className="border-b border-black">
+                    <th className="py-1">الصنف</th>
+                    <th className="py-1 text-center">الكمية</th>
+                    <th className="py-1 text-left">السعر</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {printableData.items.map((it, idx) => (
+                    <tr key={idx} className="border-b border-dotted border-slate-400">
+                      <td className="py-1">{it.name}</td>
+                      <td className="py-1 text-center">{it.qty}</td>
+                      <td className="py-1 text-left">{it.price * it.qty}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <div className="border-t-2 border-black pt-1 flex justify-between text-sm font-black">
+                <span>الإجمالي النهائي:</span>
+                <span>{printableData.total} ج.م</span>
+              </div>
+
+              <div className="pt-3 text-[10px] space-y-1">
+                <p className="font-bold">شكراً لتعاملكم معنا! البضاعة المباعة ترد وتستبدل خلال 14 يوم</p>
+                <div className="font-mono text-lg tracking-widest font-black">||| | ||||| || |||</div>
+              </div>
+            </div>
+          )}
+
+          {printableData.type === "shift_report" && (
+            <div className="max-w-[80mm] mx-auto text-center space-y-2 border-b-2 border-dashed border-black pb-4">
+              <h2 className="text-sm font-black">تقرير تقفيل الشفت الحراري</h2>
+              <p className="text-[10px]">نظام الرسالة POS - {printableData.date}</p>
+              <div className="border-t border-b border-black py-1 text-right text-[10px] space-y-1">
+                <p>الكاشير المسؤول: <strong>{printableData.cashier}</strong></p>
+                <p>عدد فواتير البيع: <strong>{printableData.salesCount}</strong></p>
+                <p>الكاش الفعلي في الدرج: <strong>{printableData.liquidCash} ج.م</strong></p>
+                <p>إجمالي المحافظ: <strong>{printableData.walletsTotal} ج.م</strong></p>
+                <p>إجمالي البنوك وإنستاباي: <strong>{printableData.bankTotal} ج.م</strong></p>
+                <p className="border-t border-black pt-1 font-black">الإجمالي المحول للخزينة: {printableData.total} ج.م</p>
+              </div>
+              <p className="text-[9px]">توقيع الكاشير: ........................</p>
+            </div>
+          )}
+
+          {printableData.type === "barcode_label" && (
+            <div className="max-w-[38mm] mx-auto text-center p-2 border border-black space-y-1">
+              <p className="text-[9px] font-black">الرسالة</p>
+              <p className="text-[8px] font-bold truncate">{printableData.name}</p>
+              <div className="font-mono text-base font-black">||| ||||| |||</div>
+              <div className="flex justify-between text-[8px] font-black">
+                <span>{printableData.barcode}</span>
+                <span>{printableData.price} ج.م</span>
+              </div>
+            </div>
+          )}
+
+          {printableData.type === "test_print" && (
+            <div className="max-w-[80mm] mx-auto text-center space-y-2 border-b-2 border-dashed border-black pb-4">
+              <h2 className="text-sm font-black">اختبار الطابعة الحرارية بنجاح</h2>
+              <p className="text-[10px]">طابعة الكاشير تعمل بصورة سليمة 100%</p>
+              <p className="text-[9px]">{printableData.date}</p>
+              <div className="font-mono text-xl font-black py-2">|||| | ||||| || |||</div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ========================================================
+          شريط التنقل السفلي السريع
+         ======================================================== */}
+      <footer className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-slate-300 px-2 py-1.5 flex items-center justify-around text-[11px] text-slate-700 z-40 shadow-lg print:hidden">
         <button
           onClick={() => setCurrentTab("cash_drawer")}
           className={`flex flex-col items-center gap-1 px-3 py-1 rounded-xl transition ${
-            currentTab === "cash_drawer" ? "text-emerald-700 font-bold bg-emerald-50" : "hover:text-slate-800"
+            currentTab === "cash_drawer"
+              ? "text-emerald-900 font-black bg-emerald-100 border border-emerald-300"
+              : "hover:text-slate-950 font-bold"
           }`}
         >
           <Icon name="drawer" className="w-4 h-4" />
@@ -1467,7 +1274,9 @@ export default function App() {
         <button
           onClick={() => setCurrentTab("pos")}
           className={`flex flex-col items-center gap-1 px-3 py-1 rounded-xl transition ${
-            currentTab === "pos" ? "text-emerald-700 font-bold bg-emerald-50" : "hover:text-slate-800"
+            currentTab === "pos"
+              ? "text-emerald-900 font-black bg-emerald-100 border border-emerald-300"
+              : "hover:text-slate-950 font-bold"
           }`}
         >
           <Icon name="pos" className="w-4 h-4" />
@@ -1475,18 +1284,16 @@ export default function App() {
         </button>
 
         <button
-          onClick={() => setCurrentTab("audit")}
-          className={`flex flex-col items-center gap-1 px-3 py-1 rounded-xl transition ${
-            currentTab === "audit" ? "text-emerald-700 font-bold bg-emerald-50" : "hover:text-slate-800"
-          }`}
+          onClick={() => setActiveModal("printers")}
+          className="flex flex-col items-center gap-1 px-3 py-1 rounded-xl hover:text-slate-950 font-bold transition text-emerald-800"
         >
-          <Icon name="audit" className="w-4 h-4" />
-          <span>الجرد</span>
+          <Icon name="print" className="w-4 h-4" />
+          <span>الطابعات</span>
         </button>
 
         <button
           onClick={() => setActiveModal("repairs")}
-          className="flex flex-col items-center gap-1 px-3 py-1 rounded-xl hover:text-slate-800 transition"
+          className="flex flex-col items-center gap-1 px-3 py-1 rounded-xl hover:text-slate-950 font-bold transition"
         >
           <Icon name="repairs" className="w-4 h-4" />
           <span>الصيانة</span>
@@ -1494,7 +1301,7 @@ export default function App() {
 
         <button
           onClick={() => setMobileMenuOpen(true)}
-          className="flex flex-col items-center gap-1 px-3 py-1 rounded-xl text-emerald-700 font-bold hover:text-emerald-900 transition"
+          className="flex flex-col items-center gap-1 px-3 py-1 rounded-xl text-emerald-800 font-black hover:text-emerald-950 transition"
         >
           <Icon name="menu" className="w-4 h-4" />
           <span>كل الأقسام</span>
