@@ -1,0 +1,17 @@
+{
+  "name": "el-resala-print-agent",
+  "version": "1.0.0",
+  "description": "On-site bridge that prints El-RESALA POS receipts/labels to the shop's local thermal printers",
+  "private": true,
+  "main": "agent.js",
+  "scripts": {
+    "start": "node agent.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "iconv-lite": "^0.6.3"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
