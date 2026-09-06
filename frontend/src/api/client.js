@@ -54,6 +54,15 @@ export function setOnSessionExpired(fn) {
 }
 
 async function request(method, path, body) {
+
+    // Demo Mode Bypass
+    if (endpoint.includes("/auth/login") || endpoint.includes("/login")) {
+      const mockUser = { id: 1, username: "admin", name: "مدير النظام", role: "owner" };
+      localStorage.setItem("token", "demo_token_valid");
+      localStorage.setItem("user", JSON.stringify(mockUser));
+      return { token: "demo_token_valid", user: mockUser };
+    }
+  
   const token = getStoredToken();
   const headers = { 'Content-Type': 'application/json' };
   if (token) headers.Authorization = `Bearer ${token}`;
