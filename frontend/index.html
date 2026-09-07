@@ -41,7 +41,7 @@
       </button>
     </div>
 
-    <!-- روابط التنقل الـ 14 الشاملة -->
+    <!-- روابط التنقل -->
     <nav class="flex-1 px-3 py-4 space-y-1 text-xs font-bold overflow-y-auto custom-scroll">
       <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-blue-600 text-white shadow-md transition">
         <i data-lucide="home" class="w-4 h-4"></i><span>الرئيسية والداشبورد</span>
@@ -189,51 +189,6 @@
             </div>
           </div>
         </div>
-
-        <!-- شبكة الوصول السريع -->
-        <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm space-y-4">
-          <h3 class="font-black text-sm text-slate-800 flex items-center gap-2 border-b pb-2">
-            <i data-lucide="layout-grid" class="w-4 h-4 text-blue-600"></i> الوصول السريع لكافة أقسام النظام
-          </h3>
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 text-center font-bold text-xs">
-            <button onclick="navigateTo('pos')" class="p-3.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-2xl flex flex-col items-center gap-2 border transition hover:scale-105">
-              <i data-lucide="shopping-cart" class="w-6 h-6 text-blue-600"></i><span>نقطة البيع (POS)</span>
-            </button>
-            <button onclick="navigateTo('debts')" class="p-3.5 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded-2xl flex flex-col items-center gap-2 border transition hover:scale-105">
-              <i data-lucide="clock" class="w-6 h-6 text-amber-600"></i><span>الديون والآجل</span>
-            </button>
-            <button onclick="navigateTo('inventory')" class="p-3.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-2xl flex flex-col items-center gap-2 border transition hover:scale-105">
-              <i data-lucide="boxes" class="w-6 h-6 text-emerald-600"></i><span>المخزون والجرد</span>
-            </button>
-            <button onclick="navigateTo('waste')" class="p-3.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-2xl flex flex-col items-center gap-2 border transition hover:scale-105">
-              <i data-lucide="alert-triangle" class="w-6 h-6 text-rose-600"></i><span>الهالك والمرتجعات</span>
-            </button>
-            <button onclick="navigateTo('devices')" class="p-3.5 bg-sky-50 hover:bg-sky-100 text-sky-700 rounded-2xl flex flex-col items-center gap-2 border transition hover:scale-105">
-              <i data-lucide="smartphone" class="w-6 h-6 text-sky-600"></i><span>الأجهزة (IMEI)</span>
-            </button>
-            <button onclick="navigateTo('repairs')" class="p-3.5 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded-2xl flex flex-col items-center gap-2 border transition hover:scale-105">
-              <i data-lucide="wrench" class="w-6 h-6 text-amber-600"></i><span>قسم الصيانة</span>
-            </button>
-            <button onclick="navigateTo('treasury')" class="p-3.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-2xl flex flex-col items-center gap-2 border transition hover:scale-105">
-              <i data-lucide="wallet" class="w-6 h-6 text-emerald-600"></i><span>الخزينة والمحافظ</span>
-            </button>
-            <button onclick="navigateTo('reports')" class="p-3.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-2xl flex flex-col items-center gap-2 border transition hover:scale-105">
-              <i data-lucide="bar-chart-3" class="w-6 h-6 text-indigo-600"></i><span>التقارير المالية</span>
-            </button>
-            <button onclick="navigateTo('customers')" class="p-3.5 bg-teal-50 hover:bg-teal-100 text-teal-700 rounded-2xl flex flex-col items-center gap-2 border transition hover:scale-105">
-              <i data-lucide="users" class="w-6 h-6 text-teal-600"></i><span>العملاء</span>
-            </button>
-            <button onclick="navigateTo('suppliers')" class="p-3.5 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-2xl flex flex-col items-center gap-2 border transition hover:scale-105">
-              <i data-lucide="building" class="w-6 h-6 text-purple-600"></i><span>الموردين والشركات</span>
-            </button>
-            <button onclick="navigateTo('accessories')" class="p-3.5 bg-pink-50 hover:bg-pink-100 text-pink-700 rounded-2xl flex flex-col items-center gap-2 border transition hover:scale-105">
-              <i data-lucide="headphones" class="w-6 h-6 text-pink-600"></i><span>الإكسسوارات</span>
-            </button>
-            <button onclick="navigateTo('settings')" class="p-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl flex flex-col items-center gap-2 border transition hover:scale-105">
-              <i data-lucide="settings" class="w-6 h-6 text-slate-600"></i><span>الإعدادات</span>
-            </button>
-          </div>
-        </div>
       </section>
 
       <!-- ================= 2. شاشة المبيعات (POS) ================= -->
@@ -338,7 +293,7 @@
         </div>
         <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
           <table class="w-full text-right text-xs">
-            <thead class="bg-slate-50 text-slate-500 border-b"><tr><th class="p-3">الموديل والجهاز</th><th class="p-3">الـ IMEI</th><th class="p-3">اللون والسعة</th><th class="p-3">الحالة</th><th class="p-3">سعر الشراء</th><th class="p-3">سعر البيع</th><th class="p-3">الضمان</th></tr></thead>
+            <thead class="bg-slate-50 text-slate-500 border-b"><tr><th class="p-3">الموديل والجهاز</th><th class="p-3">الـ IMEI</th><th class="p-3">اللون والسعة</th><th class="p-3">سعر الشراء</th><th class="p-3">سعر البيع</th></tr></thead>
             <tbody id="devicesTableBody" class="divide-y font-semibold"></tbody>
           </table>
         </div>
@@ -388,7 +343,7 @@
         </div>
       </section>
 
-      <!-- ================= 11. شاشة الموردين والشركات (مملوءة بالكامل ومحمية من الفراغ) ================= -->
+      <!-- ================= 11. شاشة الموردين والشركات ================= -->
       <section id="view-suppliers" class="page-view hidden space-y-4">
         <div class="bg-white p-4 rounded-2xl border shadow-sm flex justify-between items-center">
           <div>
@@ -428,7 +383,6 @@
               </tr>
             </thead>
             <tbody id="suppliersTableBody" class="divide-y font-semibold">
-              <!-- أسطر ثابتة ومباشرة لضمان عدم ظهور الشاشة بيضاء نهائياً -->
               <tr class="hover:bg-slate-50">
                 <td class="p-3 font-bold text-slate-800">شركة ألفا جروب للموبايلات</td>
                 <td class="p-3 font-mono text-slate-600">01099887766</td>
@@ -450,14 +404,6 @@
                 <td class="p-3 font-mono text-slate-600">01277665544</td>
                 <td class="p-3"><span class="bg-purple-50 text-purple-700 px-2 py-0.5 rounded text-[11px] font-bold">آيفون وسامسونج مستعمل</span></td>
                 <td class="p-3 font-black text-slate-900">95,000 ج.م</td>
-                <td class="p-3 font-bold text-emerald-600">0.00 ج.م (خالص)</td>
-                <td class="p-3 text-center"><button class="text-blue-600 font-bold hover:underline">كشف حساب</button></td>
-              </tr>
-              <tr class="hover:bg-slate-50">
-                <td class="p-3 font-bold text-slate-800">الباشا للاسكرينات والجرابات</td>
-                <td class="p-3 font-mono text-slate-600">01011223344</td>
-                <td class="p-3"><span class="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded text-[11px] font-bold">جرابات 11D وحماية</span></td>
-                <td class="p-3 font-black text-slate-900">45,000 ج.م</td>
                 <td class="p-3 font-bold text-emerald-600">0.00 ج.م (خالص)</td>
                 <td class="p-3 text-center"><button class="text-blue-600 font-bold hover:underline">كشف حساب</button></td>
               </tr>
@@ -499,28 +445,157 @@
         </div>
       </section>
 
-      <!-- ================= 14. شاشة الإعدادات الشاملة (10 تبويبات كاملة) ================= -->
+      <!-- ================= 14. شاشة الإعدادات الشاملة (مع التحكم الكامل في الطابعات والواتساب) ================= -->
       <section id="view-settings" class="page-view hidden space-y-4">
         <div class="bg-[#121c2e] text-slate-200 rounded-3xl border border-slate-800 shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[640px]">
           
           <div class="w-full md:w-72 bg-[#0c1322] border-b md:border-b-0 md:border-l border-slate-800 p-4 space-y-2 shrink-0">
             <div class="text-[10px] text-slate-400 font-black px-2 mb-1">الأساسيات</div>
+            <button onclick="switchSettingTab('printers')" id="stab-printers" class="setting-nav-btn w-full text-right px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 flex items-center gap-2.5 font-bold text-xs">
+              <i data-lucide="printer" class="w-4 h-4 text-amber-400"></i><span>إعدادات الطابعات والفواتير</span>
+            </button>
+            <button onclick="switchSettingTab('whatsapp')" id="stab-whatsapp" class="setting-nav-btn w-full text-right px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 flex items-center gap-2.5 font-bold text-xs">
+              <i data-lucide="message-square" class="w-4 h-4 text-emerald-400"></i><span>إعدادات ورقم الواتساب</span>
+            </button>
             <button onclick="switchSettingTab('policies')" id="stab-policies" class="setting-nav-btn w-full text-right px-3 py-2 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 font-black flex items-center gap-2.5 text-xs shadow-md">
               <i data-lucide="shield-check" class="w-4 h-4 text-cyan-400"></i><span>سياسات التشغيل</span>
             </button>
             <button onclick="switchSettingTab('users')" id="stab-users" class="setting-nav-btn w-full text-right px-3 py-2 rounded-xl text-amber-400 hover:bg-slate-800/80 flex items-center gap-2.5 font-black text-xs">
               <i data-lucide="users" class="w-4 h-4 text-amber-400"></i><span>المستخدمين وكلمات المرور</span>
             </button>
-            <button onclick="switchSettingTab('printers')" id="stab-printers" class="setting-nav-btn w-full text-right px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 flex items-center gap-2.5 font-bold text-xs">
-              <i data-lucide="printer" class="w-4 h-4 text-amber-400"></i><span>الطباعة والفواتير</span>
-            </button>
-            <button onclick="switchSettingTab('whatsapp')" id="stab-whatsapp" class="setting-nav-btn w-full text-right px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 flex items-center gap-2.5 font-bold text-xs">
-              <i data-lucide="message-square" class="w-4 h-4 text-emerald-400"></i><span>واتساب المحل</span>
-            </button>
           </div>
 
           <div class="flex-1 p-5 md:p-6 overflow-y-auto custom-scroll space-y-4" id="settingsPanelsContainer">
             
+            <!-- 1. إعدادات الطابعات والريسيت الاحترافية (المقاسات، الانحياز، حجم الخط، إظهار وإخفاء السعر) -->
+            <div id="spane-printers" class="setting-pane hidden space-y-4 text-xs">
+              <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
+                <div>
+                  <h2 class="text-base font-black text-amber-400 flex items-center gap-2">
+                    <i data-lucide="printer" class="w-5 h-5"></i> تخصيص الطابعة والريسيت والباركود
+                  </h2>
+                  <p class="text-slate-400 text-[11px]">تحكم كامل في مقاس الورق، المحاذاة، الإزاحة بالمليمتر، وإظهار أو إخفاء الأسعار</p>
+                </div>
+                <button onclick="testPrintConfiguredReceipt()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-black px-4 py-2 rounded-xl shadow flex items-center gap-1.5">
+                  <i data-lucide="printer" class="w-4 h-4"></i> تجربة طباعة فورية
+                </button>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-[#172338] p-3 rounded-2xl border border-slate-800">
+                  <label class="text-slate-400 block mb-1 font-bold">مقاس الورق (الرول):</label>
+                  <select id="cfgPaperSize" class="w-full bg-[#16233b] border border-slate-700 rounded-xl p-2 font-bold text-slate-100" onchange="savePrinterOptions()">
+                    <option value="80mm">حرارية 80 مم (القياسي لـ EL-RESALA)</option>
+                    <option value="58mm">حرارية 58 مم (طابعات الفواتير الصغيرة)</option>
+                    <option value="A4">ورق قياسي A4</option>
+                  </select>
+                </div>
+
+                <div class="bg-[#172338] p-3 rounded-2xl border border-slate-800">
+                  <label class="text-slate-400 block mb-1 font-bold">حجم خط الفاتورة:</label>
+                  <select id="cfgFontSize" class="w-full bg-[#16233b] border border-slate-700 rounded-xl p-2 font-bold text-slate-100" onchange="savePrinterOptions()">
+                    <option value="11px">صغير (11px) — موفر للورق</option>
+                    <option value="13px" selected>متوسط (13px) — قياسي</option>
+                    <option value="15px">كبير (15px) — عريض وواضح</option>
+                    <option value="17px">ضخم (17px)</option>
+                  </select>
+                </div>
+
+                <div class="bg-[#172338] p-3 rounded-2xl border border-slate-800">
+                  <label class="text-slate-400 block mb-1 font-bold">انحياز النص والمحاذاة:</label>
+                  <select id="cfgTextAlign" class="w-full bg-[#16233b] border border-slate-700 rounded-xl p-2 font-bold text-slate-100" onchange="savePrinterOptions()">
+                    <option value="right">انحياز جهة اليمين (عربي قياسي)</option>
+                    <option value="center">انحياز في المنتصف (سنتر)</option>
+                    <option value="left">انحياز جهة اليسار</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="bg-[#172338] p-3 rounded-2xl border border-slate-800">
+                  <label class="text-slate-400 block mb-1 font-bold">معايرة الإزاحة الأفقية (يمين وشمال بالـ mm):</label>
+                  <input type="number" id="cfgHorizontalOffset" value="2" min="-20" max="20" class="w-full bg-[#16233b] border border-slate-700 rounded-xl p-2 font-mono font-bold text-slate-100" oninput="savePrinterOptions()">
+                  <p class="text-[10px] text-slate-500 mt-1">لتوسيط الطباعة على بكرة الورق في حال خروج الكلام عن الحافة.</p>
+                </div>
+
+                <div class="bg-[#172338] p-3 rounded-2xl border border-slate-800">
+                  <label class="text-slate-400 block mb-1 font-bold">مقاس استيكر الباركود لظهر الهاتف:</label>
+                  <select id="cfgBarcodeStickerSize" class="w-full bg-[#16233b] border border-slate-700 rounded-xl p-2 font-bold text-slate-100" onchange="savePrinterOptions()">
+                    <option value="38x25mm">38 × 25 مم (المقاس الأكثر شيوعاً)</option>
+                    <option value="50x30mm">50 × 30 مم (كبير مع تفاصيل أكثر)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- تحكم إظهار وإخفاء السعر والـ IMEI -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="bg-[#172338] p-3.5 rounded-2xl border border-slate-800 flex items-center justify-between">
+                  <div>
+                    <div class="font-bold text-slate-100">إظهار أسعار الأصناف في الفاتورة</div>
+                    <div class="text-[10px] text-slate-400">إظهار أو إخفاء سعر كل قطعة وتفاصيل الحساب</div>
+                  </div>
+                  <input type="checkbox" id="cfgShowItemPrice" checked class="w-5 h-5 accent-emerald-400 cursor-pointer" onchange="savePrinterOptions()">
+                </div>
+
+                <div class="bg-[#172338] p-3.5 rounded-2xl border border-slate-800 flex items-center justify-between">
+                  <div>
+                    <div class="font-bold text-slate-100">إظهار رقم الـ IMEI والسيريال</div>
+                    <div class="text-[10px] text-slate-400">طباعة السيريال والضمان أسفل اسم الجهاز</div>
+                  </div>
+                  <input type="checkbox" id="cfgShowIMEI" checked class="w-5 h-5 accent-emerald-400 cursor-pointer" onchange="savePrinterOptions()">
+                </div>
+
+                <div class="bg-[#172338] p-3.5 rounded-2xl border border-slate-800 flex items-center justify-between">
+                  <div>
+                    <div class="font-bold text-slate-100">إظهار السعر على ملصقات الباركود</div>
+                    <div class="text-[10px] text-slate-400">طباعة سعر البيع على الاستيكر اللاصق</div>
+                  </div>
+                  <input type="checkbox" id="cfgShowBarcodePrice" checked class="w-5 h-5 accent-emerald-400 cursor-pointer" onchange="savePrinterOptions()">
+                </div>
+
+                <div class="bg-[#172338] p-3.5 rounded-2xl border border-slate-800 flex items-center justify-between">
+                  <div>
+                    <div class="font-bold text-slate-100">القص التلقائي للورق (Auto-Cut)</div>
+                    <div class="text-[10px] text-slate-400">إرسال أمر قطع الورقة بعد نهاية الطباعة</div>
+                  </div>
+                  <input type="checkbox" id="cfgAutoCut" checked class="w-5 h-5 accent-emerald-400 cursor-pointer" onchange="savePrinterOptions()">
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. إعدادات الواتساب مع إمكانية تحديد وتغيير الرقم بحرية -->
+            <div id="spane-whatsapp" class="setting-pane hidden space-y-4 text-xs">
+              <div class="border-b border-slate-800 pb-3">
+                <h2 class="text-base font-black text-emerald-400 flex items-center gap-2">
+                  <i data-lucide="message-square" class="w-5 h-5"></i> إعدادات ورقم واتساب المحل (WhatsApp Gateway)
+                </h2>
+                <p class="text-slate-400 text-[11px]">يمكنك كتابة وتعديل أي رقم هاتف تريده هنا وسيعتمد عليه السيستم فوراً</p>
+              </div>
+
+              <div class="bg-[#172338] p-4 rounded-2xl border border-slate-800 space-y-3">
+                <div>
+                  <label class="text-slate-200 font-bold block mb-1.5">رقم هاتف واتساب المحل المعتمد (يمكنك تغييره بحرية):</label>
+                  <input type="text" id="cfgCustomWhatsAppNumber" placeholder="مثال: 01070900711 أو 012XXXXXXXX" class="w-full bg-[#16233b] border border-emerald-500/60 rounded-xl p-2.5 font-mono text-slate-100 font-bold text-sm focus:outline-none focus:border-emerald-400" oninput="saveWhatsAppOptions()">
+                  <p class="text-[10px] text-slate-400 mt-1">هذا الرقم يطبع على الفواتير وكروت الصيانة ويستخدم في روابط التواصل المباشرة.</p>
+                </div>
+
+                <div class="space-y-1.5 pt-2 border-t border-slate-800">
+                  <label class="text-slate-200 font-bold block">قالب رسالة الفاتورة الإلكترونية عبر واتساب:</label>
+                  <textarea id="cfgWhatsAppInvTpl" rows="2" class="w-full bg-[#16233b] border border-slate-700 rounded-xl p-2.5 text-slate-100" oninput="saveWhatsAppOptions()">مرحباً بك أستاذ {customer}، تم إصدار فاتورتك رقم {invoice} من محل EL-RESALA بقيمة {total} ج.م. شكراً لتعاملكم معنا!</textarea>
+                </div>
+
+                <div class="space-y-1.5">
+                  <label class="text-slate-200 font-bold block">قالب إشعار جهاز الصيانة جاهز:</label>
+                  <textarea id="cfgWhatsAppReadyTpl" rows="2" class="w-full bg-[#16233b] border border-slate-700 rounded-xl p-2.5 text-slate-100" oninput="saveWhatsAppOptions()">بشرى سارة أستاذ {customer}! جهازك ({device}) تم إصلاحه بنجاح وهو جاهز للاستلام الآن بمحل EL-RESALA. المطلوب سداده: {total} ج.م.</textarea>
+                </div>
+
+                <button onclick="saveWhatsAppOptions(true)" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black px-5 py-2 rounded-xl shadow transition">
+                  حفظ رقم وقوالب الواتساب
+                </button>
+              </div>
+            </div>
+
+            <!-- 3. سياسات التشغيل -->
             <div id="spane-policies" class="setting-pane space-y-4">
               <h2 class="text-base font-black text-slate-100 flex items-center gap-2"><i data-lucide="bell" class="w-5 h-5 text-cyan-400"></i> إعدادات الإشعارات وسياسات التشغيل</h2>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
@@ -532,21 +607,10 @@
                   <div><div class="font-bold text-slate-100">الأصوات</div><div class="text-[10px] text-slate-400">تشغيل أصوات التنبيهات والأزرار</div></div>
                   <input type="checkbox" checked class="w-5 h-5 accent-cyan-400">
                 </div>
-                <div class="bg-[#172338] p-4 rounded-2xl border border-slate-800 flex items-center justify-between">
-                  <div><div class="font-bold text-slate-100">تنبيهات التذكيرات</div><div class="text-[10px] text-slate-400">إشعارات التذكيرات والمهام اليومية</div></div>
-                  <input type="checkbox" checked class="w-5 h-5 accent-cyan-400">
-                </div>
-                <div class="bg-[#172338] p-4 rounded-2xl border border-slate-800 flex items-center justify-between">
-                  <div><div class="font-bold text-slate-100">تنبيهات المبيعات</div><div class="text-[10px] text-slate-400">إشعار فوري عند إتمام أي عملية بيع</div></div>
-                  <input type="checkbox" checked class="w-5 h-5 accent-cyan-400">
-                </div>
-                <div class="bg-[#172338] p-4 rounded-2xl border border-slate-800 flex items-center justify-between md:col-span-2">
-                  <div><div class="font-bold text-slate-100">تنبيهات المخزون</div><div class="text-[10px] text-slate-400">إشعار عند وصول الصنف للحد الأدنى للنواقص</div></div>
-                  <input type="checkbox" checked class="w-5 h-5 accent-cyan-400">
-                </div>
               </div>
             </div>
 
+            <!-- 4. المستخدمين وكلمات المرور -->
             <div id="spane-users" class="setting-pane hidden space-y-4 text-xs">
               <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
                 <div>
@@ -566,16 +630,6 @@
               </div>
             </div>
 
-            <div id="spane-printers" class="setting-pane hidden text-xs space-y-3">
-              <h3 class="font-bold text-amber-400 text-sm">إعدادات الطابعة الحرارية 80 مم</h3>
-              <p class="text-slate-400">تدعم الطباعة المباشرة مع قص الورق التلقائي.</p>
-              <button onclick="alert('🖨️ جاري تجربة طباعة إيصال فحص...');" class="bg-amber-500 text-slate-950 font-bold px-4 py-2 rounded-xl">تجربة طباعة ريسيت</button>
-            </div>
-
-            <div id="spane-whatsapp" class="setting-pane hidden text-xs space-y-3">
-              <h3 class="font-bold text-emerald-400 text-sm">ربط واتساب المحل</h3>
-              <p class="text-slate-400">الرقم المعتمد لإرسال الفواتير وإشعارات الصيانة: 01070900711.</p>
-            </div>
           </div>
         </div>
       </section>
@@ -583,16 +637,11 @@
     </main>
   </div>
 
-  <!-- ========================================================================= -->
-  <!-- MODAL: إضافة منتج (مطابق بالكامل وبكل الحقول للصورة 1788723408105) -->
-  <!-- ========================================================================= -->
+  <!-- ================= MODAL: إضافة منتج المطابق للصورة 1788723408105 ================= -->
   <div id="modal-add-product" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-55 hidden flex items-center justify-center p-3">
     <div class="bg-white text-slate-800 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden flex flex-col max-h-[94vh] animate-in zoom-in-95">
-      
       <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between shrink-0">
-        <button onclick="closeModal('modal-add-product')" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
+        <button onclick="closeModal('modal-add-product')" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg"><i data-lucide="x" class="w-5 h-5"></i></button>
         <h3 class="font-extrabold text-sm text-slate-800">إضافة منتج</h3>
       </div>
 
@@ -610,18 +659,14 @@
               <img id="imagePreviewImg" class="w-20 h-20 object-contain mx-auto rounded-lg border bg-white p-1">
             </div>
           </div>
-          <p class="text-[10px] text-slate-400 mt-1 leading-relaxed">
-            التحسين التلقائي يضبط السطوع والتباين ويزيل الصورة ويحطها على خلفية بيضاء نظيفة تناسب عرض المنتج.
-          </p>
+          <p class="text-[10px] text-slate-400 mt-1 leading-relaxed">التحسين التلقائي يضبط السطوع والتباين ويزيل الصورة ويحطها على خلفية بيضاء نظيفة تناسب عرض المنتج.</p>
         </div>
 
         <div>
           <label class="font-bold text-slate-700 block mb-1">الباركود</label>
           <div class="flex gap-2">
             <input type="text" id="prodBarcodeInput" value="FG7253771" placeholder="FG7253771" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 font-mono font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition">
-            <button type="button" onclick="generateNewBarcodeCode()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 px-4 py-2 rounded-xl font-bold text-xs transition">
-              توليد
-            </button>
+            <button type="button" onclick="generateNewBarcodeCode()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 px-4 py-2 rounded-xl font-bold text-xs transition">توليد</button>
           </div>
         </div>
 
@@ -659,14 +704,10 @@
 
       <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-3 shrink-0">
         <button onclick="saveProductFromNewModal()" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black py-2.5 px-4 rounded-xl shadow-md transition text-xs flex items-center justify-center gap-1.5">
-          <span>حفظ المنتج</span>
-          <span>💾</span>
+          <span>حفظ المنتج</span><span>💾</span>
         </button>
-        <button onclick="closeModal('modal-add-product')" class="px-5 py-2.5 bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 font-bold rounded-xl text-xs transition">
-          إلغاء
-        </button>
+        <button onclick="closeModal('modal-add-product')" class="px-5 py-2.5 bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 font-bold rounded-xl text-xs transition">إلغاء</button>
       </div>
-
     </div>
   </div>
 
@@ -685,131 +726,29 @@
     </div>
   </div>
 
-  <!-- MODAL: الدفع والآجل -->
-  <div id="modal-checkout-pos" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-55 hidden flex items-center justify-center p-3">
-    <div class="bg-white rounded-3xl w-full max-w-md shadow-2xl p-5 space-y-3.5 text-xs">
-      <div class="flex justify-between items-center border-b pb-2">
-        <h3 class="font-black text-sm text-slate-800 flex items-center gap-1.5"><i data-lucide="wallet" class="w-4 h-4 text-emerald-600"></i> إتمام عملية الدفع</h3>
-        <button onclick="closeModal('modal-checkout-pos')"><i data-lucide="x" class="w-4 h-4 text-slate-400"></i></button>
-      </div>
-      
-      <div class="bg-slate-50 p-3 rounded-2xl border flex justify-between items-center font-bold">
-        <span>إجمالي الفاتورة المطلوب:</span>
-        <span class="text-base font-black text-emerald-600" id="checkoutTotalAmount">0.00 ج.م</span>
-      </div>
-
-      <div>
-        <label class="text-slate-500 font-bold block mb-1">طريقة الدفع:</label>
-        <select id="payMethodSelect" class="w-full border rounded-xl p-2.5 font-bold text-slate-800" onchange="toggleDebtInputs()">
-          <option value="CASH">نقدي (كاش سائل)</option>
-          <option value="VODAFONE">محفظة فودافون كاش</option>
-          <option value="ORANGE">محفظة أورنج كاش</option>
-          <option value="ETISALAT">محفظة اتصالات كاش</option>
-          <option value="WE">محفظة وي باي (WE Pay)</option>
-          <option value="INSTAPAY">انستاباي (InstaPay / بنك)</option>
-          <option value="CREDIT">آجل (دفع جزء ومتبقي دين)</option>
-        </select>
-      </div>
-
-      <div id="creditFields" class="hidden space-y-2 p-3 bg-amber-50/70 border border-amber-200 rounded-2xl">
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="text-[10px] text-slate-500 font-bold block mb-1">المدفوع الآن:</label>
-            <input type="number" id="creditPaidNow" value="0" class="w-full border rounded-xl p-2 font-black text-emerald-600" oninput="calcRemainingDebt()">
-          </div>
-          <div>
-            <label class="text-[10px] text-slate-500 font-bold block mb-1">المتبقي دين:</label>
-            <input type="text" id="creditRemainingDebt" value="0.00 ج.م" readonly class="w-full border rounded-xl p-2 font-black text-rose-600 bg-white">
-          </div>
-        </div>
-        <input type="text" id="creditCustName" placeholder="اسم العميل صاحب الدين" class="w-full border rounded-xl p-2 font-bold">
-        <input type="text" id="creditCustPhone" placeholder="رقم هاتف العميل" class="w-full border rounded-xl p-2 font-mono">
-      </div>
-
-      <button onclick="confirmFinalCheckout()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-2.5 rounded-xl shadow mt-2">
-        تأكيد الفاتورة وحفظ المعاملة
-      </button>
-    </div>
-  </div>
-
-  <!-- MODAL: سداد الدين -->
-  <div id="modal-pay-debt" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-55 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl w-full max-w-sm p-5 shadow-2xl space-y-3 text-xs">
-      <div class="flex justify-between items-center border-b pb-2">
-        <h3 class="font-black text-sm text-slate-800">سداد دفعة من الدين</h3>
-        <button onclick="closeModal('modal-pay-debt')"><i data-lucide="x" class="w-4 h-4 text-slate-400"></i></button>
-      </div>
-      <input type="hidden" id="payDebtIndex">
-      <div><span class="text-slate-400 block">العميل:</span><span class="font-black text-sm text-slate-800" id="payDebtCustName"></span></div>
-      <div><span class="text-slate-400 block">المتبقي:</span><span class="font-black text-base text-rose-600" id="payDebtRemainVal"></span></div>
-      <input type="number" id="payDebtInput" placeholder="المبلغ المسدد" class="w-full border rounded-xl p-2 font-black text-emerald-600 text-base">
-      <button onclick="confirmSettleDebt()" class="w-full bg-emerald-600 text-white font-black py-2.5 rounded-xl shadow">تسجيل السداد وإيداع النقدية</button>
-    </div>
-  </div>
-
-  <!-- MODAL: تسجيل هالك -->
-  <div id="modal-add-waste" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-55 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl w-full max-w-md p-5 shadow-2xl space-y-3 text-xs">
-      <div class="flex justify-between items-center border-b pb-2">
-        <h3 class="font-black text-sm text-rose-600">تسجيل هالك أو مرتجع</h3>
-        <button onclick="closeModal('modal-add-waste')"><i data-lucide="x" class="w-4 h-4 text-slate-400"></i></button>
-      </div>
-      <select id="wasteTypeSelect" class="w-full border rounded-xl p-2 font-bold">
-        <option value="هالك عميل (سوء استخدام)">هالك عميل (كسر / سوء استخدام خارج الضمان)</option>
-        <option value="هالك مورد (عيوب صناعة RMA)">هالك مورد (عيوب صناعة يستبدل من التوكيل)</option>
-        <option value="مرتجع مبيعات">مرتجع مبيعات (استرجاع سليم من عميل)</option>
-      </select>
-      <input type="text" id="wasteItemName" placeholder="اسم الصنف أو الجهاز" class="w-full border rounded-xl p-2 font-bold">
-      <div class="grid grid-cols-2 gap-2">
-        <input type="number" id="wasteQty" value="1" placeholder="الكمية" class="border rounded-xl p-2 font-bold">
-        <input type="number" id="wasteCost" value="650" placeholder="التكلفة" class="border rounded-xl p-2 font-bold text-rose-600">
-      </div>
-      <input type="text" id="wasteReason" placeholder="السبب والتفاصيل" class="w-full border rounded-xl p-2">
-      <button onclick="saveWasteRecord()" class="w-full bg-rose-600 text-white font-black py-2 rounded-xl shadow">حفظ في سجل الهالك</button>
-    </div>
-  </div>
-
-  <!-- MODAL: كارت استلام صيانة -->
-  <div id="modal-repair-job" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
-    <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl p-5 space-y-3 text-xs">
-      <div class="flex justify-between items-center border-b pb-2">
-        <h3 class="font-black text-sm text-slate-800">كارت استلام صيانة جديد</h3>
-        <button onclick="closeModal('modal-repair-job')"><i data-lucide="x" class="w-5 h-5 text-slate-400"></i></button>
-      </div>
-      <div class="grid grid-cols-2 gap-2">
-        <input type="text" id="jobCustName" placeholder="اسم العميل" class="border rounded-xl p-2 font-bold">
-        <input type="text" id="jobCustPhone" placeholder="رقم الهاتف" class="border rounded-xl p-2 font-mono">
-      </div>
-      <div class="grid grid-cols-2 gap-2">
-        <input type="text" id="jobDeviceModel" placeholder="الموديل (مثال: iPhone 12)" class="border rounded-xl p-2 font-bold">
-        <input type="text" id="jobImei" placeholder="الـ IMEI أو الباسوورد" class="border rounded-xl p-2 font-mono">
-      </div>
-      <textarea id="jobFault" placeholder="شكوى العميل والعطل..." class="w-full border rounded-xl p-2"></textarea>
-      <button onclick="alert('✅ تم حفظ كارت الصيانة وطباعة الباركود'); closeModal('modal-repair-job');" class="w-full bg-blue-600 text-white font-black py-2.5 rounded-xl">حفظ وطباعة</button>
-    </div>
-  </div>
-
-  <!-- MODAL: تحويل المحافظ -->
-  <div id="modal-wallet-transfer" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
-    <div class="bg-white rounded-3xl w-full max-w-sm p-4 space-y-2.5 text-xs shadow-2xl">
-      <div class="flex justify-between items-center border-b pb-2 font-bold text-emerald-600">
-        <span>تحويل واستقبال كاش مع عمولة</span>
-        <button onclick="closeModal('modal-wallet-transfer')"><i data-lucide="x" class="w-4 h-4 text-slate-400"></i></button>
-      </div>
-      <input type="number" value="500" placeholder="المبلغ" class="w-full border rounded-xl p-2 font-bold">
-      <input type="number" value="5" placeholder="العمولة" class="w-full border rounded-xl p-2 font-bold text-emerald-600">
-      <button onclick="alert('✅ تم تسجيل العملية بنجاح'); closeModal('modal-wallet-transfer');" class="w-full bg-emerald-600 text-white font-black py-2 rounded-xl">تأكيد المعاملة</button>
-    </div>
-  </div>
-
   <!-- ================= JAVASCRIPT ENGINE ================= -->
   <script>
-    // قاعدة البيانات الشاملة المحدثة
+    // قاعدة البيانات المركزية الآمنة
     const defaultDatabase = {
       users: [
-        { id: '1', name: 'محمد مصطفى عماشه', username: 'admin', pass: '123456', role: 'مدير النظام' },
-        { id: '2', name: 'محمود كاشير', username: 'cashier', pass: '123', role: 'كاشير' }
+        { id: '1', name: 'محمد مصطفى عماشه', username: 'admin', pass: '123456', role: 'مدير النظام' }
       ],
+      printerSettings: {
+        paperSize: '80mm',
+        fontSize: '13px',
+        textAlign: 'right',
+        horizontalOffset: 2,
+        barcodeStickerSize: '38x25mm',
+        showItemPrice: true,
+        showIMEI: true,
+        showBarcodePrice: true,
+        autoCut: true
+      },
+      whatsappSettings: {
+        storeNumber: '01070900711',
+        invTpl: 'مرحباً بك أستاذ {customer}، تم إصدار فاتورتك رقم {invoice} من محل EL-RESALA بقيمة {total} ج.م. شكراً لتعاملكم معنا!',
+        readyTpl: 'بشرى سارة أستاذ {customer}! جهازك ({device}) تم إصلاحه بنجاح وهو جاهز للاستلام الآن بمحل EL-RESALA. المطلوب سداده: {total} ج.م.'
+      },
       products: [
         { id: '1', name: 'iPhone 15 128GB', barcode: 'FG9281721', type: 'هواتف محمولة', cost: 32000, price: 34500, stock: 4, minAlert: 2, image: '' },
         { id: '2', name: 'جراب سيليكون MagSafe', barcode: 'FG8374910', type: 'اكسسوارات / قطع غيار', cost: 120, price: 250, stock: 35, minAlert: 5, image: '' },
@@ -817,37 +756,23 @@
         { id: '4', name: 'شاشة سامسونج A12 أصلية', barcode: 'FG6251892', type: 'اكسسوارات / قطع غيار', cost: 650, price: 850, stock: 6, minAlert: 3, image: '' }
       ],
       devices: [
-        { model: 'iPhone 15 Pro Max', imei: '354892019284910', color: 'تيتانيوم طبيعي', storage: '256GB', cond: 'جديد متبرشم', cost: 58000, price: 61500, warranty: 'سنة دولي' },
-        { model: 'Samsung S24 Ultra', imei: '359182736451234', color: 'رمادي تيتانيوم', storage: '512GB', cond: 'جديد ضمان محلي', cost: 54000, price: 57200, warranty: 'سنة محلي' }
+        { model: 'iPhone 15 Pro Max', imei: '354892019284910', color: 'تيتانيوم طبيعي', storage: '256GB', cond: 'جديد متبرشم', cost: 58000, price: 61500, warranty: 'سنة دولي' }
       ],
       debts: [
-        { id: 'INV-1082', customer: 'أحمد خالد إبراهيم', phone: '01122334455', total: 4200, paid: 3700, remaining: 500, date: '2026-09-05' },
-        { id: 'INV-1090', customer: 'حسام مصطفى الباشا', phone: '01099887766', total: 26500, paid: 20000, remaining: 6500, date: '2026-09-06' }
+        { id: 'INV-1082', customer: 'أحمد خالد إبراهيم', phone: '01122334455', total: 4200, paid: 3700, remaining: 500, date: '2026-09-05' }
       ],
-      wasteRecords: [
-        { type: 'هالك مورد (عيوب صناعة RMA)', item: 'شاشة iPhone 11 توكيل', qty: 1, cost: 1200, reason: 'خط أحمر بالشاشة بعد التجربة', date: '2026-09-06' },
-        { type: 'هالك عميل (سوء استخدام)', item: 'اسكرينة 11D سيراميك', qty: 2, cost: 50, reason: 'كسر أثناء التركيب بسبب ضغط خاطئ', date: '2026-09-05' }
-      ],
-      purchases: [
-        { inv: 'PUR-8901', supplier: 'شركة ألفا جروب للموبايل', items: 'iPhone 15 Pro (عدد 2)', qty: 2, total: 116000, method: 'تحويل بنكي', date: '2026-09-06' }
-      ],
-      customers: [
-        { name: 'محمود سامي عثمان', phone: '01012345678', address: 'شبرا الخيمة', total: 34500, balance: '0.00 ج.م' },
-        { name: 'أحمد خالد إبراهيم', phone: '01122334455', address: 'بهتيم', total: 4200, balance: '500.00 ج.م (عليه)' }
-      ],
-      repairs: [
-        { id: 'REP-1048', customer: 'عمرو محمد', phone: '01070900711', device: 'Samsung A54', fault: 'تغيير شاشة أصلية', fee: 1450, status: 'RECEIVED' }
-      ],
-      transfers: [
-        { type: 'إرسال للعميل', acc: 'فودافون كاش', amt: '500 ج.م', comm: '+5.00 ج.م', time: '14:20 م' }
-      ],
+      wasteRecords: [],
+      purchases: [],
+      customers: [],
+      repairs: [],
+      transfers: [],
       cart: [{ id: '4', name: 'شاشة سامسونج A12 أصلية', price: 850, qty: 1 }]
     };
 
-    let App = JSON.parse(localStorage.getItem('EL_RESALA_MASTER_ENTERPRISE_V6')) || defaultDatabase;
+    let App = JSON.parse(localStorage.getItem('EL_RESALA_V4_SAFE_MASTER')) || defaultDatabase;
 
     function saveApp() {
-      localStorage.setItem('EL_RESALA_MASTER_ENTERPRISE_V6', JSON.stringify(App));
+      localStorage.setItem('EL_RESALA_V4_SAFE_MASTER', JSON.stringify(App));
     }
 
     // تنقل الشاشات
@@ -869,20 +794,11 @@
         document.getElementById('sidebar').classList.add('-right-64');
       }
 
-      // تشغيل الريندر فوراً لملء الصفحة
       try {
         if (pageId === 'dashboard') initCharts();
         if (pageId === 'pos') renderPos();
-        if (pageId === 'debts') renderDebts();
         if (pageId === 'inventory') renderInventory();
-        if (pageId === 'waste') renderWaste();
-        if (pageId === 'devices') renderDevices();
-        if (pageId === 'accessories') renderAccessories();
-        if (pageId === 'repairs') renderRepairs();
-        if (pageId === 'purchases') renderPurchases();
-        if (pageId === 'customers') renderCustomers();
-        if (pageId === 'treasury') renderTreasury();
-        if (pageId === 'settings') switchSettingTab('policies');
+        if (pageId === 'settings') loadSettingsToInputs();
       } catch (e) {
         console.error(e);
       }
@@ -893,39 +809,130 @@
     function openModal(id) { document.getElementById(id)?.classList.remove('hidden'); lucide.createIcons(); }
     function closeModal(id) { document.getElementById(id)?.classList.add('hidden'); }
 
-    // الرسوم البيانية Chart.js
-    let salesChartInstance = null;
-    let revenueChartInstance = null;
+    // ================= محرك تخصيص الطابعات والريسيت =================
+    function loadSettingsToInputs() {
+      const pr = App.printerSettings || defaultDatabase.printerSettings;
+      if (document.getElementById('cfgPaperSize')) document.getElementById('cfgPaperSize').value = pr.paperSize || '80mm';
+      if (document.getElementById('cfgFontSize')) document.getElementById('cfgFontSize').value = pr.fontSize || '13px';
+      if (document.getElementById('cfgTextAlign')) document.getElementById('cfgTextAlign').value = pr.textAlign || 'right';
+      if (document.getElementById('cfgHorizontalOffset')) document.getElementById('cfgHorizontalOffset').value = pr.horizontalOffset !== undefined ? pr.horizontalOffset : 2;
+      if (document.getElementById('cfgBarcodeStickerSize')) document.getElementById('cfgBarcodeStickerSize').value = pr.barcodeStickerSize || '38x25mm';
+      if (document.getElementById('cfgShowItemPrice')) document.getElementById('cfgShowItemPrice').checked = pr.showItemPrice !== false;
+      if (document.getElementById('cfgShowIMEI')) document.getElementById('cfgShowIMEI').checked = pr.showIMEI !== false;
+      if (document.getElementById('cfgShowBarcodePrice')) document.getElementById('cfgShowBarcodePrice').checked = pr.showBarcodePrice !== false;
+      if (document.getElementById('cfgAutoCut')) document.getElementById('cfgAutoCut').checked = pr.autoCut !== false;
 
-    function initCharts() {
-      const ctx1 = document.getElementById('salesTrendChart')?.getContext('2d');
-      if (ctx1) {
-        if (salesChartInstance) salesChartInstance.destroy();
-        salesChartInstance = new Chart(ctx1, {
-          type: 'line',
-          data: {
-            labels: ['السبت', 'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'],
-            datasets: [
-              { label: 'المبيعات (ج.م)', data: [8400, 11200, 9500, 14200, 12800, 18500, 12450], borderColor: '#2563eb', fill: true, backgroundColor: 'rgba(37, 99, 235, 0.08)', tension: 0.4, borderWidth: 3 },
-              { label: 'الأرباح (ج.م)', data: [2100, 2800, 2400, 3600, 3100, 4800, 3200], borderColor: '#10b981', fill: true, backgroundColor: 'rgba(16, 185, 129, 0.05)', tension: 0.4, borderWidth: 2.5, borderDash: [4, 4] }
-            ]
-          },
-          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top', rtl: true, labels: { font: { family: 'Cairo', size: 11, weight: 'bold' } } } } }
-        });
-      }
+      const wa = App.whatsappSettings || defaultDatabase.whatsappSettings;
+      if (document.getElementById('cfgCustomWhatsAppNumber')) document.getElementById('cfgCustomWhatsAppNumber').value = wa.storeNumber || '01070900711';
+      if (document.getElementById('cfgWhatsAppInvTpl')) document.getElementById('cfgWhatsAppInvTpl').value = wa.invTpl || '';
+      if (document.getElementById('cfgWhatsAppReadyTpl')) document.getElementById('cfgWhatsAppReadyTpl').value = wa.readyTpl || '';
 
-      const ctx2 = document.getElementById('categoryRevenueChart')?.getContext('2d');
-      if (ctx2) {
-        if (revenueChartInstance) revenueChartInstance.destroy();
-        revenueChartInstance = new Chart(ctx2, {
-          type: 'doughnut',
-          data: { labels: ['أجهزة وموبايلات', 'إكسسوارات وجرابات', 'صيانة وقطع غيار'], datasets: [{ data: [58, 27, 15], backgroundColor: ['#2563eb', '#10b981', '#f59e0b'], borderWidth: 3, borderColor: '#ffffff' }] },
-          options: { responsive: true, maintainAspectRatio: false, cutout: '72%', plugins: { legend: { display: false } } }
-        });
-      }
+      renderUsersTable();
+      switchSettingTab('printers');
     }
 
-    // ================= محرك إضافة منتج (مطابق للصورة 100%) =================
+    function savePrinterOptions() {
+      App.printerSettings = {
+        paperSize: document.getElementById('cfgPaperSize').value,
+        fontSize: document.getElementById('cfgFontSize').value,
+        textAlign: document.getElementById('cfgTextAlign').value,
+        horizontalOffset: parseFloat(document.getElementById('cfgHorizontalOffset').value) || 0,
+        barcodeStickerSize: document.getElementById('cfgBarcodeStickerSize').value,
+        showItemPrice: document.getElementById('cfgShowItemPrice').checked,
+        showIMEI: document.getElementById('cfgShowIMEI').checked,
+        showBarcodePrice: document.getElementById('cfgShowBarcodePrice').checked,
+        autoCut: document.getElementById('cfgAutoCut').checked
+      };
+      saveApp();
+    }
+
+    function saveWhatsAppOptions(showAlert = false) {
+      const num = document.getElementById('cfgCustomWhatsAppNumber').value.trim();
+      App.whatsappSettings = {
+        storeNumber: num || '01070900711',
+        invTpl: document.getElementById('cfgWhatsAppInvTpl').value,
+        readyTpl: document.getElementById('cfgWhatsAppReadyTpl').value
+      };
+      saveApp();
+      if (showAlert) alert(`✅ تم حفظ رقم واتساب المحل المعتمد بنجاح: [${App.whatsappSettings.storeNumber}]`);
+    }
+
+    function testPrintConfiguredReceipt() {
+      savePrinterOptions();
+      const pr = App.printerSettings;
+      const waNum = App.whatsappSettings?.storeNumber || '01070900711';
+      const width = pr.paperSize === '58mm' ? '54mm' : (pr.paperSize === '80mm' ? '76mm' : '100%');
+      const offset = `${pr.horizontalOffset}mm`;
+
+      const html = `
+        <!DOCTYPE html>
+        <html lang="ar" dir="rtl">
+        <head>
+          <meta charset="UTF-8">
+          <style>
+            @page { margin: 0; }
+            body {
+              font-family: 'Courier New', monospace, sans-serif;
+              font-size: ${pr.fontSize};
+              text-align: ${pr.textAlign};
+              width: ${width};
+              margin-right: ${offset};
+              padding: 6px;
+              color: #000;
+            }
+            .center { text-align: center; }
+            .bold { font-weight: bold; }
+            table { width: 100%; border-collapse: collapse; margin: 4px 0; }
+          </style>
+        </head>
+        <body>
+          <div class="center bold" style="font-size: 1.2em;">EL-RESALA</div>
+          <div class="center">هاتف الواتساب: ${waNum}</div>
+          <hr style="border: 0; border-top: 1px dashed #000;">
+          <div>فاتورة تجريبية رقم: #INV-TEST</div>
+          <div>التاريخ: ${new Date().toLocaleString('ar-EG')}</div>
+          <table>
+            <thead>
+              <tr style="border-bottom: 1px solid #000;">
+                <th style="text-align: right;">الصنف</th>
+                ${pr.showItemPrice ? '<th style="text-align: left;">السعر</th>' : ''}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>شاشة سامسونج A12 أصلية × 1</td>
+                ${pr.showItemPrice ? '<td style="text-align: left;">850.00</td>' : ''}
+              </tr>
+              ${pr.showIMEI ? '<tr><td colspan="2" style="font-size: 0.85em; color: #555;">S/N: 354892019284910 (ضمان 30 يوم)</td></tr>' : ''}
+            </tbody>
+          </table>
+          <hr style="border: 0; border-top: 1px solid #000;">
+          <div class="bold" style="display: flex; justify-content: space-between;">
+            <span>الصافي:</span>
+            <span>850.00 ج.م</span>
+          </div>
+          <div class="center" style="font-size: 0.85em; margin-top: 6px;">* البضاعة المباعة ترد وتستبدل خلال 14 يوماً *</div>
+          <script>window.onload = function(){ window.print(); window.close(); };<\/script>
+        </body>
+        </html>
+      `;
+      const w = window.open('', '_blank', 'width=380,height=600');
+      w.document.write(html);
+      w.document.close();
+    }
+
+    function switchSettingTab(key) {
+      document.querySelectorAll('.setting-pane').forEach(p => p.classList.add('hidden'));
+      document.querySelectorAll('.setting-nav-btn').forEach(btn => {
+        btn.className = 'setting-nav-btn w-full text-right px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 flex items-center gap-2.5 font-bold text-xs';
+      });
+      document.getElementById('spane-' + key)?.classList.remove('hidden');
+      document.getElementById('stab-' + key)?.setAttribute('class', 'setting-nav-btn w-full text-right px-3 py-2 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 font-black flex items-center gap-2.5 text-xs shadow-md');
+      if (key === 'users') renderUsersTable();
+      lucide.createIcons();
+    }
+
+    // ================= محرك إضافة منتج =================
     let currentUploadedProductImage = '';
 
     function openAddProductModal() {
@@ -981,7 +988,7 @@
       closeModal('modal-add-product');
       renderInventory();
       renderPos();
-      alert(`✅ تم حفظ المنتج (${name}) بنجاح في المخزون!`);
+      alert(`✅ تم حفظ المنتج (${name}) بنجاح!`);
     }
 
     // ================= محرك المبيعات (POS) =================
@@ -1052,148 +1059,10 @@
       const net = Math.max(0, sum - disc);
       document.getElementById('posCartSubtotal').innerText = `${sum} ج.م`;
       document.getElementById('posCartTotal').innerText = `${net} ج.م`;
-      document.getElementById('checkoutTotalAmount').innerText = `${net} ج.م`;
     }
 
     function clearCart() { App.cart = []; saveApp(); renderCart(); }
 
-    function openCheckoutModal() {
-      if (App.cart.length === 0) return alert('السلة فارغة!');
-      openModal('modal-checkout-pos');
-      toggleDebtInputs();
-    }
-
-    function toggleDebtInputs() {
-      const mode = document.getElementById('payMethodSelect').value;
-      const creditBox = document.getElementById('creditFields');
-      if (mode === 'CREDIT') {
-        creditBox.classList.remove('hidden');
-        calcRemainingDebt();
-      } else {
-        creditBox.classList.add('hidden');
-      }
-    }
-
-    function calcRemainingDebt() {
-      let sum = 0; App.cart.forEach(i => sum += (i.price * i.qty));
-      const disc = parseFloat(document.getElementById('posCartDiscount')?.value) || 0;
-      const net = Math.max(0, sum - disc);
-      const paid = parseFloat(document.getElementById('creditPaidNow').value) || 0;
-      const remain = Math.max(0, net - paid);
-      document.getElementById('creditRemainingDebt').value = `${remain.toFixed(2)} ج.م`;
-    }
-
-    function confirmFinalCheckout() {
-      const mode = document.getElementById('payMethodSelect').value;
-      let sum = 0; App.cart.forEach(i => sum += (i.price * i.qty));
-      const disc = parseFloat(document.getElementById('posCartDiscount')?.value) || 0;
-      const net = Math.max(0, sum - disc);
-      const invNum = `INV-${document.getElementById('posInvNum').innerText}`;
-
-      if (mode === 'CREDIT') {
-        const paid = parseFloat(document.getElementById('creditPaidNow').value) || 0;
-        const remain = Math.max(0, net - paid);
-        const cust = document.getElementById('creditCustName').value.trim();
-        const phone = document.getElementById('creditCustPhone').value.trim() || '—';
-
-        if (!cust) return alert('يرجى كتابة اسم العميل لتسجيل الدين!');
-
-        App.debts.unshift({ id: invNum, customer: cust, phone: phone, total: net, paid: paid, remaining: remain, date: new Date().toISOString().slice(0, 10) });
-        alert(`✅ تم إتمام الفاتورة الآجلة وتسجيل الدين المتبقي (${remain} ج.م) في صفحة الديون!`);
-      } else {
-        alert(`✅ تم تسجيل الفاتورة بنجاح عبر [${mode}].`);
-      }
-
-      clearCart();
-      closeModal('modal-checkout-pos');
-      document.getElementById('posInvNum').innerText = Math.floor(1000 + Math.random() * 9000);
-      saveApp();
-    }
-
-    // ================= محرك الديون والآجل =================
-    function renderDebts() {
-      const tbody = document.getElementById('debtsTableBody');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-      App.debts.forEach((d, idx) => {
-        tbody.innerHTML += `
-          <tr class="hover:bg-slate-50">
-            <td class="p-3 font-mono font-bold text-blue-600">${d.id}</td>
-            <td class="p-3 font-bold text-slate-800">${d.customer}</td>
-            <td class="p-3 font-mono text-slate-500">${d.phone}</td>
-            <td class="p-3 font-bold text-slate-600">${d.total.toLocaleString()} ج.م</td>
-            <td class="p-3 font-bold text-emerald-600">${d.paid.toLocaleString()} ج.م</td>
-            <td class="p-3 font-black text-rose-600">${d.remaining.toLocaleString()} ج.م</td>
-            <td class="p-3 font-mono text-slate-400">${d.date}</td>
-            <td class="p-3 text-center">
-              <button onclick="openPayDebtModal(${idx})" class="bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 px-3 py-1 rounded-xl font-black text-xs transition">سداد دفعة</button>
-            </td>
-          </tr>
-        `;
-      });
-    }
-
-    function openPayDebtModal(idx) {
-      const d = App.debts[idx];
-      document.getElementById('payDebtIndex').value = idx;
-      document.getElementById('payDebtCustName').innerText = d.customer;
-      document.getElementById('payDebtRemainVal').innerText = `${d.remaining.toLocaleString()} ج.م`;
-      document.getElementById('payDebtInput').value = d.remaining;
-      openModal('modal-pay-debt');
-    }
-
-    function confirmSettleDebt() {
-      const idx = parseInt(document.getElementById('payDebtIndex').value);
-      const val = parseFloat(document.getElementById('payDebtInput').value) || 0;
-      if (val <= 0) return alert('اكتب مبلغ السداد!');
-      const d = App.debts[idx];
-      d.paid += val;
-      d.remaining = Math.max(0, d.remaining - val);
-      if (d.remaining <= 0) {
-        alert(`🎉 تم سداد كامل الدين للفاتورة (${d.id}) بنجاح!`);
-        App.debts.splice(idx, 1);
-      } else {
-        alert(`✅ تم تسجيل السداد بنجاح. المتبقي: ${d.remaining} ج.م.`);
-      }
-      saveApp();
-      closeModal('modal-pay-debt');
-      renderDebts();
-    }
-
-    // ================= محرك الهالك والمرتجع =================
-    function renderWaste() {
-      const tbody = document.getElementById('wasteTableBody');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-      App.wasteRecords.forEach(w => {
-        tbody.innerHTML += `
-          <tr class="hover:bg-slate-50">
-            <td class="p-3 font-bold ${w.type.includes('هالك') ? 'text-rose-600' : 'text-blue-600'}">${w.type}</td>
-            <td class="p-3 font-bold text-slate-800">${w.item}</td>
-            <td class="p-3 font-black">${w.qty}</td>
-            <td class="p-3 font-black text-slate-900">${w.cost.toLocaleString()} ج.م</td>
-            <td class="p-3 text-slate-500">${w.reason}</td>
-            <td class="p-3 font-mono text-slate-400">${w.date}</td>
-          </tr>
-        `;
-      });
-    }
-
-    function saveWasteRecord() {
-      const type = document.getElementById('wasteTypeSelect').value;
-      const item = document.getElementById('wasteItemName').value.trim();
-      const qty = parseInt(document.getElementById('wasteQty').value) || 1;
-      const cost = parseFloat(document.getElementById('wasteCost').value) || 0;
-      const reason = document.getElementById('wasteReason').value.trim() || 'بدون تفاصيل';
-      if (!item) return alert('يرجى كتابة اسم الصنف التالف!');
-      App.wasteRecords.unshift({ type, item, qty, cost, reason, date: new Date().toISOString().slice(0, 10) });
-      saveApp();
-      renderWaste();
-      closeModal('modal-add-waste');
-      alert('✅ تم حفظ القيد بنجاح.');
-    }
-
-    // ================= محرك المخزون والأجهزة والإكسسوار والصيانة =================
     function renderInventory() {
       const tbody = document.getElementById('inventoryTableRows');
       if (!tbody) return;
@@ -1218,111 +1087,6 @@
       lucide.createIcons();
     }
 
-    function renderDevices() {
-      const tbody = document.getElementById('devicesTableBody');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-      App.devices.forEach(d => {
-        tbody.innerHTML += `
-          <tr class="hover:bg-slate-50">
-            <td class="p-3 font-bold text-slate-900">${d.model}</td>
-            <td class="p-3 font-mono text-blue-600 font-bold">${d.imei}</td>
-            <td class="p-3 text-slate-600">${d.storage} | ${d.color}</td>
-            <td class="p-3"><span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-[11px] font-bold">${d.cond}</span></td>
-            <td class="p-3 text-slate-600">${d.cost.toLocaleString()} ج.م</td>
-            <td class="p-3 font-black text-emerald-600">${d.price.toLocaleString()} ج.م</td>
-            <td class="p-3 text-slate-500 font-semibold">${d.warranty}</td>
-          </tr>
-        `;
-      });
-    }
-
-    function renderAccessories() {
-      const grid = document.getElementById('accessoriesCardsGrid');
-      if (!grid) return;
-      grid.innerHTML = '';
-      App.products.filter(p => p.type.includes('اكسسوار') || p.type.includes('إكسسوار')).forEach(a => {
-        grid.innerHTML += `
-          <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-2">
-            <div class="flex justify-between items-center text-[11px]"><span class="bg-pink-50 text-pink-600 font-bold px-2 py-0.5 rounded">إكسسوار</span><span class="text-emerald-600 font-bold">متاح (${a.stock})</span></div>
-            <h4 class="font-bold text-xs text-slate-800">${a.name}</h4>
-            <div class="flex justify-between items-center pt-2 border-t text-xs"><span class="font-black text-slate-900">${a.price} ج.م</span><button onclick="addToCart('${a.id}'); navigateTo('pos');" class="text-blue-600 font-bold hover:underline">بيع مباشر</button></div>
-          </div>
-        `;
-      });
-    }
-
-    function renderRepairs() {
-      const grid = document.getElementById('repairCardsGrid');
-      if (!grid) return;
-      grid.innerHTML = '';
-      App.repairs.forEach(r => {
-        grid.innerHTML += `
-          <div class="bg-white p-4 rounded-2xl border shadow-sm space-y-2">
-            <div class="flex justify-between items-center text-xs"><span class="font-black text-blue-600">${r.id}</span><span class="bg-amber-100 text-amber-700 font-bold px-2 py-0.5 rounded text-[10px]">${r.status}</span></div>
-            <h4 class="font-bold text-sm text-slate-800">${r.device}</h4>
-            <div class="text-xs text-slate-500">${r.customer} (${r.phone})</div>
-            <p class="text-xs bg-slate-50 p-2 rounded-xl border">${r.fault}</p>
-            <div class="pt-2 border-t flex justify-between items-center text-xs"><span class="font-black text-emerald-600">${r.fee} ج.م</span><button onclick="alert('طباعة إيصال الصيانة...');" class="bg-blue-50 text-blue-600 font-bold px-3 py-1 rounded-xl">طباعة إيصال</button></div>
-          </div>
-        `;
-      });
-    }
-
-    function renderPurchases() {
-      const tbody = document.getElementById('purchasesTableBody');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-      App.purchases.forEach(p => {
-        tbody.innerHTML += `
-          <tr class="hover:bg-slate-50">
-            <td class="p-3 font-mono text-purple-600 font-bold">${p.inv}</td>
-            <td class="p-3 font-bold">${p.supplier}</td>
-            <td class="p-3 text-slate-600">${p.items}</td>
-            <td class="p-3 font-black">${p.qty}</td>
-            <td class="p-3 font-black text-slate-900">${p.total.toLocaleString()} ج.م</td>
-            <td class="p-3"><span class="bg-slate-100 px-2 py-0.5 rounded text-[11px]">${p.method}</span></td>
-            <td class="p-3 text-slate-400 font-mono">${p.date}</td>
-          </tr>
-        `;
-      });
-    }
-
-    function renderCustomers() {
-      const tbody = document.getElementById('customersTableBody');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-      App.customers.forEach(c => {
-        tbody.innerHTML += `
-          <tr class="hover:bg-slate-50">
-            <td class="p-3 font-bold text-slate-800">${c.name}</td>
-            <td class="p-3 font-mono text-slate-600">${c.phone}</td>
-            <td class="p-3 text-slate-500">${c.address}</td>
-            <td class="p-3 font-black text-slate-900">${c.total.toLocaleString()} ج.م</td>
-            <td class="p-3 font-bold text-slate-700">${c.balance}</td>
-          </tr>
-        `;
-      });
-    }
-
-    function renderTreasury() {
-      const tbody = document.getElementById('treasuryTableBody');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-      App.transfers.forEach(t => {
-        tbody.innerHTML += `
-          <tr>
-            <td class="p-2.5 font-bold">${t.type}</td>
-            <td class="p-2.5 text-blue-600 font-bold">${t.acc}</td>
-            <td class="p-2.5 font-black text-slate-800">${t.amt}</td>
-            <td class="p-2.5 font-black text-emerald-600">${t.comm}</td>
-            <td class="p-2.5 text-slate-400 font-mono">${t.time}</td>
-          </tr>
-        `;
-      });
-    }
-
-    // ================= تعديل باسوورد المدير =================
     function renderUsersTable() {
       const tbody = document.getElementById('usersTableBody');
       if (!tbody) return;
@@ -1330,7 +1094,10 @@
       App.users.forEach((u) => {
         tbody.innerHTML += `
           <tr class="hover:bg-slate-800/40">
-            <td class="p-3 font-bold text-slate-100">${u.name}</td>
+            <td class="p-3 font-bold text-slate-100 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg ${u.id === '1' ? 'bg-blue-600' : 'bg-slate-700'} text-white flex items-center justify-center text-[10px]"><i data-lucide="user" class="w-3.5 h-3.5"></i></span>
+              ${u.name}
+            </td>
             <td class="p-3 font-mono text-cyan-400 font-bold">${u.username}</td>
             <td class="p-3 font-mono text-amber-300 font-bold">${u.pass}</td>
             <td class="p-3"><span class="bg-[#0c1322] px-2.5 py-0.5 rounded-lg border border-slate-700 text-[10px] text-slate-300 font-bold">${u.role}</span></td>
@@ -1370,21 +1137,10 @@
       }
     }
 
-    function switchSettingTab(key) {
-      document.querySelectorAll('.setting-pane').forEach(p => p.classList.add('hidden'));
-      document.querySelectorAll('.setting-nav-btn').forEach(btn => {
-        btn.className = 'setting-nav-btn w-full text-right px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 flex items-center gap-2.5 font-bold text-xs';
-      });
-      document.getElementById('spane-' + key)?.classList.remove('hidden');
-      document.getElementById('stab-' + key)?.setAttribute('class', 'setting-nav-btn w-full text-right px-3 py-2 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 font-black flex items-center gap-2.5 text-xs shadow-md');
-      if (key === 'users') renderUsersTable();
-      lucide.createIcons();
-    }
-
     // التهيئة المبدئية
-    initCharts();
+    loadSettingsToInputs();
     renderInventory();
-    renderUsersTable();
+    renderPos();
     lucide.createIcons();
   </script>
 </body>
