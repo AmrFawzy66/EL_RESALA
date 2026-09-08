@@ -1,0 +1,873 @@
+#!/bin/bash
+set -e
+
+echo "🔒 جاري إضافة شاشة الدخول وبنود الإعدادات المتطابقة لنظام EL-RESALA..."
+
+cat << 'HTML' > frontend/index.html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>EL-RESALA ERP & POS V4.0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brandDark: '#0a0f1d',
+            panelDark: '#121a2d',
+            cardDark: '#19243c',
+            borderDark: '#233452',
+            accentGreen: '#10b981',
+            accentOrange: '#f59e0b',
+            accentCyan: '#06b6d4',
+            accentBlue: '#3b82f6',
+            accentRed: '#ef4444'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
+    body { font-family: 'Cairo', sans-serif; }
+    .custom-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
+    .custom-scroll::-webkit-scrollbar-track { background: #0a0f1d; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #233452; border-radius: 4px; }
+    .custom-scroll::-webkit-scrollbar-thumb:hover { background: #06b6d4; }
+  </style>
+</head>
+<body class="bg-brandDark text-slate-100 min-h-screen flex flex-col select-none pb-20">
+
+  <!-- ================= 0. نافذة تسجيل الدخول (LOGIN OVERLAY) ================= -->
+  <div id="loginOverlay" class="fixed inset-0 bg-[#070b14] z-[100] flex items-center justify-center p-4">
+    <div class="bg-panelDark border border-borderDark rounded-3xl w-full max-w-sm p-6 shadow-2xl space-y-4">
+      <div class="text-center space-y-1">
+        <div class="w-14 h-14 bg-gradient-to-tr from-accentCyan to-accentBlue rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-cyan-950">
+          <i data-lucide="zap" class="w-8 h-8 text-white"></i>
+        </div>
+        <h1 class="text-lg font-black text-white mt-2">EL-RESALA ERP</h1>
+        <p class="text-xs text-slate-400">سجّل دخولك للوصول لنظام المحل</p>
+      </div>
+
+      <div class="space-y-3 pt-2 text-xs">
+        <div>
+          <label class="text-slate-400 block mb-1">اسم المستخدم:</label>
+          <input type="text" id="loginUsername" value="admin" class="w-full bg-brandDark border border-borderDark rounded-xl p-2.5 text-slate-100 focus:outline-none focus:border-accentCyan">
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1">كلمة المرور:</label>
+          <input type="password" id="loginPassword" value="123456" class="w-full bg-brandDark border border-borderDark rounded-xl p-2.5 text-slate-100 focus:outline-none focus:border-accentCyan">
+        </div>
+        <button onclick="handleLogin()" class="w-full bg-accentCyan hover:bg-cyan-600 text-slate-950 font-black py-2.5 rounded-xl shadow-lg transition text-xs mt-2 flex items-center justify-center gap-1.5">
+          <i data-lucide="log-in" class="w-4 h-4"></i> تسجيل الدخول للنظام
+        </button>
+      </div>
+      <div class="text-[11px] text-center text-slate-500 pt-2 border-t border-borderDark/40">
+        الحساب الافتراضي: admin / 123456
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TOP HEADER ================= -->
+  <header class="bg-panelDark border-b border-borderDark px-3 py-2 flex flex-wrap items-center justify-between sticky top-0 z-40 shadow-lg gap-2">
+    <div class="flex items-center gap-2">
+      <div class="bg-gradient-to-r from-accentCyan to-accentBlue text-white font-black px-3 py-1 rounded-xl text-sm tracking-wider flex items-center gap-1.5 shadow-[0_0_12px_rgba(6,182,212,0.4)]">
+        <i data-lucide="zap" class="w-4 h-4 text-white"></i> EL-RESALA
+      </div>
+      <!-- شارة المستخدم الحالي -->
+      <div class="flex items-center gap-1.5 bg-cardDark border border-borderDark px-2.5 py-1 rounded-xl">
+        <i data-lucide="user" class="w-3.5 h-3.5 text-accentCyan"></i>
+        <span class="text-xs font-bold text-slate-200" id="headerUserName">admin</span>
+        <span class="text-[9px] bg-accentCyan/15 text-accentCyan px-1.5 py-0.5 rounded font-mono" id="headerUserRole">مدير</span>
+        <button onclick="handleLogout()" title="تسجيل خروج" class="text-slate-400 hover:text-rose-400 mr-1"><i data-lucide="log-out" class="w-3.5 h-3.5"></i></button>
+      </div>
+    </div>
+
+    <!-- أزرار العمليات السريعة -->
+    <div class="flex items-center gap-1.5 overflow-x-auto max-w-full py-1">
+      <button onclick="openModal('modal-add-product')" class="bg-cardDark hover:bg-borderDark text-xs px-2.5 py-1.5 rounded-lg border border-borderDark flex items-center gap-1 font-bold whitespace-nowrap">
+        <i data-lucide="smartphone" class="w-3.5 h-3.5 text-accentCyan"></i> شراء جهاز
+      </button>
+      <button onclick="openModal('modal-repair-job')" class="bg-cardDark hover:bg-borderDark text-xs px-2.5 py-1.5 rounded-lg border border-borderDark flex items-center gap-1 font-bold whitespace-nowrap">
+        <i data-lucide="wrench" class="w-3.5 h-3.5 text-accentCyan"></i> استلام صيانة
+      </button>
+      <button onclick="switchTab('inventory')" class="bg-cardDark hover:bg-borderDark text-xs px-2.5 py-1.5 rounded-lg border border-borderDark flex items-center gap-1 font-bold whitespace-nowrap">
+        <i data-lucide="boxes" class="w-3.5 h-3.5 text-accentGreen"></i> جرد المخزن
+      </button>
+    </div>
+
+    <!-- الرصيد وتقفيل الشفت -->
+    <div class="flex items-center gap-2">
+      <div class="bg-cardDark border border-borderDark rounded-xl px-2.5 py-1 flex items-center gap-2">
+        <div class="text-right">
+          <div class="text-[9px] text-slate-400 font-bold">الرصيد الكلي</div>
+          <div class="text-xs font-black text-accentGreen" id="headerTotalBalance">1,000.00 ج.م</div>
+        </div>
+        <button onclick="switchTab('cash')" class="bg-accentGreen/15 hover:bg-accentGreen/25 text-accentGreen border border-accentGreen/30 text-[11px] px-2 py-1 rounded-lg font-bold flex items-center gap-1">
+          <i data-lucide="wallet" class="w-3 h-3"></i> الدرج
+        </button>
+        <button onclick="openModal('modal-close-shift')" class="bg-accentOrange/15 hover:bg-accentOrange/25 text-accentOrange border border-accentOrange/30 text-[11px] px-2 py-1 rounded-lg font-bold flex items-center gap-1">
+          <i data-lucide="lock" class="w-3 h-3"></i> تقفيل
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= TABS VIEWPORT ================= -->
+  <main class="flex-1 p-2 md:p-4 max-w-7xl mx-auto w-full">
+
+    <!-- 1. شاشة المبيعات (POS) -->
+    <section id="tab-pos" class="tab-view flex flex-col lg:flex-row gap-3">
+      <div class="w-full lg:w-[380px] bg-panelDark border border-borderDark rounded-2xl flex flex-col overflow-hidden shadow-xl">
+        <div class="bg-cardDark p-3 border-b border-borderDark flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="p-2 bg-accentCyan/15 rounded-xl text-accentCyan"><i data-lucide="shopping-cart" class="w-4 h-4"></i></div>
+            <div>
+              <h2 class="font-bold text-xs">فاتورة بيع مباشرة</h2>
+              <p class="text-[10px] text-slate-400">رقم الفاتورة: #<span id="posInvoiceNum">1092</span></p>
+            </div>
+          </div>
+          <button onclick="clearCart()" class="text-xs text-rose-400 hover:text-rose-300 font-bold">تفريغ</button>
+        </div>
+
+        <div class="flex-1 max-h-[320px] lg:max-h-[400px] overflow-y-auto p-2 space-y-1.5 custom-scroll" id="cartContainer"></div>
+
+        <div class="bg-cardDark/95 p-3 border-t border-borderDark space-y-2 text-xs">
+          <div class="flex justify-between text-slate-400">
+            <span>المجموع:</span><span class="text-slate-100 font-bold" id="cartSubtotalText">0.00 ج.م</span>
+          </div>
+          <div class="flex justify-between text-slate-400">
+            <span>الخصم:</span>
+            <input type="number" id="cartDiscountInput" value="0" min="0" class="w-16 bg-brandDark border border-borderDark rounded px-1 text-center font-bold text-accentOrange" oninput="renderCart()">
+          </div>
+          <div class="flex justify-between items-center pt-2 border-t border-borderDark/60">
+            <span class="font-bold text-sm">الصافي:</span>
+            <span class="text-lg font-black text-accentGreen" id="cartGrandTotalText">0.00 ج.م</span>
+          </div>
+          <button onclick="openModal('modal-checkout')" class="w-full bg-accentGreen hover:bg-emerald-600 text-white font-black py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-lg transition">
+            <i data-lucide="check-circle" class="w-4 h-4"></i> إتمام الدفع (F10)
+          </button>
+        </div>
+      </div>
+
+      <div class="flex-1 bg-panelDark border border-borderDark rounded-2xl flex flex-col overflow-hidden shadow-xl p-3">
+        <div class="flex items-center justify-between pb-3 border-b border-borderDark flex-wrap gap-2">
+          <div class="flex items-center gap-1.5 overflow-x-auto">
+            <button onclick="filterCatalog('ALL')" class="cat-chip bg-accentCyan text-slate-900 font-black text-xs px-3 py-1 rounded-xl shadow">الكل</button>
+            <button onclick="filterCatalog('DEVICE')" class="cat-chip bg-cardDark text-slate-300 font-semibold text-xs px-3 py-1 rounded-xl">هواتف</button>
+            <button onclick="filterCatalog('ACCESSORY')" class="cat-chip bg-cardDark text-slate-300 font-semibold text-xs px-3 py-1 rounded-xl">إكسسوارات</button>
+            <button onclick="filterCatalog('SPARE_PART')" class="cat-chip bg-cardDark text-slate-300 font-semibold text-xs px-3 py-1 rounded-xl">قطع غيار</button>
+          </div>
+          <span class="text-[11px] text-slate-400 bg-brandDark px-2 py-0.5 rounded-md border border-borderDark" id="catalogCount">4 أصناف</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 pt-3 overflow-y-auto max-h-[500px] custom-scroll" id="posCatalogGrid"></div>
+      </div>
+    </section>
+
+    <!-- 2. شاشة المخزون والجرد -->
+    <section id="tab-inventory" class="tab-view hidden space-y-3">
+      <div class="bg-panelDark border border-borderDark rounded-2xl p-3 flex flex-wrap items-center justify-between gap-2 shadow-md">
+        <div class="flex items-center gap-2">
+          <div class="p-2 bg-emerald-500/15 rounded-xl text-emerald-400"><i data-lucide="boxes" class="w-5 h-5"></i></div>
+          <div>
+            <h2 class="font-extrabold text-sm">إدارة وجرد المخزون العام</h2>
+            <p class="text-[11px] text-slate-400">متابعة دقيقة للكميات، الـ IMEI، والنواقص</p>
+          </div>
+        </div>
+        <button onclick="openModal('modal-add-product')" class="bg-accentGreen hover:bg-emerald-600 text-white text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 shadow">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i> إضافة صنف جديد
+        </button>
+      </div>
+      <div class="bg-panelDark border border-borderDark rounded-2xl overflow-hidden shadow-xl">
+        <div class="p-3 border-b border-borderDark flex items-center justify-between gap-2 flex-wrap">
+          <input type="text" id="inventorySearch" placeholder="بحث باسم الصنف أو الباركود أو IMEI..." class="bg-brandDark border border-borderDark rounded-lg px-3 py-1.5 text-xs text-slate-200 w-full md:w-72 focus:outline-none" oninput="renderInventoryTable()">
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-right text-xs">
+            <thead class="bg-cardDark/80 text-slate-400 border-b border-borderDark text-[11px]">
+              <tr>
+                <th class="p-3">الصنف</th>
+                <th class="p-3">النوع</th>
+                <th class="p-3">الرصيد</th>
+                <th class="p-3">سعر الشراء</th>
+                <th class="p-3">سعر البيع</th>
+                <th class="p-3 text-center">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="inventoryTableBody" class="divide-y divide-borderDark/40"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. شاشة الصيانة -->
+    <section id="tab-repairs" class="tab-view hidden space-y-3">
+      <div class="bg-panelDark border border-borderDark rounded-2xl p-3 flex flex-wrap items-center justify-between gap-2 shadow-md">
+        <div class="flex items-center gap-2">
+          <div class="p-2 bg-accentCyan/15 rounded-xl text-accentCyan"><i data-lucide="wrench" class="w-5 h-5"></i></div>
+          <h2 class="font-extrabold text-sm">قسم الصيانة واستلام الأجهزة</h2>
+        </div>
+        <button onclick="openModal('modal-repair-job')" class="bg-accentCyan text-slate-950 text-xs font-black px-3.5 py-2 rounded-xl flex items-center gap-1.5">
+          <i data-lucide="plus" class="w-4 h-4"></i> استلام جهاز
+        </button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3" id="repairCardsContainer"></div>
+    </section>
+
+    <!-- 4. شاشة الدرج والمحافظ -->
+    <section id="tab-cash" class="tab-view hidden space-y-3">
+      <div class="bg-panelDark border border-borderDark rounded-2xl p-3 flex items-center justify-between shadow-md">
+        <h2 class="font-extrabold text-sm flex items-center gap-2"><i data-lucide="wallet" class="w-5 h-5 text-emerald-400"></i> درج الكاش والمحافظ</h2>
+        <button onclick="openModal('modal-close-shift')" class="bg-accentOrange text-slate-950 font-black px-3 py-1.5 rounded-xl text-xs flex items-center gap-1">
+          <i data-lucide="lock" class="w-3.5 h-3.5"></i> تقفيل الوردية
+        </button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div class="bg-panelDark p-3.5 rounded-2xl border border-borderDark">
+          <div class="text-xs text-slate-400 font-bold">كاش سائل - الخزينة</div>
+          <div class="text-xl font-black text-slate-100 mt-2" id="walletCashBal">0.00 ج.م</div>
+        </div>
+        <div class="bg-panelDark p-3.5 rounded-2xl border border-borderDark">
+          <div class="text-xs text-accentCyan font-bold">فودافون كاش (محمد مصطفي)</div>
+          <div class="text-xl font-black text-slate-100 mt-2" id="walletVodafoneBal">1,000.00 ج.م</div>
+        </div>
+        <div class="bg-panelDark p-3.5 rounded-2xl border border-borderDark">
+          <div class="text-xs text-blue-400 font-bold">انستاباي / بنك</div>
+          <div class="text-xl font-black text-slate-100 mt-2" id="walletBankBal">0.00 ج.م</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 5. شاشة الإعدادات الشاملة (مطابقة للصورة 100%) ================= -->
+    <section id="tab-settings" class="tab-view hidden space-y-3">
+      <div class="bg-panelDark border border-borderDark rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[600px]">
+        
+        <!-- القائمة الجانبية (مطابقة بالمللي للصورة) -->
+        <div class="w-full md:w-64 bg-cardDark/40 border-b md:border-b-0 md:border-l border-borderDark p-3 space-y-2">
+          <div class="relative">
+            <input type="text" placeholder="ابحث في الإعدادات..." class="w-full bg-brandDark border border-borderDark rounded-xl px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-accentCyan">
+            <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5"></i>
+          </div>
+
+          <!-- الأساسيات -->
+          <div class="pt-2">
+            <div class="text-[10px] text-slate-500 font-black px-2 mb-1">الأساسيات</div>
+            <div class="space-y-0.5 text-xs font-semibold">
+              <button onclick="setSettingView('general')" id="setBtn-general" class="set-nav-btn w-full text-right px-3 py-2 rounded-xl text-slate-300 hover:bg-cardDark flex items-center gap-2">
+                <i data-lucide="sliders" class="w-4 h-4 text-cyan-400"></i> عام
+              </button>
+              <button onclick="setSettingView('printers')" id="setBtn-printers" class="set-nav-btn w-full text-right px-3 py-2 rounded-xl text-slate-300 hover:bg-cardDark flex items-center gap-2">
+                <i data-lucide="printer" class="w-4 h-4 text-amber-400"></i> الطباعة
+              </button>
+              <button onclick="setSettingView('invoices')" id="setBtn-invoices" class="set-nav-btn w-full text-right px-3 py-2 rounded-xl text-slate-300 hover:bg-cardDark flex items-center gap-2">
+                <i data-lucide="file-text" class="w-4 h-4 text-emerald-400"></i> الفواتير
+              </button>
+              <button onclick="setSettingView('shifts')" id="setBtn-shifts" class="set-nav-btn w-full text-right px-3 py-2 rounded-xl text-slate-300 hover:bg-cardDark flex items-center gap-2">
+                <i data-lucide="calendar" class="w-4 h-4 text-blue-400"></i> الشغل اليومي
+              </button>
+              <button onclick="setSettingView('wallets')" id="setBtn-wallets" class="set-nav-btn w-full text-right px-3 py-2 rounded-xl text-slate-300 hover:bg-cardDark flex items-center gap-2">
+                <i data-lucide="credit-card" class="w-4 h-4 text-purple-400"></i> المحافظ والصلات
+              </button>
+            </div>
+          </div>
+
+          <!-- سياسات التشغيل (المحددة في صورتك) -->
+          <div class="pt-1">
+            <button onclick="setSettingView('policies')" id="setBtn-policies" class="set-nav-btn w-full text-right px-3 py-2 rounded-xl bg-accentCyan/20 text-accentCyan border border-accentCyan/30 font-bold flex items-center gap-2">
+              <i data-lucide="shield-check" class="w-4 h-4"></i> سياسات التشغيل
+            </button>
+          </div>
+
+          <!-- واتساب -->
+          <div class="pt-1">
+            <button onclick="setSettingView('whatsapp')" id="setBtn-whatsapp" class="set-nav-btn w-full text-right px-3 py-2 rounded-xl text-slate-300 hover:bg-cardDark flex items-center gap-2 font-semibold text-xs">
+              <i data-lucide="message-square" class="w-4 h-4 text-emerald-400"></i> واتساب
+            </button>
+          </div>
+
+          <!-- النظام والمستخدمين -->
+          <div class="pt-1">
+            <div class="text-[10px] text-slate-500 font-black px-2 mb-1">النظام</div>
+            <div class="space-y-0.5 text-xs font-semibold">
+              <button onclick="setSettingView('devices')" id="setBtn-devices" class="set-nav-btn w-full text-right px-3 py-2 rounded-xl text-slate-300 hover:bg-cardDark flex items-center gap-2">
+                <i data-lucide="hard-drive" class="w-4 h-4 text-cyan-400"></i> الاتصال والأجهزة
+              </button>
+              <!-- صفحة المستخدمين وكلمات المرور المطلوبة -->
+              <button onclick="setSettingView('users')" id="setBtn-users" class="set-nav-btn w-full text-right px-3 py-2 rounded-xl text-amber-400 hover:bg-cardDark flex items-center gap-2 font-bold">
+                <i data-lucide="users" class="w-4 h-4"></i> المستخدمين وكلمات المرور
+              </button>
+              <button onclick="setSettingView('license')" id="setBtn-license" class="set-nav-btn w-full text-right px-3 py-2 rounded-xl text-slate-300 hover:bg-cardDark flex items-center gap-2">
+                <i data-lucide="key" class="w-4 h-4 text-rose-400"></i> الترخيص والبرنامج
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- محتوى الإعدادات (يمين الشاشة) -->
+        <div class="flex-1 p-4 overflow-y-auto custom-scroll" id="settingContentArea">
+          
+          <!-- عرض سياسات التشغيل والإشعارات (مطابق لصورتك بالمللي) -->
+          <div id="view-policies" class="set-pane space-y-3">
+            <div class="border-b border-borderDark pb-2">
+              <h2 class="text-sm font-black text-slate-100 flex items-center gap-2">
+                <i data-lucide="bell" class="w-4 h-4 text-accentCyan"></i> إعدادات الإشعارات وسياسات التشغيل
+              </h2>
+              <p class="text-[11px] text-slate-400">تحكم كامل في أصوات التنبيهات وإشعارات المبيعات والمخزن</p>
+            </div>
+
+            <!-- بطاقات التبديل المتطابقة مع الصورة -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+              
+              <!-- 1. تفعيل الإشعارات -->
+              <div class="bg-cardDark p-3.5 rounded-2xl border border-borderDark flex items-center justify-between">
+                <div>
+                  <div class="text-xs font-bold text-slate-200">تفعيل الإشعارات</div>
+                  <div class="text-[11px] text-slate-400">إظهار إشعارات النظام على الشاشة</div>
+                </div>
+                <input type="checkbox" id="set_notif_active" checked onchange="updatePolicyConfig()" class="w-5 h-5 accent-accentCyan cursor-pointer">
+              </div>
+
+              <!-- 2. الأصوات -->
+              <div class="bg-cardDark p-3.5 rounded-2xl border border-borderDark flex items-center justify-between">
+                <div>
+                  <div class="text-xs font-bold text-slate-200">الأصوات</div>
+                  <div class="text-[11px] text-slate-400">تشغيل أصوات التنبيهات والأزرار</div>
+                </div>
+                <input type="checkbox" id="set_sound_active" checked onchange="updatePolicyConfig()" class="w-5 h-5 accent-accentCyan cursor-pointer">
+              </div>
+
+              <!-- 3. تنبيهات التذكيرات -->
+              <div class="bg-cardDark p-3.5 rounded-2xl border border-borderDark flex items-center justify-between">
+                <div>
+                  <div class="text-xs font-bold text-slate-200">تنبيهات التذكيرات</div>
+                  <div class="text-[11px] text-slate-400">إشعارات التذكيرات والمهام اليومية</div>
+                </div>
+                <input type="checkbox" id="set_reminders_active" checked onchange="updatePolicyConfig()" class="w-5 h-5 accent-accentCyan cursor-pointer">
+              </div>
+
+              <!-- 4. تنبيهات المبيعات -->
+              <div class="bg-cardDark p-3.5 rounded-2xl border border-borderDark flex items-center justify-between">
+                <div>
+                  <div class="text-xs font-bold text-slate-200">تنبيهات المبيعات</div>
+                  <div class="text-[11px] text-slate-400">إشعار فوري عند إتمام أي عملية بيع</div>
+                </div>
+                <input type="checkbox" id="set_sales_notif" checked onchange="updatePolicyConfig()" class="w-5 h-5 accent-accentCyan cursor-pointer">
+              </div>
+
+              <!-- 5. تنبيهات المخزون -->
+              <div class="bg-cardDark p-3.5 rounded-2xl border border-borderDark flex items-center justify-between md:col-span-2">
+                <div>
+                  <div class="text-xs font-bold text-slate-200">تنبيهات المخزون</div>
+                  <div class="text-[11px] text-slate-400">إشعار وتنبيه عند وصول الصنف للحد الأدنى للنواقص</div>
+                </div>
+                <input type="checkbox" id="set_stock_notif" checked onchange="updatePolicyConfig()" class="w-5 h-5 accent-accentCyan cursor-pointer">
+              </div>
+            </div>
+          </div>
+
+          <!-- ================= صفحة المستخدمين وكلمات المرور (USERS VIEW) ================= -->
+          <div id="view-users" class="set-pane hidden space-y-4">
+            <div class="flex justify-between items-center border-b border-borderDark pb-2">
+              <div>
+                <h2 class="text-sm font-black text-amber-400 flex items-center gap-2">
+                  <i data-lucide="users" class="w-4 h-4"></i> إدارة المستخدمين وصلاحيات الدخول
+                </h2>
+                <p class="text-[11px] text-slate-400">إنشاء حسابات للكاشير والفنيين مع كلمات المرور</p>
+              </div>
+              <button onclick="openModal('modal-add-user')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs px-3 py-1.5 rounded-xl shadow">
+                + إضافة مستخدم جديد
+              </button>
+            </div>
+
+            <!-- جدول المستخدمين -->
+            <div class="bg-cardDark rounded-2xl border border-borderDark overflow-hidden">
+              <table class="w-full text-right text-xs">
+                <thead class="bg-brandDark/80 text-slate-400 border-b border-borderDark text-[11px]">
+                  <tr>
+                    <th class="p-3">الاسم</th>
+                    <th class="p-3">اسم المستخدم (Login)</th>
+                    <th class="p-3">كلمة المرور</th>
+                    <th class="p-3">الدور / الصلاحية</th>
+                    <th class="p-3 text-center">إجراء</th>
+                  </tr>
+                </thead>
+                <tbody id="usersTableBody" class="divide-y divide-borderDark/40">
+                  <!-- قائمة المستخدمين -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- باقي الأقسام التفاعلية -->
+          <div id="view-general" class="set-pane hidden space-y-3">
+            <h2 class="text-xs font-bold text-slate-200">إعدادات المتجر العامة</h2>
+            <input type="text" id="cfgStoreNameInput" value="EL-RESALA Store" class="w-full bg-brandDark border border-borderDark rounded-lg p-2 text-xs">
+            <button onclick="alert('تم الحفظ بنجاح')" class="bg-accentGreen text-white px-4 py-1.5 rounded-lg text-xs font-bold">حفظ</button>
+          </div>
+          <div id="view-printers" class="set-pane hidden space-y-3">
+            <h2 class="text-xs font-bold text-slate-200">إعدادات الطابعة الحرارية</h2>
+            <p class="text-xs text-slate-400">مقاس الرول الافتراضي: 80 مم (يدعم الطباعة المباشرة بدون نافذة ويندوز).</p>
+          </div>
+          <div id="view-whatsapp" class="set-pane hidden space-y-3">
+            <h2 class="text-xs font-bold text-emerald-400">ربط رسائل واتساب</h2>
+            <p class="text-xs text-slate-400">إرسال الفواتير وكروت الصيانة تلقائياً عبر واتساب للعملاء.</p>
+          </div>
+          <div id="view-license" class="set-pane hidden space-y-3">
+            <h2 class="text-xs font-bold text-rose-400">الترخيص</h2>
+            <p class="text-xs text-emerald-400 font-bold">النسخة مرخصة ومفعلة لنظام EL-RESALA V4.0</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= BOTTOM NAVIGATION ================= -->
+  <nav class="fixed bottom-0 inset-x-0 bg-panelDark border-t border-borderDark px-2 py-1.5 flex items-center justify-around z-40 text-[10px] font-bold shadow-2xl">
+    <button onclick="switchTab('pos')" id="nav-pos" class="nav-item flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-accentCyan bg-accentCyan/15 border border-accentCyan/30">
+      <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+      <span>نقطة البيع</span>
+    </button>
+    <button onclick="switchTab('inventory')" id="nav-inventory" class="nav-item flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-400 hover:text-slate-200">
+      <i data-lucide="boxes" class="w-4 h-4"></i>
+      <span>المخزون والجرد</span>
+    </button>
+    <button onclick="switchTab('repairs')" id="nav-repairs" class="nav-item flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-400 hover:text-slate-200">
+      <i data-lucide="wrench" class="w-4 h-4"></i>
+      <span>الصيانة</span>
+    </button>
+    <button onclick="switchTab('cash')" id="nav-cash" class="nav-item flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-400 hover:text-slate-200">
+      <i data-lucide="wallet" class="w-4 h-4"></i>
+      <span>الدرج والمحافظ</span>
+    </button>
+    <button onclick="switchTab('settings')" id="nav-settings" class="nav-item flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-400 hover:text-slate-200">
+      <i data-lucide="settings" class="w-4 h-4"></i>
+      <span>الإعدادات</span>
+    </button>
+  </nav>
+
+  <!-- ================= MODAL: إضافة مستخدم جديد ================= -->
+  <div id="modal-add-user" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-55 hidden flex items-center justify-center p-4">
+    <div class="bg-panelDark border border-borderDark rounded-2xl w-full max-w-sm p-4 shadow-2xl space-y-3">
+      <div class="flex justify-between items-center border-b border-borderDark pb-2">
+        <h3 class="text-xs font-black text-amber-400">إضافة مستخدم جديد للنظام</h3>
+        <button onclick="closeModal('modal-add-user')"><i data-lucide="x" class="w-4 h-4 text-slate-400"></i></button>
+      </div>
+      <div class="space-y-2 text-xs">
+        <div>
+          <label class="text-slate-400">الاسم بالكامل:</label>
+          <input type="text" id="newUserName" placeholder="مثال: أحمد كاشير" class="w-full bg-brandDark border border-borderDark rounded-lg p-2 text-slate-200 mt-1">
+        </div>
+        <div>
+          <label class="text-slate-400">اسم المستخدم (للدخول):</label>
+          <input type="text" id="newUserLogin" placeholder="مثال: ahmed" class="w-full bg-brandDark border border-borderDark rounded-lg p-2 text-slate-200 mt-1">
+        </div>
+        <div>
+          <label class="text-slate-400">كلمة المرور:</label>
+          <input type="text" id="newUserPass" placeholder="اكتب كلمة مرور قوية" class="w-full bg-brandDark border border-borderDark rounded-lg p-2 text-slate-200 mt-1">
+        </div>
+        <div>
+          <label class="text-slate-400">الصلاحية / الدور:</label>
+          <select id="newUserRole" class="w-full bg-brandDark border border-borderDark rounded-lg p-2 text-slate-200 mt-1">
+            <option value="كاشير">كاشير مبيعات</option>
+            <option value="فني صيانة">فني صيانة</option>
+            <option value="مدير">مدير نظام كامل</option>
+          </select>
+        </div>
+        <button onclick="saveNewUser()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-2.5 rounded-xl text-xs mt-2">
+          حفظ المستخدم وتفعيل الحساب
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- باقي الموديلات (إتمام البيع، إضافة منتج، كارت صيانة، تقفيل شفت) -->
+  <div id="modal-checkout" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
+    <div class="bg-panelDark border border-borderDark rounded-2xl w-full max-w-sm p-4 shadow-2xl space-y-3">
+      <div class="flex justify-between items-center border-b border-borderDark pb-2">
+        <h2 class="text-xs font-black text-accentGreen">إتمام عملية البيع</h2>
+        <button onclick="closeModal('modal-checkout')"><i data-lucide="x" class="w-4 h-4 text-slate-400"></i></button>
+      </div>
+      <div class="text-xs space-y-2">
+        <div class="flex justify-between items-center bg-brandDark p-2 rounded-lg">
+          <span class="text-slate-400">المبلغ المطلوب:</span>
+          <span class="text-base font-black text-accentGreen" id="checkoutDueAmount">0.00 ج.م</span>
+        </div>
+        <select id="checkoutAccountSelect" class="w-full bg-brandDark border border-borderDark rounded-lg p-2">
+          <option value="cash">كاش سائل - الخزينة</option>
+          <option value="vodafone">فودافون كاش</option>
+          <option value="bank">انستاباي</option>
+        </select>
+        <button onclick="processCheckoutSuccess()" class="w-full bg-accentGreen hover:bg-emerald-600 text-white font-bold py-2 rounded-xl">تأكيد البيع والطباعة</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-add-product" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
+    <div class="bg-panelDark border border-borderDark rounded-2xl w-full max-w-md p-4 space-y-2.5 text-xs shadow-2xl">
+      <div class="flex justify-between items-center border-b border-borderDark pb-2 font-bold text-accentCyan">
+        <span>إضافة صنف / جهاز جديد</span>
+        <button onclick="closeModal('modal-add-product')"><i data-lucide="x" class="w-4 h-4 text-slate-400"></i></button>
+      </div>
+      <input type="text" id="newProdName" placeholder="اسم الصنف أو الموبايل" class="w-full bg-brandDark border border-borderDark rounded-lg p-2">
+      <div class="grid grid-cols-2 gap-2">
+        <select id="newProdType" class="bg-brandDark border border-borderDark rounded-lg p-2">
+          <option value="SPARE_PART">قطع غيار</option>
+          <option value="ACCESSORY">إكسسوار</option>
+          <option value="DEVICE">هاتف محمول (IMEI)</option>
+        </select>
+        <input type="number" id="newProdStock" placeholder="الكمية" value="5" class="bg-brandDark border border-borderDark rounded-lg p-2">
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <input type="number" id="newProdCost" placeholder="سعر الشراء" value="650" class="bg-brandDark border border-borderDark rounded-lg p-2">
+        <input type="number" id="newProdPrice" placeholder="سعر البيع" value="850" class="bg-brandDark border border-borderDark rounded-lg p-2 font-bold text-accentGreen">
+      </div>
+      <button onclick="saveNewProduct()" class="w-full bg-accentCyan font-black py-2 rounded-xl text-slate-950">حفظ في المخزن</button>
+    </div>
+  </div>
+
+  <div id="modal-repair-job" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
+    <div class="bg-panelDark border border-borderDark rounded-2xl w-full max-w-md p-4 space-y-2 text-xs shadow-2xl">
+      <div class="flex justify-between items-center border-b border-borderDark pb-2 font-bold text-accentCyan">
+        <span>استلام صيانة جديد</span>
+        <button onclick="closeModal('modal-repair-job')"><i data-lucide="x" class="w-4 h-4 text-slate-400"></i></button>
+      </div>
+      <input type="text" id="jobCustName" placeholder="اسم العميل" class="w-full bg-brandDark border border-borderDark rounded-lg p-2">
+      <input type="text" id="jobDeviceModel" placeholder="موديل الجهاز" class="w-full bg-brandDark border border-borderDark rounded-lg p-2">
+      <textarea id="jobFault" placeholder="العطل وملاحظات الاستلام..." class="w-full bg-brandDark border border-borderDark rounded-lg p-2"></textarea>
+      <button onclick="saveRepairJob()" class="w-full bg-accentCyan font-black py-2 rounded-xl text-slate-950">حفظ كارت الصيانة</button>
+    </div>
+  </div>
+
+  <div id="modal-close-shift" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
+    <div class="bg-panelDark border border-borderDark rounded-2xl w-full max-w-sm p-4 space-y-3 text-xs shadow-2xl">
+      <div class="flex justify-between items-center border-b border-borderDark pb-2 font-bold text-accentOrange">
+        <span>تقفيل الشفت</span>
+        <button onclick="closeModal('modal-close-shift')"><i data-lucide="x" class="w-4 h-4 text-slate-400"></i></button>
+      </div>
+      <p class="text-slate-300">هل تريد تأكيد تقفيل الوردية الحالية وطباعة ملخص الكاش والمحافظ؟</p>
+      <button onclick="alert('🔒 تم تقفيل الشفت بنجاح'); closeModal('modal-close-shift');" class="w-full bg-accentOrange font-black py-2 rounded-xl text-slate-950">تأكيد التقفيل</button>
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT ENGINE ================= -->
+  <script>
+    // 1. قاعدة البيانات والمستخدمين
+    const defaultData = {
+      currentUser: null,
+      users: [
+        { id: '1', name: 'أحمد محمود', username: 'admin', pass: '123456', role: 'مدير' },
+        { id: '2', name: 'محمد كاشير', username: 'cashier', pass: '123', role: 'كاشير' }
+      ],
+      policies: {
+        notif: true,
+        sound: true,
+        reminders: true,
+        sales: true,
+        stock: true
+      },
+      products: [
+        { id: '1', name: 'شاشة سامسونج A12 أصلية', type: 'SPARE_PART', price: 850, cost: 650, stock: 5, code: 'SAM-A12' },
+        { id: '2', name: 'iPhone 13 128GB أزرق', type: 'DEVICE', price: 26500, cost: 24000, stock: 2, code: '354892019284910' },
+        { id: '3', name: 'جراب حماية MagSafe', type: 'ACCESSORY', price: 250, cost: 120, stock: 12, code: 'MAG-13' },
+        { id: '4', name: 'اسكرينة 11D سيراميك', type: 'ACCESSORY', price: 65, cost: 20, stock: 35, code: '11D-SCR' }
+      ],
+      cart: [{ id: '1', name: 'شاشة سامسونج A12 أصلية', price: 850, qty: 1 }],
+      repairs: [],
+      balances: { cash: 0.0, vodafone: 1000.0, bank: 0.0 }
+    };
+
+    let App = JSON.parse(localStorage.getItem('EL_RESALA_APP_AUTH')) || defaultData;
+
+    function saveApp() {
+      localStorage.setItem('EL_RESALA_APP_AUTH', JSON.stringify(App));
+    }
+
+    // 2. نظام تسجيل الدخول والمستخدمين
+    function checkAuth() {
+      const overlay = document.getElementById('loginOverlay');
+      if (!App.currentUser) {
+        overlay.classList.remove('hidden');
+      } else {
+        overlay.classList.add('hidden');
+        document.getElementById('headerUserName').innerText = App.currentUser.username;
+        document.getElementById('headerUserRole').innerText = App.currentUser.role;
+      }
+    }
+
+    function handleLogin() {
+      const u = document.getElementById('loginUsername').value.trim();
+      const p = document.getElementById('loginPassword').value.trim();
+
+      const user = App.users.find(x => x.username === u && x.pass === p);
+      if (user) {
+        App.currentUser = user;
+        saveApp();
+        checkAuth();
+        if (App.policies.sound) playBeep();
+      } else {
+        alert('❌ اسم المستخدم أو كلمة المرور غير صحيحة!');
+      }
+    }
+
+    function handleLogout() {
+      if (confirm('هل تريد تسجيل الخروج؟')) {
+        App.currentUser = null;
+        saveApp();
+        checkAuth();
+      }
+    }
+
+    function renderUsersTable() {
+      const tbody = document.getElementById('usersTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      App.users.forEach((u, idx) => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-cardDark/50">
+            <td class="p-3 font-bold text-slate-200">${u.name}</td>
+            <td class="p-3 font-mono text-accentCyan">${u.username}</td>
+            <td class="p-3 font-mono text-slate-400">${u.pass}</td>
+            <td class="p-3"><span class="bg-brandDark px-2 py-0.5 rounded text-[10px] font-bold border border-borderDark">${u.role}</span></td>
+            <td class="p-3 text-center">
+              ${u.username !== 'admin' ? `<button onclick="deleteUser(${idx})" class="text-rose-400 font-bold hover:underline">حذف</button>` : '<span class="text-slate-500 text-[10px]">أساسي</span>'}
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function saveNewUser() {
+      const name = document.getElementById('newUserName').value.trim();
+      const login = document.getElementById('newUserLogin').value.trim();
+      const pass = document.getElementById('newUserPass').value.trim();
+      const role = document.getElementById('newUserRole').value;
+
+      if (!name || !login || !pass) return alert('يرجى كتابة كافة البيانات!');
+      if (App.users.some(x => x.username === login)) return alert('اسم المستخدم مسجل مسبقاً!');
+
+      App.users.push({ id: Date.now().toString(), name, username: login, pass, role });
+      saveApp();
+      renderUsersTable();
+      closeModal('modal-add-user');
+      alert('✅ تم حفظ المستخدم الجديد بنجاح.');
+    }
+
+    function deleteUser(idx) {
+      if (confirm('تأكيد حذف المستخدم؟')) {
+        App.users.splice(idx, 1);
+        saveApp();
+        renderUsersTable();
+      }
+    }
+
+    // 3. التبديل في الإعدادات وحفظ السياسات
+    function setSettingView(viewId) {
+      document.querySelectorAll('.set-pane').forEach(p => p.classList.add('hidden'));
+      document.querySelectorAll('.set-nav-btn').forEach(b => {
+        b.className = 'set-nav-btn w-full text-right px-3 py-2 rounded-xl text-slate-300 hover:bg-cardDark flex items-center gap-2 font-semibold text-xs';
+      });
+
+      document.getElementById('view-' + viewId)?.classList.remove('hidden');
+      const activeBtn = document.getElementById('setBtn-' + viewId);
+      if (activeBtn) {
+        activeBtn.className = 'set-nav-btn w-full text-right px-3 py-2 rounded-xl bg-accentCyan/20 text-accentCyan border border-accentCyan/30 font-bold flex items-center gap-2 text-xs';
+      }
+
+      if (viewId === 'users') renderUsersTable();
+      lucide.createIcons();
+    }
+
+    function updatePolicyConfig() {
+      App.policies = {
+        notif: document.getElementById('set_notif_active').checked,
+        sound: document.getElementById('set_sound_active').checked,
+        reminders: document.getElementById('set_reminders_active').checked,
+        sales: document.getElementById('set_sales_notif').checked,
+        stock: document.getElementById('set_stock_notif').checked
+      };
+      saveApp();
+    }
+
+    function playBeep() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, ctx.currentTime);
+        osc.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.1);
+      } catch (e) {}
+    }
+
+    // 4. التبويبات والمخزون والـ POS
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-view').forEach(t => t.classList.add('hidden'));
+      document.getElementById('tab-' + tabId)?.classList.remove('hidden');
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.className = 'nav-item flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-400 hover:text-slate-200';
+      });
+      const activeNav = document.getElementById('nav-' + tabId);
+      if (activeNav) {
+        activeNav.className = 'nav-item flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-accentCyan bg-accentCyan/15 border border-accentCyan/30 font-bold';
+      }
+      if (tabId === 'inventory') renderInventoryTable();
+      if (tabId === 'settings') setSettingView('policies');
+      lucide.createIcons();
+    }
+
+    function openModal(id) { document.getElementById(id)?.classList.remove('hidden'); lucide.createIcons(); }
+    function closeModal(id) { document.getElementById(id)?.classList.add('hidden'); }
+
+    function renderPosCatalog(filter = 'ALL') {
+      const container = document.getElementById('posCatalogGrid');
+      if (!container) return;
+      container.innerHTML = '';
+      const list = filter === 'ALL' ? App.products : App.products.filter(p => p.type === filter);
+      document.getElementById('catalogCount').innerText = `${list.length} أصناف`;
+
+      list.forEach(p => {
+        container.innerHTML += `
+          <div onclick="addToCart('${p.id}')" class="bg-cardDark hover:border-accentCyan border border-borderDark p-3 rounded-2xl flex flex-col justify-between cursor-pointer transition active:scale-95 group">
+            <div>
+              <div class="flex justify-between items-center text-[10px]">
+                <span class="bg-accentCyan/15 text-accentCyan px-1.5 py-0.5 rounded font-bold">${p.type}</span>
+                <span class="${p.stock <= 3 ? 'text-rose-400 font-bold' : 'text-emerald-400'}">متاح (${p.stock})</span>
+              </div>
+              <h3 class="font-bold text-xs mt-1.5 text-slate-100 group-hover:text-accentCyan line-clamp-1">${p.name}</h3>
+            </div>
+            <div class="mt-2.5 pt-2 border-t border-borderDark/40 flex items-center justify-between">
+              <span class="text-xs font-black text-accentGreen">${p.price.toLocaleString()} ج.م</span>
+              <i data-lucide="plus-circle" class="w-4 h-4 text-slate-400 group-hover:text-accentCyan"></i>
+            </div>
+          </div>
+        `;
+      });
+      lucide.createIcons();
+    }
+
+    function addToCart(prodId) {
+      const p = App.products.find(x => x.id === prodId);
+      if (!p || p.stock <= 0) return alert('غير متوفر بالمخزن!');
+      const item = App.cart.find(x => x.id === prodId);
+      if (item) item.qty++;
+      else App.cart.push({ id: p.id, name: p.name, price: p.price, qty: 1 });
+      saveApp();
+      renderCart();
+      if (App.policies.sound) playBeep();
+    }
+
+    function renderCart() {
+      const box = document.getElementById('cartContainer');
+      if (!box) return;
+      box.innerHTML = '';
+      let subtotal = 0;
+      App.cart.forEach((item, idx) => {
+        subtotal += item.price * item.qty;
+        box.innerHTML += `
+          <div class="bg-cardDark p-2 rounded-xl border border-borderDark flex items-center justify-between text-xs">
+            <div class="flex-1">
+              <div class="font-bold text-slate-100">${item.name}</div>
+              <div class="text-[10px] text-slate-400">${item.price} × ${item.qty}</div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="font-black text-accentGreen">${(item.price * item.qty).toLocaleString()} ج.م</span>
+              <button onclick="App.cart.splice(${idx},1);saveApp();renderCart();" class="text-rose-400 font-bold p-1">×</button>
+            </div>
+          </div>`;
+      });
+      const discount = parseFloat(document.getElementById('cartDiscountInput')?.value) || 0;
+      const grand = Math.max(0, subtotal - discount);
+      document.getElementById('cartSubtotalText').innerText = `${subtotal.toLocaleString()} ج.م`;
+      document.getElementById('cartGrandTotalText').innerText = `${grand.toLocaleString()} ج.م`;
+      document.getElementById('checkoutDueAmount').innerText = `${grand.toLocaleString()} ج.م`;
+    }
+
+    function clearCart() { App.cart = []; saveApp(); renderCart(); }
+
+    function processCheckoutSuccess() {
+      if (App.cart.length === 0) return;
+      const acc = document.getElementById('checkoutAccountSelect').value;
+      const subtotal = App.cart.reduce((s, i) => s + (i.price * i.qty), 0);
+      App.balances[acc] += subtotal;
+      App.cart.forEach(item => {
+        const p = App.products.find(x => x.id === item.id);
+        if (p) p.stock -= item.qty;
+      });
+      alert('✅ تم تسجيل الفاتورة بنجاح!');
+      App.cart = [];
+      saveApp();
+      renderCart();
+      closeModal('modal-checkout');
+    }
+
+    function renderInventoryTable() {
+      const tbody = document.getElementById('inventoryTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      App.products.forEach(p => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-cardDark/50">
+            <td class="p-3 font-bold text-slate-100">${p.name}</td>
+            <td class="p-3"><span class="bg-cardDark border border-borderDark px-2 py-0.5 rounded text-[10px]">${p.type}</span></td>
+            <td class="p-3 font-bold ${p.stock <= 3 ? 'text-rose-400' : 'text-emerald-400'}">${p.stock}</td>
+            <td class="p-3 font-bold text-slate-300">${p.cost.toLocaleString()} ج.م</td>
+            <td class="p-3 font-black text-accentGreen">${p.price.toLocaleString()} ج.م</td>
+            <td class="p-3 text-center">
+              <button onclick="p.stock = parseInt(prompt('تعديل رصيد الصنف:', p.stock)); saveApp(); renderInventoryTable();" class="text-accentCyan font-bold text-[11px]">تعديل</button>
+            </td>
+          </tr>`;
+      });
+    }
+
+    function saveNewProduct() {
+      const name = document.getElementById('newProdName').value.trim();
+      const type = document.getElementById('newProdType').value;
+      const stock = parseInt(document.getElementById('newProdStock').value) || 1;
+      const cost = parseFloat(document.getElementById('newProdCost').value) || 0;
+      const price = parseFloat(document.getElementById('newProdPrice').value) || 0;
+      if (!name) return alert('اكتب اسم الصنف!');
+      App.products.unshift({ id: Date.now().toString(), name, type, stock, cost, price });
+      saveApp();
+      renderPosCatalog();
+      closeModal('modal-add-product');
+      alert('✅ تم حفظ الصنف بالمخزون.');
+    }
+
+    function saveRepairJob() {
+      const cust = document.getElementById('jobCustName').value.trim();
+      const dev = document.getElementById('jobDeviceModel').value.trim();
+      if (!cust || !dev) return alert('اكتب اسم العميل والموديل!');
+      alert('🛠️ تم استلام جهاز الصيانة بنجاح.');
+      closeModal('modal-repair-job');
+    }
+
+    // التهيئة المبدئية
+    checkAuth();
+    renderPosCatalog();
+    renderCart();
+    lucide.createIcons();
+  </script>
+</body>
+</html>
+HTML
+
+# نسخ نفس التحديث للمسار الرئيسي
+cp frontend/index.html index.html
+
+# رفع التحديث إلى GitHub
+git add frontend/index.html index.html
+git commit -m "feat(settings): add full operational policies tabs, sound toggles, and user-password auth"
+git push origin main
+
+echo "=========================================================="
+echo "✨ تم رفع التحديث بنجاح! راجع رابط Vercel الآن:"
+echo "اسم المستخدم الافتراضي: admin | كلمة المرور: 123456"
+echo "=========================================================="

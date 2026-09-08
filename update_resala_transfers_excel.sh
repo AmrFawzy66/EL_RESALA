@@ -1,0 +1,994 @@
+#!/bin/bash
+set -e
+
+echo "🚀 جاري دمج نظام التحويلات والعمولات والتصدير لإكسيل في EL-RESALA..."
+
+cat << 'HTML' > frontend/index.html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>EL-RESALA ERP & POS V4.0</title>
+  <!-- Tailwind CSS & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- SheetJS لتصدير ملفات Excel الحقيقية -->
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brandDark: '#0a0f1d',
+            panelDark: '#121a2d',
+            cardDark: '#19243c',
+            borderDark: '#233452',
+            accentGreen: '#10b981',
+            accentOrange: '#f59e0b',
+            accentCyan: '#06b6d4',
+            accentBlue: '#3b82f6',
+            accentRed: '#ef4444'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
+    body { font-family: 'Cairo', sans-serif; }
+    .custom-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
+    .custom-scroll::-webkit-scrollbar-track { background: #0a0f1d; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #233452; border-radius: 4px; }
+    .custom-scroll::-webkit-scrollbar-thumb:hover { background: #06b6d4; }
+  </style>
+</head>
+<body class="bg-brandDark text-slate-100 min-h-screen flex flex-col select-none pb-20">
+
+  <!-- ================= نافذة تسجيل الدخول ================= -->
+  <div id="loginOverlay" class="fixed inset-0 bg-[#070b14] z-[100] flex items-center justify-center p-4">
+    <div class="bg-panelDark border border-borderDark rounded-3xl w-full max-w-sm p-6 shadow-2xl space-y-4">
+      <div class="text-center space-y-1">
+        <div class="w-14 h-14 bg-gradient-to-tr from-accentCyan to-accentBlue rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-cyan-950">
+          <i data-lucide="zap" class="w-8 h-8 text-white"></i>
+        </div>
+        <h1 class="text-lg font-black text-white mt-2">EL-RESALA ERP</h1>
+        <p class="text-xs text-slate-400">سجّل دخولك للوصول لنظام المحل</p>
+      </div>
+      <div class="space-y-3 pt-2 text-xs">
+        <div>
+          <label class="text-slate-400 block mb-1">اسم المستخدم:</label>
+          <input type="text" id="loginUsername" value="admin" class="w-full bg-brandDark border border-borderDark rounded-xl p-2.5 text-slate-100 focus:outline-none focus:border-accentCyan">
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1">كلمة المرور:</label>
+          <input type="password" id="loginPassword" value="123456" class="w-full bg-brandDark border border-borderDark rounded-xl p-2.5 text-slate-100 focus:outline-none focus:border-accentCyan">
+        </div>
+        <button onclick="handleLogin()" class="w-full bg-accentCyan hover:bg-cyan-600 text-slate-950 font-black py-2.5 rounded-xl shadow-lg transition text-xs mt-2 flex items-center justify-center gap-1.5">
+          <i data-lucide="log-in" class="w-4 h-4"></i> دخول النظام
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= الشريط العلوي ================= -->
+  <header class="bg-panelDark border-b border-borderDark px-3 py-2 flex flex-wrap items-center justify-between sticky top-0 z-40 shadow-lg gap-2">
+    <div class="flex items-center gap-2">
+      <div class="bg-gradient-to-r from-accentCyan to-accentBlue text-white font-black px-3 py-1 rounded-xl text-sm tracking-wider flex items-center gap-1.5 shadow-[0_0_12px_rgba(6,182,212,0.4)]">
+        <i data-lucide="zap" class="w-4 h-4 text-white"></i> EL-RESALA
+      </div>
+      <div class="flex items-center gap-1.5 bg-cardDark border border-borderDark px-2 py-1 rounded-xl">
+        <span class="text-xs font-bold text-slate-200" id="headerUserName">admin</span>
+        <button onclick="handleLogout()" title="خروج" class="text-slate-400 hover:text-rose-400 mr-1"><i data-lucide="log-out" class="w-3.5 h-3.5"></i></button>
+      </div>
+    </div>
+
+    <!-- أزرار العمليات السريعة في الهيدر -->
+    <div class="flex items-center gap-1.5 overflow-x-auto max-w-full py-1">
+      <button onclick="openModal('modal-wallet-transfer')" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs px-3 py-1.5 rounded-xl border border-emerald-400/40 flex items-center gap-1.5 font-black whitespace-nowrap shadow-md shadow-emerald-950/40">
+        <i data-lucide="repeat" class="w-3.5 h-3.5"></i> تحويل / استقبال كاش
+      </button>
+      <button onclick="openModal('modal-add-product')" class="bg-cardDark hover:bg-borderDark text-xs px-2.5 py-1.5 rounded-lg border border-borderDark flex items-center gap-1 font-bold whitespace-nowrap">
+        <i data-lucide="smartphone" class="w-3.5 h-3.5 text-accentCyan"></i> شراء جهاز
+      </button>
+      <button onclick="openModal('modal-repair-job')" class="bg-cardDark hover:bg-borderDark text-xs px-2.5 py-1.5 rounded-lg border border-borderDark flex items-center gap-1 font-bold whitespace-nowrap">
+        <i data-lucide="wrench" class="w-3.5 h-3.5 text-accentCyan"></i> استلام صيانة
+      </button>
+    </div>
+
+    <!-- الرصيد وتقفيل الشفت -->
+    <div class="flex items-center gap-2">
+      <div class="bg-cardDark border border-borderDark rounded-xl px-2.5 py-1 flex items-center gap-2">
+        <div class="text-right">
+          <div class="text-[9px] text-slate-400 font-bold">الرصيد الكلي</div>
+          <div class="text-xs font-black text-accentGreen" id="headerTotalBalance">1,000.00 ج.م</div>
+        </div>
+        <button onclick="switchTab('cash')" class="bg-accentGreen/15 hover:bg-accentGreen/25 text-accentGreen border border-accentGreen/30 text-[11px] px-2 py-1 rounded-lg font-bold flex items-center gap-1">
+          <i data-lucide="wallet" class="w-3 h-3"></i> الدرج
+        </button>
+        <button onclick="openModal('modal-close-shift')" class="bg-accentOrange/15 hover:bg-accentOrange/25 text-accentOrange border border-accentOrange/30 text-[11px] px-2 py-1 rounded-lg font-bold flex items-center gap-1">
+          <i data-lucide="lock" class="w-3 h-3"></i> تقفيل
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= TABS VIEWPORT ================= -->
+  <main class="flex-1 p-2 md:p-4 max-w-7xl mx-auto w-full">
+
+    <!-- 1. شاشة نقطة البيع (POS) -->
+    <section id="tab-pos" class="tab-view flex flex-col lg:flex-row gap-3">
+      <div class="w-full lg:w-[380px] bg-panelDark border border-borderDark rounded-2xl flex flex-col overflow-hidden shadow-xl">
+        <div class="bg-cardDark p-3 border-b border-borderDark flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="p-2 bg-accentCyan/15 rounded-xl text-accentCyan"><i data-lucide="shopping-cart" class="w-4 h-4"></i></div>
+            <div>
+              <h2 class="font-bold text-xs">فاتورة بيع مباشرة</h2>
+              <p class="text-[10px] text-slate-400">رقم: #<span id="posInvoiceNum">1092</span></p>
+            </div>
+          </div>
+          <button onclick="clearCart()" class="text-xs text-rose-400 hover:text-rose-300 font-bold">تفريغ</button>
+        </div>
+
+        <div class="flex-1 max-h-[320px] lg:max-h-[400px] overflow-y-auto p-2 space-y-1.5 custom-scroll" id="cartContainer"></div>
+
+        <div class="bg-cardDark/95 p-3 border-t border-borderDark space-y-2 text-xs">
+          <div class="flex justify-between text-slate-400">
+            <span>المجموع:</span><span class="text-slate-100 font-bold" id="cartSubtotalText">0.00 ج.م</span>
+          </div>
+          <div class="flex justify-between text-slate-400">
+            <span>الخصم:</span>
+            <input type="number" id="cartDiscountInput" value="0" min="0" class="w-16 bg-brandDark border border-borderDark rounded px-1 text-center font-bold text-accentOrange" oninput="renderCart()">
+          </div>
+          <div class="flex justify-between items-center pt-2 border-t border-borderDark/60">
+            <span class="font-bold text-sm">الصافي:</span>
+            <span class="text-lg font-black text-accentGreen" id="cartGrandTotalText">0.00 ج.م</span>
+          </div>
+          <button onclick="openModal('modal-checkout')" class="w-full bg-accentGreen hover:bg-emerald-600 text-white font-black py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-lg transition">
+            <i data-lucide="check-circle" class="w-4 h-4"></i> إتمام الدفع (F10)
+          </button>
+        </div>
+      </div>
+
+      <div class="flex-1 bg-panelDark border border-borderDark rounded-2xl flex flex-col overflow-hidden shadow-xl p-3">
+        <div class="flex items-center justify-between pb-3 border-b border-borderDark flex-wrap gap-2">
+          <div class="flex items-center gap-1.5 overflow-x-auto">
+            <button onclick="filterCatalog('ALL')" class="cat-chip bg-accentCyan text-slate-900 font-black text-xs px-3 py-1 rounded-xl shadow">الكل</button>
+            <button onclick="filterCatalog('DEVICE')" class="cat-chip bg-cardDark text-slate-300 font-semibold text-xs px-3 py-1 rounded-xl">هواتف</button>
+            <button onclick="filterCatalog('ACCESSORY')" class="cat-chip bg-cardDark text-slate-300 font-semibold text-xs px-3 py-1 rounded-xl">إكسسوارات</button>
+            <button onclick="filterCatalog('SPARE_PART')" class="cat-chip bg-cardDark text-slate-300 font-semibold text-xs px-3 py-1 rounded-xl">قطع غيار</button>
+          </div>
+          <button onclick="exportSalesToExcel()" class="bg-cardDark border border-borderDark text-emerald-400 hover:text-emerald-300 text-xs px-2.5 py-1 rounded-lg font-bold flex items-center gap-1">
+            <i data-lucide="sheet" class="w-3.5 h-3.5"></i> إكسيل المبيعات
+          </button>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 pt-3 overflow-y-auto max-h-[500px] custom-scroll" id="posCatalogGrid"></div>
+      </div>
+    </section>
+
+    <!-- 2. شاشة جرد المخزون مع زر تصدير إكسيل -->
+    <section id="tab-inventory" class="tab-view hidden space-y-3">
+      <div class="bg-panelDark border border-borderDark rounded-2xl p-3 flex flex-wrap items-center justify-between gap-2 shadow-md">
+        <div class="flex items-center gap-2">
+          <div class="p-2 bg-emerald-500/15 rounded-xl text-emerald-400"><i data-lucide="boxes" class="w-5 h-5"></i></div>
+          <div>
+            <h2 class="font-extrabold text-sm">إدارة وجرد المخزون العام</h2>
+            <p class="text-[11px] text-slate-400">متابعة دقيقة للكميات، الـ IMEI، وتكلفة رأس المال</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="exportInventoryToExcel()" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/40 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 shadow">
+            <i data-lucide="sheet" class="w-4 h-4"></i> تصدير المخزون إكسيل (Excel)
+          </button>
+          <button onclick="openModal('modal-add-product')" class="bg-accentGreen hover:bg-emerald-600 text-white text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 shadow">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i> إضافة صنف
+          </button>
+        </div>
+      </div>
+      <div class="bg-panelDark border border-borderDark rounded-2xl overflow-hidden shadow-xl">
+        <div class="p-3 border-b border-borderDark flex items-center justify-between gap-2 flex-wrap">
+          <input type="text" id="inventorySearch" placeholder="بحث باسم الصنف أو الباركود أو IMEI..." class="bg-brandDark border border-borderDark rounded-lg px-3 py-1.5 text-xs text-slate-200 w-full md:w-72 focus:outline-none" oninput="renderInventoryTable()">
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-right text-xs">
+            <thead class="bg-cardDark/80 text-slate-400 border-b border-borderDark text-[11px]">
+              <tr>
+                <th class="p-3">الصنف</th>
+                <th class="p-3">النوع</th>
+                <th class="p-3">الرصيد</th>
+                <th class="p-3">سعر الشراء</th>
+                <th class="p-3">سعر البيع</th>
+                <th class="p-3 text-center">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="inventoryTableBody" class="divide-y divide-borderDark/40"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. شاشة الصيانة مع تصدير إكسيل -->
+    <section id="tab-repairs" class="tab-view hidden space-y-3">
+      <div class="bg-panelDark border border-borderDark rounded-2xl p-3 flex flex-wrap items-center justify-between gap-2 shadow-md">
+        <div class="flex items-center gap-2">
+          <div class="p-2 bg-accentCyan/15 rounded-xl text-accentCyan"><i data-lucide="wrench" class="w-5 h-5"></i></div>
+          <h2 class="font-extrabold text-sm">قسم الصيانة واستلام الأجهزة</h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="exportRepairsToExcel()" class="bg-cardDark border border-borderDark text-emerald-400 hover:text-emerald-300 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5">
+            <i data-lucide="sheet" class="w-4 h-4"></i> تصدير الصيانة إكسيل
+          </button>
+          <button onclick="openModal('modal-repair-job')" class="bg-accentCyan text-slate-950 text-xs font-black px-3.5 py-2 rounded-xl flex items-center gap-1.5">
+            <i data-lucide="plus" class="w-4 h-4"></i> استلام جهاز
+          </button>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3" id="repairCardsContainer"></div>
+    </section>
+
+    <!-- 4. شاشة الدرج والمحافظ + قسم التحويلات والعمولات المتقدم -->
+    <section id="tab-cash" class="tab-view hidden space-y-3">
+      <div class="bg-panelDark border border-borderDark rounded-2xl p-3 flex flex-wrap items-center justify-between gap-2 shadow-md">
+        <div class="flex items-center gap-2">
+          <div class="p-2 bg-emerald-500/15 rounded-xl text-emerald-400"><i data-lucide="wallet" class="w-5 h-5"></i></div>
+          <div>
+            <h2 class="font-extrabold text-sm">درج الكاش وخدمات المحافظ والعمولات</h2>
+            <p class="text-[11px] text-slate-400">إدارة أرصدة فودافون كاش، انستاباي، والتحويلات النقدية اليومية</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="openModal('modal-wallet-transfer')" class="bg-accentGreen hover:bg-emerald-600 text-white font-black px-3.5 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow">
+            <i data-lucide="repeat" class="w-4 h-4"></i> عملية تحويل / سحب جديدة
+          </button>
+          <button onclick="openModal('modal-close-shift')" class="bg-accentOrange text-slate-950 font-black px-3 py-2 rounded-xl text-xs flex items-center gap-1">
+            <i data-lucide="lock" class="w-3.5 h-3.5"></i> تقفيل الوردية
+          </button>
+        </div>
+      </div>
+
+      <!-- كروت المحافظ الرئيسية -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div class="bg-panelDark p-3.5 rounded-2xl border border-borderDark">
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-slate-400 font-bold">كاش سائل - الخزينة</span>
+            <span class="text-[10px] bg-emerald-500/15 text-emerald-400 px-2 py-0.5 rounded font-bold">نقدي</span>
+          </div>
+          <div class="text-xl font-black text-slate-100 mt-2" id="walletCashBal">0.00 ج.م</div>
+        </div>
+        <div class="bg-panelDark p-3.5 rounded-2xl border border-borderDark">
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-accentCyan font-bold">فودافون كاش (محمد مصطفي)</span>
+            <span class="text-[10px] bg-accentCyan/15 text-accentCyan px-2 py-0.5 rounded font-bold">محفظة</span>
+          </div>
+          <div class="text-xl font-black text-slate-100 mt-2" id="walletVodafoneBal">1,000.00 ج.م</div>
+        </div>
+        <div class="bg-panelDark p-3.5 rounded-2xl border border-borderDark">
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-blue-400 font-bold">انستاباي / بنك</span>
+            <span class="text-[10px] bg-blue-500/15 text-blue-400 px-2 py-0.5 rounded font-bold">بنك</span>
+          </div>
+          <div class="text-xl font-black text-slate-100 mt-2" id="walletBankBal">0.00 ج.م</div>
+        </div>
+      </div>
+
+      <!-- ملخص أرباح العمولات اليوم -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+        <div class="bg-cardDark p-3 rounded-2xl border border-borderDark">
+          <div class="text-[10px] text-slate-400">إجمالي عمليات التحويل</div>
+          <div class="text-sm font-black text-slate-100 mt-1" id="statTransferCount">0 عملية</div>
+        </div>
+        <div class="bg-cardDark p-3 rounded-2xl border border-borderDark">
+          <div class="text-[10px] text-slate-400">إجمالي المبالغ المتداولة</div>
+          <div class="text-sm font-black text-accentCyan mt-1" id="statTransferVolume">0.00 ج.م</div>
+        </div>
+        <div class="bg-cardDark p-3 rounded-2xl border border-borderDark">
+          <div class="text-[10px] text-accentGreen font-bold">صافي أرباح العمولات اليوم</div>
+          <div class="text-base font-black text-accentGreen mt-1" id="statTransferProfits">0.00 ج.م</div>
+        </div>
+        <div class="bg-cardDark p-3 rounded-2xl border border-borderDark flex items-center justify-center">
+          <button onclick="exportTransfersToExcel()" class="w-full bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/40 text-xs font-bold py-2 rounded-xl flex items-center justify-center gap-1.5 shadow">
+            <i data-lucide="sheet" class="w-4 h-4"></i> تصدير سجل التحويلات إكسيل
+          </button>
+        </div>
+      </div>
+
+      <!-- جدول سجل التحويلات والعمولات -->
+      <div class="bg-panelDark border border-borderDark rounded-2xl overflow-hidden shadow-xl">
+        <div class="p-3 border-b border-borderDark flex justify-between items-center">
+          <h3 class="text-xs font-black text-slate-200 flex items-center gap-1.5">
+            <i data-lucide="arrow-left-right" class="w-4 h-4 text-accentCyan"></i> سجل خدمات التحويل وسحب الكاش والعمولات
+          </h3>
+          <span class="text-[10px] text-slate-400">محدث لحظياً</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-right text-xs">
+            <thead class="bg-cardDark/80 text-slate-400 border-b border-borderDark text-[11px]">
+              <tr>
+                <th class="p-3">نوع العملية</th>
+                <th class="p-3">المحفظة المستخدمة</th>
+                <th class="p-3">رقم العميل</th>
+                <th class="p-3">المبلغ المحول</th>
+                <th class="p-3">العمولة (ربحك)</th>
+                <th class="p-3">المبلغ المستلم/المسلم</th>
+                <th class="p-3">الوقت</th>
+              </tr>
+            </thead>
+            <tbody id="transfersTableBody" class="divide-y divide-borderDark/40">
+              <!-- أسطر التحويلات -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. شاشة الإعدادات -->
+    <section id="tab-settings" class="tab-view hidden space-y-3">
+      <div class="bg-panelDark border border-borderDark rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[500px]">
+        <div class="w-full md:w-64 bg-cardDark/40 border-b md:border-b-0 md:border-l border-borderDark p-3 space-y-2">
+          <button onclick="setSettingView('policies')" id="setBtn-policies" class="w-full text-right px-3 py-2 rounded-xl bg-accentCyan/20 text-accentCyan border border-accentCyan/30 font-bold flex items-center gap-2 text-xs">
+            <i data-lucide="shield-check" class="w-4 h-4"></i> سياسات التشغيل
+          </button>
+          <button onclick="setSettingView('users')" id="setBtn-users" class="w-full text-right px-3 py-2 rounded-xl text-amber-400 hover:bg-cardDark flex items-center gap-2 font-bold text-xs">
+            <i data-lucide="users" class="w-4 h-4"></i> المستخدمين وكلمات المرور
+          </button>
+          <button onclick="exportAllDataToExcel()" class="w-full text-right px-3 py-2 rounded-xl text-emerald-400 hover:bg-cardDark flex items-center gap-2 font-bold text-xs">
+            <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> تصدير كل بيانات السيستم (Excel)
+          </button>
+        </div>
+        <div class="flex-1 p-4 overflow-y-auto custom-scroll" id="settingContentArea">
+          <!-- تفاصيل الإعدادات -->
+          <div id="view-policies" class="set-pane space-y-3">
+            <h2 class="text-sm font-black text-slate-100 flex items-center gap-2"><i data-lucide="bell" class="w-4 h-4 text-accentCyan"></i> سياسات التشغيل</h2>
+            <div class="bg-cardDark p-3.5 rounded-2xl border border-borderDark flex items-center justify-between">
+              <div>
+                <div class="text-xs font-bold text-slate-200">الأصوات والتنبيهات</div>
+                <div class="text-[11px] text-slate-400">تشغيل تنبيه صوتي عند البيع أو التحويل</div>
+              </div>
+              <input type="checkbox" id="set_sound_active" checked class="w-5 h-5 accent-accentCyan">
+            </div>
+          </div>
+          <div id="view-users" class="set-pane hidden space-y-3">
+            <div class="flex justify-between items-center">
+              <h2 class="text-sm font-black text-amber-400">المستخدمين وكلمات المرور</h2>
+              <button onclick="openModal('modal-add-user')" class="bg-amber-500 text-slate-950 font-bold text-xs px-3 py-1 rounded-lg">+ مستخدم جديد</button>
+            </div>
+            <div class="bg-cardDark rounded-2xl border border-borderDark overflow-hidden">
+              <table class="w-full text-right text-xs">
+                <thead class="bg-brandDark text-slate-400 text-[11px]">
+                  <tr><th class="p-2.5">الاسم</th><th class="p-2.5">اليوزر</th><th class="p-2.5">الباسوورد</th><th class="p-2.5">الصلاحية</th></tr>
+                </thead>
+                <tbody id="usersTableBody" class="divide-y divide-borderDark/40"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= الشريط السفلي ================= -->
+  <nav class="fixed bottom-0 inset-x-0 bg-panelDark border-t border-borderDark px-2 py-1.5 flex items-center justify-around z-40 text-[10px] font-bold shadow-2xl">
+    <button onclick="switchTab('pos')" id="nav-pos" class="nav-item flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-accentCyan bg-accentCyan/15 border border-accentCyan/30">
+      <i data-lucide="shopping-cart" class="w-4 h-4"></i><span>نقطة البيع</span>
+    </button>
+    <button onclick="switchTab('inventory')" id="nav-inventory" class="nav-item flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-400 hover:text-slate-200">
+      <i data-lucide="boxes" class="w-4 h-4"></i><span>المخزون</span>
+    </button>
+    <button onclick="switchTab('repairs')" id="nav-repairs" class="nav-item flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-400 hover:text-slate-200">
+      <i data-lucide="wrench" class="w-4 h-4"></i><span>الصيانة</span>
+    </button>
+    <button onclick="switchTab('cash')" id="nav-cash" class="nav-item flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-400 hover:text-slate-200">
+      <i data-lucide="wallet" class="w-4 h-4"></i><span>الدرج والمحافظ</span>
+    </button>
+    <button onclick="switchTab('settings')" id="nav-settings" class="nav-item flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-400 hover:text-slate-200">
+      <i data-lucide="settings" class="w-4 h-4"></i><span>الإعدادات</span>
+    </button>
+  </nav>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: عملية تحويل / استقبال كاش مع عمولة (محفظة & انستاباي) -->
+  <!-- ========================================================================= -->
+  <div id="modal-wallet-transfer" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
+    <div class="bg-panelDark border border-borderDark rounded-3xl w-full max-w-md shadow-2xl overflow-hidden animate-in zoom-in-95">
+      <div class="bg-cardDark px-4 py-3 border-b border-borderDark flex items-center justify-between">
+        <h2 class="text-xs font-black text-emerald-400 flex items-center gap-1.5">
+          <i data-lucide="repeat" class="w-4 h-4"></i> خدمات تحويل وسحب المحافظ والعمولات
+        </h2>
+        <button onclick="closeModal('modal-wallet-transfer')"><i data-lucide="x" class="w-5 h-5 text-slate-400"></i></button>
+      </div>
+
+      <div class="p-4 space-y-3 text-xs">
+        <!-- اختيار نوع المعاملة: إرسال أم استقبال -->
+        <div>
+          <label class="text-slate-400 block mb-1 font-bold">نوع العملية:</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="setTransferType('SEND')" id="btnTypeSend" class="py-2.5 px-3 rounded-xl font-black text-xs border border-emerald-500 bg-emerald-500/20 text-emerald-400 flex items-center justify-center gap-1.5">
+              <i data-lucide="arrow-up-right" class="w-4 h-4"></i> إرسال للعميل (أنت تحول)
+            </button>
+            <button onclick="setTransferType('RECEIVE')" id="btnTypeReceive" class="py-2.5 px-3 rounded-xl font-bold text-xs border border-borderDark bg-cardDark text-slate-400 flex items-center justify-center gap-1.5">
+              <i data-lucide="arrow-down-left" class="w-4 h-4"></i> استقبال من العميل (العميل يحول)
+            </button>
+          </div>
+        </div>
+
+        <!-- اختيار المحفظة -->
+        <div>
+          <label class="text-slate-400 block mb-1">المحفظة / الحساب:</label>
+          <select id="tfWalletSelect" class="w-full bg-brandDark border border-borderDark rounded-xl p-2.5 text-slate-100 font-bold focus:outline-none" onchange="autoCalculateCommission()">
+            <option value="vodafone">فودافون كاش (محمد مصطفي)</option>
+            <option value="bank">انستاباي / حساب بنكي</option>
+            <option value="orange">أورنج كاش</option>
+            <option value="etisalat">اتصالات كاش</option>
+            <option value="we">وي باي (WE Pay)</option>
+          </select>
+        </div>
+
+        <!-- رقم هاتف العميل -->
+        <div>
+          <label class="text-slate-400 block mb-1">رقم هاتف أو حساب العميل:</label>
+          <input type="text" id="tfClientPhone" placeholder="010XXXXXXXX" class="w-full bg-brandDark border border-borderDark rounded-xl p-2 text-slate-100 font-mono focus:outline-none focus:border-accentCyan">
+        </div>
+
+        <!-- المبلغ والعمولة -->
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-slate-400 block mb-1">المبلغ المراد تحويله:</label>
+            <input type="number" id="tfAmount" value="500" min="1" class="w-full bg-brandDark border border-borderDark rounded-xl p-2 text-slate-100 font-bold text-sm focus:outline-none" oninput="autoCalculateCommission()">
+          </div>
+          <div>
+            <label class="text-slate-400 block mb-1">العمولة (ربحك الصافي):</label>
+            <input type="number" id="tfCommission" value="5" min="0" class="w-full bg-brandDark border border-borderDark rounded-xl p-2 text-emerald-400 font-black text-sm focus:outline-none" oninput="updateTransferSummary()">
+          </div>
+        </div>
+
+        <!-- بطاقة الحسابات الآلية المباشرة (توضح ما سيحدث في الخزينة والمحفظة) -->
+        <div class="bg-brandDark/90 p-3 rounded-2xl border border-borderDark/80 space-y-1.5 text-[11px]">
+          <div class="flex justify-between text-slate-400">
+            <span id="lblWalletImpact">يخصم من رصيد المحفظة:</span>
+            <span class="font-bold text-slate-200" id="valWalletImpact">500.00 ج.م</span>
+          </div>
+          <div class="flex justify-between text-slate-400">
+            <span id="lblCashImpact">يضاف لدرج الكاش (الخزينة):</span>
+            <span class="font-bold text-accentGreen" id="valCashImpact">505.00 ج.م</span>
+          </div>
+          <div class="flex justify-between pt-1.5 border-t border-borderDark/60 font-bold">
+            <span class="text-emerald-400">صافي ربح المحل من العملية:</span>
+            <span class="font-black text-emerald-400 text-xs" id="valProfitImpact">+5.00 ج.م</span>
+          </div>
+        </div>
+
+        <button onclick="confirmWalletTransfer()" class="w-full bg-accentGreen hover:bg-emerald-600 text-white font-black py-2.5 rounded-xl shadow-lg transition text-xs mt-2 flex items-center justify-center gap-1.5">
+          <i data-lucide="check" class="w-4 h-4"></i> تأكيد العملية وتحديث الأرصدة
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- باقي الموديلات المساعدة -->
+  <div id="modal-checkout" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
+    <div class="bg-panelDark border border-borderDark rounded-2xl w-full max-w-sm p-4 space-y-3 text-xs shadow-2xl">
+      <div class="flex justify-between items-center border-b border-borderDark pb-2 font-bold text-accentGreen">
+        <span>إتمام عملية البيع</span>
+        <button onclick="closeModal('modal-checkout')"><i data-lucide="x" class="w-4 h-4 text-slate-400"></i></button>
+      </div>
+      <div class="flex justify-between items-center bg-brandDark p-2 rounded-lg">
+        <span class="text-slate-400">المطلوب:</span>
+        <span class="text-base font-black text-accentGreen" id="checkoutDueAmount">0.00 ج.م</span>
+      </div>
+      <select id="checkoutAccountSelect" class="w-full bg-brandDark border border-borderDark rounded-lg p-2 font-bold">
+        <option value="cash">كاش سائل - الخزينة</option>
+        <option value="vodafone">فودافون كاش</option>
+        <option value="bank">انستاباي</option>
+      </select>
+      <button onclick="processCheckoutSuccess()" class="w-full bg-accentGreen hover:bg-emerald-600 text-white font-bold py-2 rounded-xl">تأكيد البيع وحفظ الفاتورة</button>
+    </div>
+  </div>
+
+  <div id="modal-add-product" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
+    <div class="bg-panelDark border border-borderDark rounded-2xl w-full max-w-md p-4 space-y-2 text-xs shadow-2xl">
+      <div class="flex justify-between items-center border-b border-borderDark pb-2 font-bold text-accentCyan">
+        <span>صنف جديد بالمخزن</span>
+        <button onclick="closeModal('modal-add-product')"><i data-lucide="x" class="w-4 h-4 text-slate-400"></i></button>
+      </div>
+      <input type="text" id="newProdName" placeholder="اسم الصنف أو الموبايل" class="w-full bg-brandDark border border-borderDark rounded-lg p-2">
+      <div class="grid grid-cols-2 gap-2">
+        <select id="newProdType" class="bg-brandDark border border-borderDark rounded-lg p-2">
+          <option value="SPARE_PART">قطع غيار</option>
+          <option value="ACCESSORY">إكسسوار</option>
+          <option value="DEVICE">هاتف محمول (IMEI)</option>
+        </select>
+        <input type="number" id="newProdStock" placeholder="الكمية" value="5" class="bg-brandDark border border-borderDark rounded-lg p-2">
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <input type="number" id="newProdCost" placeholder="سعر الشراء" value="650" class="bg-brandDark border border-borderDark rounded-lg p-2">
+        <input type="number" id="newProdPrice" placeholder="سعر البيع" value="850" class="bg-brandDark border border-borderDark rounded-lg p-2 font-bold text-accentGreen">
+      </div>
+      <button onclick="saveNewProduct()" class="w-full bg-accentCyan font-black py-2 rounded-xl text-slate-950">حفظ في المخزن</button>
+    </div>
+  </div>
+
+  <div id="modal-repair-job" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
+    <div class="bg-panelDark border border-borderDark rounded-2xl w-full max-w-md p-4 space-y-2 text-xs shadow-2xl">
+      <div class="flex justify-between items-center border-b border-borderDark pb-2 font-bold text-accentCyan">
+        <span>استلام صيانة جديد</span>
+        <button onclick="closeModal('modal-repair-job')"><i data-lucide="x" class="w-4 h-4 text-slate-400"></i></button>
+      </div>
+      <input type="text" id="jobCustName" placeholder="اسم العميل" class="w-full bg-brandDark border border-borderDark rounded-lg p-2">
+      <input type="text" id="jobDeviceModel" placeholder="موديل الجهاز" class="w-full bg-brandDark border border-borderDark rounded-lg p-2">
+      <textarea id="jobFault" placeholder="العطل وملاحظات الاستلام..." class="w-full bg-brandDark border border-borderDark rounded-lg p-2"></textarea>
+      <button onclick="saveRepairJob()" class="w-full bg-accentCyan font-black py-2 rounded-xl text-slate-950">حفظ كارت الصيانة</button>
+    </div>
+  </div>
+
+  <div id="modal-close-shift" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
+    <div class="bg-panelDark border border-borderDark rounded-2xl w-full max-w-sm p-4 space-y-3 text-xs shadow-2xl">
+      <div class="flex justify-between items-center border-b border-borderDark pb-2 font-bold text-accentOrange">
+        <span>تقفيل الشفت</span>
+        <button onclick="closeModal('modal-close-shift')"><i data-lucide="x" class="w-4 h-4 text-slate-400"></i></button>
+      </div>
+      <p class="text-slate-300">تأكيد تقفيل الوردية الحالية وطباعة ملخص الكاش والمحافظ والعمولات؟</p>
+      <button onclick="alert('🔒 تم تقفيل الشفت بنجاح'); closeModal('modal-close-shift');" class="w-full bg-accentOrange font-black py-2 rounded-xl text-slate-950">تأكيد التقفيل</button>
+    </div>
+  </div>
+
+  <div id="modal-add-user" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-55 hidden flex items-center justify-center p-4">
+    <div class="bg-panelDark border border-borderDark rounded-2xl w-full max-w-sm p-4 shadow-2xl space-y-3">
+      <div class="flex justify-between items-center border-b border-borderDark pb-2">
+        <h3 class="text-xs font-black text-amber-400">إضافة مستخدم جديد</h3>
+        <button onclick="closeModal('modal-add-user')"><i data-lucide="x" class="w-4 h-4 text-slate-400"></i></button>
+      </div>
+      <div class="space-y-2 text-xs">
+        <input type="text" id="newUserName" placeholder="الاسم" class="w-full bg-brandDark border border-borderDark rounded-lg p-2">
+        <input type="text" id="newUserLogin" placeholder="اسم المستخدم" class="w-full bg-brandDark border border-borderDark rounded-lg p-2">
+        <input type="text" id="newUserPass" placeholder="كلمة المرور" class="w-full bg-brandDark border border-borderDark rounded-lg p-2">
+        <button onclick="saveNewUser()" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-xl">حفظ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT ENGINE ================= -->
+  <script>
+    // 1. قاعدة البيانات المحلية
+    const defaultData = {
+      currentUser: null,
+      users: [
+        { id: '1', name: 'أحمد محمود', username: 'admin', pass: '123456', role: 'مدير' }
+      ],
+      products: [
+        { id: '1', name: 'شاشة سامسونج A12 أصلية', type: 'SPARE_PART', price: 850, cost: 650, stock: 5, code: 'SAM-A12' },
+        { id: '2', name: 'iPhone 13 128GB أزرق', type: 'DEVICE', price: 26500, cost: 24000, stock: 2, code: '354892019284910' },
+        { id: '3', name: 'جراب حماية MagSafe', type: 'ACCESSORY', price: 250, cost: 120, stock: 12, code: 'MAG-13' },
+        { id: '4', name: 'اسكرينة 11D سيراميك', type: 'ACCESSORY', price: 65, cost: 20, stock: 35, code: '11D-SCR' }
+      ],
+      cart: [{ id: '1', name: 'شاشة سامسونج A12 أصلية', price: 850, qty: 1 }],
+      repairs: [],
+      balances: { cash: 0.0, vodafone: 1000.0, bank: 0.0, orange: 0.0, etisalat: 0.0, we: 0.0 },
+      // سجل خدمات تحويل الأموال والعمولات
+      transfers: [
+        { id: 'TF-101', type: 'SEND', walletName: 'فودافون كاش', clientPhone: '01099887766', amount: 500, commission: 5, cashImpact: 505, date: '2026-09-06 14:15' }
+      ],
+      salesHistory: []
+    };
+
+    let App = JSON.parse(localStorage.getItem('EL_RESALA_APP_MASTER')) || defaultData;
+
+    function saveApp() {
+      localStorage.setItem('EL_RESALA_APP_MASTER', JSON.stringify(App));
+      updateUIBalances();
+    }
+
+    // 2. تسجيل الدخول
+    function checkAuth() {
+      const overlay = document.getElementById('loginOverlay');
+      if (!App.currentUser) {
+        overlay.classList.remove('hidden');
+      } else {
+        overlay.classList.add('hidden');
+        document.getElementById('headerUserName').innerText = App.currentUser.username;
+      }
+    }
+
+    function handleLogin() {
+      const u = document.getElementById('loginUsername').value.trim();
+      const p = document.getElementById('loginPassword').value.trim();
+      const user = App.users.find(x => x.username === u && x.pass === p);
+      if (user) {
+        App.currentUser = user;
+        saveApp();
+        checkAuth();
+      } else {
+        alert('❌ اسم المستخدم أو كلمة المرور غير صحيحة!');
+      }
+    }
+
+    function handleLogout() {
+      if (confirm('هل تريد تسجيل الخروج؟')) {
+        App.currentUser = null;
+        saveApp();
+        checkAuth();
+      }
+    }
+
+    // 3. محرك التحويلات وسحب الكاش والعمولات (ميزة المحافظ الرئيسية)
+    let currentTransferType = 'SEND'; // SEND (إرسال للعميل) أو RECEIVE (استقبال من العميل)
+
+    function setTransferType(type) {
+      currentTransferType = type;
+      const btnSend = document.getElementById('btnTypeSend');
+      const btnRecv = document.getElementById('btnTypeReceive');
+      
+      if (type === 'SEND') {
+        btnSend.className = 'py-2.5 px-3 rounded-xl font-black text-xs border border-emerald-500 bg-emerald-500/20 text-emerald-400 flex items-center justify-center gap-1.5';
+        btnRecv.className = 'py-2.5 px-3 rounded-xl font-bold text-xs border border-borderDark bg-cardDark text-slate-400 flex items-center justify-center gap-1.5';
+      } else {
+        btnRecv.className = 'py-2.5 px-3 rounded-xl font-black text-xs border border-accentCyan bg-accentCyan/20 text-accentCyan flex items-center justify-center gap-1.5';
+        btnSend.className = 'py-2.5 px-3 rounded-xl font-bold text-xs border border-borderDark bg-cardDark text-slate-400 flex items-center justify-center gap-1.5';
+      }
+      autoCalculateCommission();
+    }
+
+    function autoCalculateCommission() {
+      const amount = parseFloat(document.getElementById('tfAmount').value) || 0;
+      const wallet = document.getElementById('tfWalletSelect').value;
+      
+      // عمولة تقريبية: 10 ج لكل ألف لفودافون وأورنج واتصالات، 5 ج لكل ألف لانستاباي (بحد أدنى 5 ج)
+      let rate = wallet === 'bank' ? 5 : 10;
+      let comm = Math.ceil(amount / 1000) * rate;
+      if (comm < 5 && amount > 0) comm = 5;
+
+      document.getElementById('tfCommission').value = comm;
+      updateTransferSummary();
+    }
+
+    function updateTransferSummary() {
+      const amount = parseFloat(document.getElementById('tfAmount').value) || 0;
+      const comm = parseFloat(document.getElementById('tfCommission').value) || 0;
+
+      if (currentTransferType === 'SEND') {
+        // العميل يريد كاش محول له: أنت تخصم من محفظتك، وتأخذ منه كاش + عمولة
+        document.getElementById('lblWalletImpact').innerText = 'يخصم من رصيد المحفظة:';
+        document.getElementById('valWalletImpact').innerText = `${amount.toFixed(2)} ج.م`;
+        document.getElementById('lblCashImpact').innerText = 'يدخل درج الكاش (من يد العميل):';
+        document.getElementById('valCashImpact').innerText = `${(amount + comm).toFixed(2)} ج.م`;
+      } else {
+        // العميل يحول لمحفظتك وأنت تعطيه كاش: يضاف لمحفظتك المبلغ، وتسلمه كاش مخصوم منه العمولة
+        document.getElementById('lblWalletImpact').innerText = 'يضاف لرصيد المحفظة:';
+        document.getElementById('valWalletImpact').innerText = `${amount.toFixed(2)} ج.م`;
+        document.getElementById('lblCashImpact').innerText = 'يخرج من درج الكاش (تسليم للعميل):';
+        document.getElementById('valCashImpact').innerText = `${Math.max(0, amount - comm).toFixed(2)} ج.م`;
+      }
+      document.getElementById('valProfitImpact').innerText = `+${comm.toFixed(2)} ج.م`;
+    }
+
+    function confirmWalletTransfer() {
+      const wallet = document.getElementById('tfWalletSelect').value;
+      const walletName = document.getElementById('tfWalletSelect').options[document.getElementById('tfWalletSelect').selectedIndex].text;
+      const phone = document.getElementById('tfClientPhone').value.trim() || 'عميل نقدي';
+      const amount = parseFloat(document.getElementById('tfAmount').value) || 0;
+      const comm = parseFloat(document.getElementById('tfCommission').value) || 0;
+
+      if (amount <= 0) return alert('أدخل مبلغاً صحيحاً للعملية!');
+
+      if (currentTransferType === 'SEND') {
+        // فحص رصيد المحفظة قبل الإرسال
+        if (App.balances[wallet] < amount) {
+          return alert(`رصيد محفظة (${walletName}) غير كافٍ لإتمام التحويل! المتاح: ${App.balances[wallet]} ج.م`);
+        }
+        App.balances[wallet] -= amount;
+        App.balances.cash += (amount + comm);
+      } else {
+        // استقبال: فحص الكاش المتاح للتسليم
+        const cashToHand = Math.max(0, amount - comm);
+        if (App.balances.cash < cashToHand) {
+          return alert(`درج الكاش لا يحتوي على المبلغ المطلوب تسليمه (${cashToHand} ج.م)!`);
+        }
+        App.balances[wallet] += amount;
+        App.balances.cash -= cashToHand;
+      }
+
+      const now = new Date();
+      const timeStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours()}:${now.getMinutes()}`;
+
+      App.transfers.unshift({
+        id: `TF-${Math.floor(1000 + Math.random()*9000)}`,
+        type: currentTransferType,
+        walletName: walletName,
+        clientPhone: phone,
+        amount: amount,
+        commission: comm,
+        cashImpact: currentTransferType === 'SEND' ? (amount + comm) : (amount - comm),
+        date: timeStr
+      });
+
+      saveApp();
+      renderTransfersTable();
+      closeModal('modal-wallet-transfer');
+      alert(`✅ تم تأكيد عملية ${currentTransferType === 'SEND' ? 'التحويل' : 'الاستقبال'} وتسجيل عمولة ربح قدرها (${comm} ج.م) بنجاح!`);
+    }
+
+    function renderTransfersTable() {
+      const tbody = document.getElementById('transfersTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      let totalVol = 0;
+      let totalProfits = 0;
+
+      App.transfers.forEach(t => {
+        totalVol += t.amount;
+        totalProfits += t.commission;
+        tbody.innerHTML += `
+          <tr class="hover:bg-cardDark/50">
+            <td class="p-3 font-bold">
+              ${t.type === 'SEND' 
+                ? '<span class="bg-emerald-500/15 text-emerald-400 px-2 py-0.5 rounded text-[10px]">إرسال (كاش ➔ محفظة)</span>'
+                : '<span class="bg-cyan-500/15 text-accentCyan px-2 py-0.5 rounded text-[10px]">استقبال (محفظة ➔ كاش)</span>'
+              }
+            </td>
+            <td class="p-3 text-slate-200">${t.walletName}</td>
+            <td class="p-3 font-mono text-slate-300">${t.clientPhone}</td>
+            <td class="p-3 font-bold text-slate-100">${t.amount.toLocaleString()} ج.م</td>
+            <td class="p-3 font-black text-emerald-400">+${t.commission.toLocaleString()} ج.م</td>
+            <td class="p-3 font-bold text-slate-200">${t.cashImpact.toLocaleString()} ج.م</td>
+            <td class="p-3 text-slate-400 text-[10px]">${t.date}</td>
+          </tr>
+        `;
+      });
+
+      document.getElementById('statTransferCount').innerText = `${App.transfers.length} عملية`;
+      document.getElementById('statTransferVolume').innerText = `${totalVol.toLocaleString()} ج.م`;
+      document.getElementById('statTransferProfits').innerText = `${totalProfits.toLocaleString()} ج.م`;
+    }
+
+    // 4. محرك تصدير إكسيل (EXCEL EXPORT ENGINE)
+    function downloadExcel(data, fileName, sheetName) {
+      if (!data || data.length === 0) return alert('لا توجد بيانات متاحة للتصدير حالياً!');
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, sheetName || 'Data');
+      XLSX.writeFile(wb, `${fileName}_${new Date().toISOString().slice(0,10)}.xlsx`);
+    }
+
+    function exportTransfersToExcel() {
+      const data = App.transfers.map(t => ({
+        "رقم العملية": t.id,
+        "النوع": t.type === 'SEND' ? 'إرسال للعميل' : 'سحب من العميل',
+        "المحفظة": t.walletName,
+        "هاتف العميل": t.clientPhone,
+        "المبلغ المحول": t.amount,
+        "عمولة المحل (ربح)": t.commission,
+        "المبلغ النقدي المسجل": t.cashImpact,
+        "التاريخ والوقت": t.date
+      }));
+      downloadExcel(data, 'EL_RESALA_Transfers_Report', 'سجل المحافظ');
+    }
+
+    function exportInventoryToExcel() {
+      const data = App.products.map(p => ({
+        "كود الصنف": p.code || p.id,
+        "اسم الصنف": p.name,
+        "القسم": p.type,
+        "الكمية المتاحة": p.stock,
+        "سعر الشراء (التكلفة)": p.cost,
+        "سعر البيع": p.price,
+        "إجمالي قيمة التكلفة": p.cost * p.stock
+      }));
+      downloadExcel(data, 'EL_RESALA_Inventory_Stock', 'جرد المخزون');
+    }
+
+    function exportSalesToExcel() {
+      if (App.salesHistory.length === 0) {
+        alert('لا توجد فواتير مبيعات مسجلة بعد للتصدير!');
+        return;
+      }
+      downloadExcel(App.salesHistory, 'EL_RESALA_Sales_Ledger', 'المبيعات');
+    }
+
+    function exportRepairsToExcel() {
+      const data = App.repairs.map(r => ({
+        "رقم الصيانة": r.id,
+        "العميل": r.customer,
+        "الهاتف": r.phone,
+        "الجهاز": r.device,
+        "العطل": r.fault,
+        "الحالة": r.status,
+        "المبلغ": r.fee
+      }));
+      downloadExcel(data, 'EL_RESALA_Repairs_Log', 'الصيانة');
+    }
+
+    function exportAllDataToExcel() {
+      exportTransfersToExcel();
+      exportInventoryToExcel();
+    }
+
+    // 5. تحديث الأرصدة والمخزون ونقاط البيع
+    function updateUIBalances() {
+      const total = App.balances.cash + App.balances.vodafone + App.balances.bank;
+      document.getElementById('headerTotalBalance').innerText = `${total.toLocaleString()} ج.م`;
+      if (document.getElementById('walletCashBal')) document.getElementById('walletCashBal').innerText = `${App.balances.cash.toLocaleString()} ج.م`;
+      if (document.getElementById('walletVodafoneBal')) document.getElementById('walletVodafoneBal').innerText = `${App.balances.vodafone.toLocaleString()} ج.م`;
+      if (document.getElementById('walletBankBal')) document.getElementById('walletBankBal').innerText = `${App.balances.bank.toLocaleString()} ج.م`;
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-view').forEach(t => t.classList.add('hidden'));
+      document.getElementById('tab-' + tabId)?.classList.remove('hidden');
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.className = 'nav-item flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-400 hover:text-slate-200';
+      });
+      const activeNav = document.getElementById('nav-' + tabId);
+      if (activeNav) {
+        activeNav.className = 'nav-item flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-accentCyan bg-accentCyan/15 border border-accentCyan/30 font-bold';
+      }
+      if (tabId === 'cash') renderTransfersTable();
+      if (tabId === 'inventory') renderInventoryTable();
+      lucide.createIcons();
+    }
+
+    function openModal(id) { document.getElementById(id)?.classList.remove('hidden'); lucide.createIcons(); }
+    function closeModal(id) { document.getElementById(id)?.classList.add('hidden'); }
+
+    function renderPosCatalog(filter = 'ALL') {
+      const container = document.getElementById('posCatalogGrid');
+      if (!container) return;
+      container.innerHTML = '';
+      const list = filter === 'ALL' ? App.products : App.products.filter(p => p.type === filter);
+      document.getElementById('catalogCount').innerText = `${list.length} أصناف`;
+      list.forEach(p => {
+        container.innerHTML += `
+          <div onclick="addToCart('${p.id}')" class="bg-cardDark hover:border-accentCyan border border-borderDark p-3 rounded-2xl flex flex-col justify-between cursor-pointer transition active:scale-95 group">
+            <div>
+              <div class="flex justify-between items-center text-[10px]">
+                <span class="bg-accentCyan/15 text-accentCyan px-1.5 py-0.5 rounded font-bold">${p.type}</span>
+                <span class="${p.stock <= 3 ? 'text-rose-400 font-bold' : 'text-emerald-400'}">متاح (${p.stock})</span>
+              </div>
+              <h3 class="font-bold text-xs mt-1.5 text-slate-100 group-hover:text-accentCyan line-clamp-1">${p.name}</h3>
+            </div>
+            <div class="mt-2.5 pt-2 border-t border-borderDark/40 flex items-center justify-between">
+              <span class="text-xs font-black text-accentGreen">${p.price.toLocaleString()} ج.م</span>
+              <i data-lucide="plus-circle" class="w-4 h-4 text-slate-400 group-hover:text-accentCyan"></i>
+            </div>
+          </div>
+        `;
+      });
+      lucide.createIcons();
+    }
+
+    function addToCart(prodId) {
+      const p = App.products.find(x => x.id === prodId);
+      if (!p || p.stock <= 0) return alert('غير متوفر بالمخزن!');
+      const item = App.cart.find(x => x.id === prodId);
+      if (item) item.qty++;
+      else App.cart.push({ id: p.id, name: p.name, price: p.price, qty: 1 });
+      saveApp();
+      renderCart();
+    }
+
+    function renderCart() {
+      const box = document.getElementById('cartContainer');
+      if (!box) return;
+      box.innerHTML = '';
+      let subtotal = 0;
+      App.cart.forEach((item, idx) => {
+        subtotal += item.price * item.qty;
+        box.innerHTML += `
+          <div class="bg-cardDark p-2 rounded-xl border border-borderDark flex items-center justify-between text-xs">
+            <div class="flex-1">
+              <div class="font-bold text-slate-100">${item.name}</div>
+              <div class="text-[10px] text-slate-400">${item.price} × ${item.qty}</div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="font-black text-accentGreen">${(item.price * item.qty).toLocaleString()} ج.م</span>
+              <button onclick="App.cart.splice(${idx},1);saveApp();renderCart();" class="text-rose-400 font-bold p-1">×</button>
+            </div>
+          </div>`;
+      });
+      const discount = parseFloat(document.getElementById('cartDiscountInput')?.value) || 0;
+      const grand = Math.max(0, subtotal - discount);
+      document.getElementById('cartSubtotalText').innerText = `${subtotal.toLocaleString()} ج.م`;
+      document.getElementById('cartGrandTotalText').innerText = `${grand.toLocaleString()} ج.م`;
+      document.getElementById('checkoutDueAmount').innerText = `${grand.toLocaleString()} ج.م`;
+    }
+
+    function clearCart() { App.cart = []; saveApp(); renderCart(); }
+
+    function processCheckoutSuccess() {
+      if (App.cart.length === 0) return;
+      const acc = document.getElementById('checkoutAccountSelect').value;
+      const subtotal = App.cart.reduce((s, i) => s + (i.price * i.qty), 0);
+      App.balances[acc] += subtotal;
+      
+      App.salesHistory.unshift({
+        "رقم الفاتورة": `#${document.getElementById('posInvoiceNum').innerText}`,
+        "القيمة": subtotal,
+        "طريقة الدفع": acc,
+        "التاريخ": new Date().toLocaleString('ar-EG')
+      });
+
+      App.cart.forEach(item => {
+        const p = App.products.find(x => x.id === item.id);
+        if (p) p.stock -= item.qty;
+      });
+
+      alert('✅ تم تسجيل الفاتورة بنجاح وتحديث الرصيد!');
+      App.cart = [];
+      document.getElementById('posInvoiceNum').innerText = Math.floor(1000 + Math.random()*9000);
+      saveApp();
+      renderCart();
+      closeModal('modal-checkout');
+    }
+
+    function renderInventoryTable() {
+      const tbody = document.getElementById('inventoryTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      App.products.forEach(p => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-cardDark/50">
+            <td class="p-3 font-bold text-slate-100">${p.name}</td>
+            <td class="p-3"><span class="bg-cardDark border border-borderDark px-2 py-0.5 rounded text-[10px]">${p.type}</span></td>
+            <td class="p-3 font-bold ${p.stock <= 3 ? 'text-rose-400' : 'text-emerald-400'}">${p.stock}</td>
+            <td class="p-3 font-bold text-slate-300">${p.cost.toLocaleString()} ج.م</td>
+            <td class="p-3 font-black text-accentGreen">${p.price.toLocaleString()} ج.م</td>
+            <td class="p-3 text-center">
+              <button onclick="p.stock = parseInt(prompt('تعديل رصيد الصنف:', p.stock)); saveApp(); renderInventoryTable();" class="text-accentCyan font-bold text-[11px]">تعديل</button>
+            </td>
+          </tr>`;
+      });
+    }
+
+    function saveNewProduct() {
+      const name = document.getElementById('newProdName').value.trim();
+      const type = document.getElementById('newProdType').value;
+      const stock = parseInt(document.getElementById('newProdStock').value) || 1;
+      const cost = parseFloat(document.getElementById('newProdCost').value) || 0;
+      const price = parseFloat(document.getElementById('newProdPrice').value) || 0;
+      if (!name) return alert('اكتب اسم الصنف!');
+      App.products.unshift({ id: Date.now().toString(), name, type, stock, cost, price });
+      saveApp();
+      renderPosCatalog();
+      closeModal('modal-add-product');
+      alert('✅ تم حفظ الصنف بالمخزون.');
+    }
+
+    function saveRepairJob() {
+      const cust = document.getElementById('jobCustName').value.trim();
+      const dev = document.getElementById('jobDeviceModel').value.trim();
+      if (!cust || !dev) return alert('اكتب اسم العميل والموديل!');
+      alert('🛠️ تم استلام جهاز الصيانة بنجاح.');
+      closeModal('modal-repair-job');
+    }
+
+    function setSettingView(v) {
+      document.querySelectorAll('.set-pane').forEach(p => p.classList.add('hidden'));
+      document.getElementById('view-' + v)?.classList.remove('hidden');
+    }
+
+    // التشغيل المبدئي
+    checkAuth();
+    updateUIBalances();
+    renderPosCatalog();
+    renderCart();
+    renderTransfersTable();
+    autoCalculateCommission();
+    lucide.createIcons();
+  </script>
+</body>
+</html>
+HTML
+
+# نسخ الملف للمسار الرئيسي
+cp frontend/index.html index.html
+
+# الرفع المباشر لـ GitHub
+git add frontend/index.html index.html
+git commit -m "feat(wallets): implement professional transfer/cash-in/cash-out engine with auto-commissions and full Excel export"
+git push origin main
+
+echo "=========================================================="
+echo "✨ تم رفع التحديث بنجاح! راجع رابط Vercel بعد ثوانٍ."
+echo "الميزات المفعلة: تحويل واستقبال كاش + حساب عمولة + تصدير Excel"
+echo "=========================================================="

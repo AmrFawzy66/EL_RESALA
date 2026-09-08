@@ -1,0 +1,37 @@
+{
+  "name": "el_resala",
+  "version": "1.0.0",
+  "description": "This is the web version of El-RESALA POS, converted from the original Electron desktop app. It's split into three independent pieces:",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AmrFawzy66/EL_RESALA.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/AmrFawzy66/EL_RESALA/issues"
+  },
+  "homepage": "https://github.com/AmrFawzy66/EL_RESALA#readme",
+  "dependencies": {
+    "@prisma/client": "^7.10.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.4.1",
+    "nodemon": "^3.1.14",
+    "prisma": "^8.0.0-rc.13",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}

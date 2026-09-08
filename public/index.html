@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EL-RESALA ERP & POS | نظام الرسالة المتكامل</title>
+  <!-- Tailwind CSS & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brandDark: '#0b111e',
+            panelDark: '#131d2e',
+            cardDark: '#1a263c',
+            borderDark: '#23334d',
+            accentGreen: '#10b981',
+            accentOrange: '#f59e0b',
+            accentCyan: '#06b6d4',
+            accentBlue: '#3b82f6',
+            accentRed: '#ef4444'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
+    body { font-family: 'Cairo', sans-serif; }
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #0b111e; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #23334d; border-radius: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #06b6d4; }
+  </style>
+</head>
+<body class="bg-brandDark text-slate-100 h-screen w-screen overflow-hidden flex flex-col select-none">
+
+  <!-- ================= TOP HEADER (مع لوجو EL-RESALA) ================= -->
+  <header class="bg-panelDark border-b border-borderDark px-4 py-2 flex items-center justify-between z-30 shadow-md">
+    
+    <!-- نظام الرسالة - Logo -->
+    <div class="flex items-center gap-3">
+      <div class="bg-gradient-to-r from-accentCyan to-accentBlue text-white font-black px-4 py-1.5 rounded-xl text-xl tracking-wider shadow-[0_0_15px_rgba(6,182,212,0.4)] flex items-center gap-2">
+        <i data-lucide="zap" class="w-6 h-6 text-white fill-white/20"></i>
+        EL-RESALA
+      </div>
+      <div class="text-[10px] bg-accentGreen/20 text-accentGreen border border-accentGreen/30 px-2 py-1 rounded-lg font-black flex items-center gap-1">
+        <span class="w-2 h-2 rounded-full bg-accentGreen animate-pulse"></span>
+        POS V4.0
+      </div>
+    </div>
+
+    <!-- Quick Actions (أعلى اليمين) -->
+    <div class="flex items-center gap-2">
+      <button onclick="openModal('modal-device')" class="bg-cardDark hover:bg-borderDark text-xs px-3 py-1.5 rounded-lg border border-borderDark flex items-center gap-1.5 font-bold transition">
+        <i data-lucide="smartphone" class="w-4 h-4 text-accentCyan"></i> شراء جهاز
+      </button>
+      <button onclick="openModal('modal-exchange')" class="bg-cardDark hover:bg-borderDark text-xs px-3 py-1.5 rounded-lg border border-borderDark flex items-center gap-1.5 font-bold transition">
+        <i data-lucide="repeat" class="w-4 h-4 text-accentCyan"></i> استبدال
+      </button>
+      <button onclick="openModal('modal-refund')" class="bg-cardDark hover:bg-borderDark text-xs px-3 py-1.5 rounded-lg border border-borderDark flex items-center gap-1.5 font-bold transition">
+        <i data-lucide="rotate-ccw" class="w-4 h-4 text-accentOrange"></i> مرتجع
+      </button>
+      <button onclick="openModal('modal-repair-job')" class="bg-cardDark hover:bg-borderDark text-xs px-3 py-1.5 rounded-lg border border-borderDark flex items-center gap-1.5 font-bold transition">
+        <i data-lucide="wrench" class="w-4 h-4 text-accentCyan"></i> استلام من عميل
+      </button>
+      <div class="h-5 w-[1px] bg-borderDark mx-1"></div>
+      <div class="relative">
+        <input type="text" id="globalSearch" placeholder="بحث شامل (Ctrl+K)..." class="bg-brandDark border border-borderDark rounded-lg px-3 py-1.5 text-xs w-56 focus:outline-none focus:border-accentCyan text-slate-200 font-semibold">
+        <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2 top-2"></i>
+      </div>
+    </div>
+
+    <!-- Date & Cash Drawer Info (أعلى اليسار) -->
+    <div class="flex items-center gap-3">
+      <span class="text-xs text-slate-400 font-bold flex items-center gap-1">
+        <i data-lucide="calendar" class="w-3.5 h-3.5 text-slate-400"></i>
+        <span id="currentDate">الأحد 6 سبتمبر 2026</span>
+      </span>
+
+      <!-- Cash Drawer Status Badge -->
+      <div class="bg-cardDark border border-borderDark rounded-xl px-3 py-1 flex items-center gap-3">
+        <div class="text-right">
+          <div class="text-[10px] text-slate-400 font-bold">الرصيد الحالي</div>
+          <div class="text-sm font-extrabold text-accentGreen" id="topDrawerBalance">1,000.00 ج.م</div>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <button onclick="openModal('modal-cash-drawer')" class="bg-accentGreen/15 hover:bg-accentGreen/25 text-accentGreen border border-accentGreen/30 text-xs px-2.5 py-1 rounded-lg font-bold flex items-center gap-1 transition">
+            <i data-lucide="wallet" class="w-3.5 h-3.5"></i> الخزينة (عمرو)
+          </button>
+          <button onclick="openModal('modal-close-shift')" class="bg-accentOrange/15 hover:bg-accentOrange/25 text-accentOrange border border-accentOrange/30 text-xs px-2 py-1 rounded-lg font-bold flex items-center gap-1 transition">
+            <i data-lucide="lock" class="w-3.5 h-3.5"></i> تقفيل
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN POS VIEWPORT ================= -->
+  <main class="flex-1 flex overflow-hidden p-3 gap-3">
+    <!-- Left: Cart & Billing Screen (35%) -->
+    <div class="w-[380px] bg-panelDark border border-borderDark rounded-2xl flex flex-col overflow-hidden shadow-xl">
+      <div class="bg-cardDark/80 p-3 border-b border-borderDark flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="p-2 bg-accentCyan/10 rounded-xl text-accentCyan">
+            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h2 class="font-bold text-sm">سلة مبيعات EL-RESALA</h2>
+            <p class="text-[11px] text-slate-400">فاتورة رقم: #<span id="invNumber">1092</span></p>
+          </div>
+        </div>
+        <button onclick="clearCart()" class="text-xs text-rose-400 hover:text-rose-300 font-semibold p-1">إفراغ</button>
+      </div>
+
+      <!-- Cart Items -->
+      <div class="flex-1 overflow-y-auto p-2 space-y-2 custom-scrollbar" id="cartContainer">
+        <!-- Default sample cart item -->
+        <div class="bg-cardDark p-2.5 rounded-xl border border-borderDark flex items-center justify-between">
+          <div class="flex-1">
+            <div class="font-bold text-xs flex items-center gap-1.5">
+              <span>شاشة a12 أصلية</span>
+              <span class="text-[10px] bg-accentCyan/10 text-accentCyan px-1.5 py-0.5 rounded">قطعة غيار</span>
+            </div>
+            <div class="text-[11px] text-slate-400 mt-0.5">850.00 ج.م × 1</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-sm text-accentGreen">850.00 ج.م</span>
+            <button class="text-rose-400 hover:text-rose-300 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cart Summary Footer -->
+      <div class="bg-cardDark/95 p-3 border-t border-borderDark space-y-2">
+        <div class="flex justify-between text-xs text-slate-400">
+          <span>المجموع الفرعي:</span>
+          <span class="text-slate-200 font-bold" id="cartSubtotal">850.00 ج.م</span>
+        </div>
+        <div class="flex justify-between items-center pt-2 border-t border-borderDark/60">
+          <span class="font-bold text-sm">الإجمالي الصافي:</span>
+          <span class="text-lg font-black text-accentGreen" id="cartGrandTotal">850.00 ج.م</span>
+        </div>
+        <button onclick="openModal('modal-checkout')" class="w-full bg-accentGreen hover:bg-emerald-600 text-white font-extrabold py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/40 transition text-sm">
+          <i data-lucide="check-circle" class="w-4 h-4"></i> إتمام البيع (F10)
+        </button>
+      </div>
+    </div>
+
+    <!-- Right: Product Catalog -->
+    <div class="flex-1 bg-panelDark border border-borderDark rounded-2xl flex flex-col overflow-hidden shadow-xl">
+      <div class="p-3 border-b border-borderDark flex items-center justify-between bg-cardDark/50">
+        <div class="flex items-center gap-2 overflow-x-auto custom-scrollbar">
+          <button class="bg-accentCyan text-slate-900 font-black text-xs px-3.5 py-1.5 rounded-xl shadow">الكل</button>
+          <button class="bg-cardDark hover:bg-borderDark text-slate-300 font-semibold text-xs px-3 py-1.5 rounded-xl transition">هواتف محمولة</button>
+          <button class="bg-cardDark hover:bg-borderDark text-slate-300 font-semibold text-xs px-3 py-1.5 rounded-xl transition">إكسسوارات</button>
+          <button class="bg-cardDark hover:bg-borderDark text-slate-300 font-semibold text-xs px-3 py-1.5 rounded-xl transition">قطع غيار</button>
+        </div>
+      </div>
+      <div class="flex-1 p-3 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 overflow-y-auto custom-scrollbar">
+        <div onclick="addCartItem('iPhone 13 128GB', 26500, true)" class="bg-cardDark hover:border-accentCyan border border-borderDark p-3 rounded-2xl flex flex-col justify-between cursor-pointer transition transform active:scale-95 group">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] bg-accentCyan/15 text-accentCyan px-2 py-0.5 rounded-md font-bold">موبايل</span>
+              <span class="text-[10px] text-emerald-400">متوفر (2)</span>
+            </div>
+            <h3 class="font-bold text-sm mt-2 text-slate-100 group-hover:text-accentCyan transition">iPhone 13 128GB</h3>
+          </div>
+          <div class="mt-3 flex items-center justify-between border-t border-borderDark/40 pt-2">
+            <span class="text-xs font-black text-accentGreen">26,500 ج.م</span>
+            <i data-lucide="plus-circle" class="w-4 h-4 text-slate-400 group-hover:text-accentCyan"></i>
+          </div>
+        </div>
+        <div onclick="addCartItem('شاشة a12 توكيل', 850, false)" class="bg-cardDark hover:border-accentCyan border border-borderDark p-3 rounded-2xl flex flex-col justify-between cursor-pointer transition transform active:scale-95 group">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] bg-amber-500/15 text-amber-400 px-2 py-0.5 rounded-md font-bold">قطعة غيار</span>
+              <span class="text-[10px] text-emerald-400">متوفر (5)</span>
+            </div>
+            <h3 class="font-bold text-sm mt-2 text-slate-100 group-hover:text-accentCyan transition">شاشة a12 أصلية</h3>
+          </div>
+          <div class="mt-3 flex items-center justify-between border-t border-borderDark/40 pt-2">
+            <span class="text-xs font-black text-accentGreen">850 ج.م</span>
+            <i data-lucide="plus-circle" class="w-4 h-4 text-slate-400 group-hover:text-accentCyan"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= BOTTOM DOCKED NAVIGATION ================= -->
+  <footer class="bg-panelDark border-t border-borderDark px-2 py-1 flex items-center justify-around z-30">
+    <button onclick="closeAllModals()" class="flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-400 hover:text-accentCyan transition">
+      <i data-lucide="home" class="w-4 h-4"></i>
+      <span class="text-[11px] font-bold">الرئيسية</span>
+    </button>
+    <button onclick="closeAllModals()" class="flex flex-col items-center gap-0.5 px-4 py-1 rounded-xl bg-accentCyan/20 text-accentCyan border border-accentCyan/30 transition">
+      <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+      <span class="text-[11px] font-black">نقطة البيع</span>
+    </button>
+    <button onclick="openModal('modal-repair-job')" class="flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-400 hover:text-accentCyan transition">
+      <i data-lucide="wrench" class="w-4 h-4"></i>
+      <span class="text-[11px] font-bold">الصيانة</span>
+    </button>
+    <button onclick="openModal('modal-cash-drawer')" class="flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-400 hover:text-accentCyan transition">
+      <i data-lucide="wallet" class="w-4 h-4"></i>
+      <span class="text-[11px] font-bold">الحسابات</span>
+    </button>
+    <button onclick="openModal('modal-settings')" class="flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-400 hover:text-accentCyan transition">
+      <i data-lucide="settings" class="w-4 h-4"></i>
+      <span class="text-[11px] font-bold">الإعدادات</span>
+    </button>
+  </footer>
+
+  <!-- (باقي النوافذ المنبثقة Modals تعمل كما هي) -->
+  <div id="modal-checkout" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#182234] border border-borderDark rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col">
+      <div class="bg-cardDark px-4 py-2.5 border-b border-borderDark flex items-center justify-between">
+        <h2 class="text-sm font-bold flex items-center gap-1.5"><i data-lucide="shopping-cart" class="w-4 h-4 text-accentCyan"></i> إتمام بيع EL-RESALA</h2>
+        <button onclick="closeModal('modal-checkout')" class="text-slate-400 hover:text-white p-1 rounded-lg"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div class="p-4 text-center">
+        <p class="text-slate-300 text-sm mb-4">اختر طريقة الدفع لتأكيد الفاتورة رقم 1092</p>
+        <button onclick="closeModal('modal-checkout'); alert('✅ تم البيع بنجاح في EL-RESALA');" class="bg-accentGreen hover:bg-emerald-600 text-white font-extrabold px-5 py-2 rounded-xl">تأكيد البيع</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-settings" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#121b2b] border border-borderDark rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col">
+      <div class="bg-cardDark px-4 py-3 border-b border-borderDark flex items-center justify-between">
+        <h2 class="text-sm font-extrabold text-slate-100 flex items-center gap-2"><i data-lucide="settings" class="w-4 h-4 text-accentCyan"></i> إعدادات EL-RESALA</h2>
+        <button onclick="closeModal('modal-settings')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div class="p-6 text-center text-slate-300 text-sm">
+        إعدادات الطباعة، الرولز، والصلاحيات الخاصة بـ EL-RESALA.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+    function openModal(id) { document.getElementById(id)?.classList.remove('hidden'); lucide.createIcons(); }
+    function closeModal(id) { document.getElementById(id)?.classList.add('hidden'); }
+    function closeAllModals() { document.querySelectorAll('[id^="modal-"]').forEach(modal => modal.classList.add('hidden')); }
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAllModals(); });
+    
+    let cart = [{ name: 'شاشة a12 أصلية', price: 850, qty: 1 }];
+    function addCartItem(name, price) { cart.push({ name, price, qty: 1 }); renderCart(); }
+    function clearCart() { cart = []; renderCart(); }
+    function renderCart() {
+      const container = document.getElementById('cartContainer');
+      container.innerHTML = '';
+      let total = 0;
+      cart.forEach((item, idx) => {
+        total += item.price * item.qty;
+        container.innerHTML += `<div class="bg-cardDark p-2.5 rounded-xl border border-borderDark flex items-center justify-between"><div class="flex-1"><div class="font-bold text-xs">${item.name}</div></div><div class="flex items-center gap-2"><span class="font-extrabold text-sm text-accentGreen">${item.price} ج.م</span></div></div>`;
+      });
+      document.getElementById('cartSubtotal').innerText = total + ' ج.م';
+      document.getElementById('cartGrandTotal').innerText = total + ' ج.م';
+    }
+  </script>
+</body>
+</html>

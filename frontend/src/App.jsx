@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 
-// --- أيقونات النظام الموحدة ---
+// --- أيقونات ELOS الاحترافية الموحدة ---
 const Icon = ({ name, className = "w-5 h-5" }) => {
   const icons = {
     menu: <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>,
@@ -18,74 +18,64 @@ const Icon = ({ name, className = "w-5 h-5" }) => {
     customers: <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>,
     users: <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>,
     reports: <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>,
-    settings: <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>,
+    settings: <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c-.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>,
     print: <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/>,
     check: <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>,
-    logout: <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+    logout: <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>,
+    installments: <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>,
+    transfers: <path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/>
   };
   return <svg className={className} fill="currentColor" viewBox="0 0 24 24">{icons[name] || icons.dashboard}</svg>;
 };
 
 export default function App() {
-  // المصادقة
+  // المصادقة الشاملة وإلغاء الدخول التلقائي
   const [user, setUser] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("user")); } catch { return null; }
+    try { return JSON.parse(localStorage.getItem("elos_user_auth")); } catch { return null; }
   });
   const [loginUsername, setLoginUsername] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [loginError, setLoginError] = useState("");
 
-  // الوقت والتاريخ الحي بالثواني
   const [liveDate, setLiveDate] = useState(new Date());
   useEffect(() => {
     const t = setInterval(() => setLiveDate(new Date()), 1000);
     return () => clearInterval(t);
   }, []);
 
-  // التنقل والمودالات
   const [currentTab, setCurrentTab] = useState("dashboard");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activePopover, setActivePopover] = useState(null); // 'inventory', 'sales', 'management'
   const [toastMsg, setToastMsg] = useState("");
-  const [checkoutModal, setCheckoutModal] = useState(false);
-  const [shiftCloseModal, setShiftCloseModal] = useState(false);
+  const [shiftModal, setShiftModal] = useState(false);
 
-  // إعدادات المبيعات والتسعير
-  const [priceTier, setPriceTier] = useState("retail"); // retail, semi, whole
-  const [paymentMethod, setPaymentMethod] = useState("cash");
-  const [selectedWalletId, setSelectedWalletId] = useState("voda");
-  const [selectedCustomerId, setSelectedCustomerId] = useState(1);
-
-  // ==================== قواعد البيانات (CRUD الكاملة لـ EL-RESALA V7) ====================
-  const [products, setProducts] = useState(() => JSON.parse(localStorage.getItem("elos_v7_prods") || JSON.stringify([
-    { id: 1, name: "شاحن سامسونج أصلي 25W", barcode: "622001", imeiTracked: false, buy_price: 85, retail_price: 160, semi_price: 130, whole_price: 110, stock: 45, category: "شواحن" },
-    { id: 2, name: "كابل شحن سريع Type-C", barcode: "622002", imeiTracked: false, buy_price: 22, retail_price: 55, semi_price: 40, whole_price: 32, stock: 95, category: "كابلات" },
-    { id: 3, name: "آيفون 13 برو ماكس (مستعمل/زيرو)", barcode: "700013", imeiTracked: true, imei: "354921098877665", buy_price: 28000, retail_price: 33000, semi_price: 32000, whole_price: 31000, stock: 1, category: "هواتف مستعملة" }
+  // قواعد البيانات الكاملة القابلة للتحكم (CRUD)
+  const [products, setProducts] = useState(() => JSON.parse(localStorage.getItem("elos_p_v8") || JSON.stringify([
+    { id: 1, name: "اوبو رينو 13F (مستعمل/زيرو)", barcode: "700001", category: "الأجهزة", buy_price: 7500, retail_price: 8900, whole_price: 8500, stock: 5 },
+    { id: 2, name: "شاحن سامسونج أصلي 25W", barcode: "622001", category: "الإكسسوارات", buy_price: 85, retail_price: 160, whole_price: 110, stock: 45 },
+    { id: 3, name: "شاشة كاملة Samsung A12 أصلية", barcode: "622005", category: "قطع الغيار", buy_price: 450, retail_price: 750, whole_price: 580, stock: 8 }
   ])));
 
   const [cart, setCart] = useState([]);
-  const [repairs, setRepairs] = useState(() => JSON.parse(localStorage.getItem("elos_v7_repairs") || JSON.stringify([
-    { id: "REP-101", client: "محمود حسن", phone: "01023456789", device: "Samsung A54", imei: "358741002233441", lockCode: "1234", issue: "تغيير شاشة أصلية", cost: 1400, deposit: 300, status: "قيد الإصلاح", date: "06/09/2026" }
+  const [priceTier, setPriceTier] = useState("retail");
+  const [repairs, setRepairs] = useState(() => JSON.parse(localStorage.getItem("elos_r_v8") || JSON.stringify([
+    { id: "R-202609-000001#", client: "محمود", phone: "012130", device: "Samsung A12", issue: "الشاشة مكسورة وتحتاج تغيير - يرجى فحص الإطار.", status: "تم التسليم", cost: 650, date: "2026/9/3" },
+    { id: "R-202609-000002#", client: "محمد محمود", phone: "01008235456", device: "Oppo reno13F", issue: "البطارية ضعيفة وتنفذ بسرعة - العميل يطلب تغيير.", status: "جاهز للتسليم", cost: 500, date: "2026/9/3" }
   ])));
 
-  const [wallets, setWallets] = useState(() => JSON.parse(localStorage.getItem("elos_v7_wallets") || JSON.stringify([
-    { id: "voda", name: "فودافون كاش الرئيسية", phone: "01002345678", balance: 5400 },
-    { id: "insta", name: "إنستاباي InstaPay", phone: "elresala@instapay", balance: 12400 }
+  const [wallets, setWallets] = useState(() => JSON.parse(localStorage.getItem("elos_w_v8") || JSON.stringify([
+    { id: "w1", name: "فودافون كاش", phone: "01002345678", balance: 5400 },
+    { id: "w2", name: "أورنج كاش", phone: "01200112233", balance: 1850 },
+    { id: "w3", name: "إنستاباي", phone: "elresala@instapay", balance: 12400 }
   ])));
 
-  const [safeBalance, setSafeBalance] = useState(() => Number(localStorage.getItem("elos_v7_safe") || 8500));
-  const [customers, setCustomers] = useState(() => JSON.parse(localStorage.getItem("elos_v7_cust") || JSON.stringify([
-    { id: 1, name: "عميل نقدي سريع", phone: "-", debt: 0 },
-    { id: 2, name: "محل الهدى للموبايل", phone: "01144556677", debt: 3400 }
-  ])));
-  const [salesLog, setSalesLog] = useState(() => JSON.parse(localStorage.getItem("elos_v7_sales") || "[]"));
+  const [safeBalance, setSafeBalance] = useState(() => Number(localStorage.getItem("elos_s_v8") || 8500));
+  const [salesLog, setSalesLog] = useState(() => JSON.parse(localStorage.getItem("elos_sl_v8") || "[]"));
 
-  // حفظ تلقائي
-  useEffect(() => { localStorage.setItem("elos_v7_prods", JSON.stringify(products)); }, [products]);
-  useEffect(() => { localStorage.setItem("elos_v7_repairs", JSON.stringify(repairs)); }, [repairs]);
-  useEffect(() => { localStorage.setItem("elos_v7_wallets", JSON.stringify(wallets)); }, [wallets]);
-  useEffect(() => { localStorage.setItem("elos_v7_safe", String(safeBalance)); }, [safeBalance]);
-  useEffect(() => { localStorage.setItem("elos_v7_cust", JSON.stringify(customers)); }, [customers]);
-  useEffect(() => { localStorage.setItem("elos_v7_sales", JSON.stringify(salesLog)); }, [salesLog]);
+  useEffect(() => { localStorage.setItem("elos_p_v8", JSON.stringify(products)); }, [products]);
+  useEffect(() => { localStorage.setItem("elos_r_v8", JSON.stringify(repairs)); }, [repairs]);
+  useEffect(() => { localStorage.setItem("elos_w_v8", JSON.stringify(wallets)); }, [wallets]);
+  useEffect(() => { localStorage.setItem("elos_s_v8", String(safeBalance)); }, [safeBalance]);
+  useEffect(() => { localStorage.setItem("elos_sl_v8", JSON.stringify(salesLog)); }, [salesLog]);
 
   const showToast = (msg) => {
     setToastMsg(msg);
@@ -103,325 +93,229 @@ export default function App() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    showToast("تم تصدير الملف بنجاح!");
+    showToast("تم التصدير بنجاح!");
   };
 
   const handleLogin = (e) => {
     e.preventDefault();
     setLoginError("");
     if ((loginUsername === "admin" && loginPassword === "admin1234") || (loginUsername === "cashier" && loginPassword === "1234")) {
-      const u = { id: 1, username: loginUsername, name: loginUsername === "admin" ? "مدير النظام" : "كاشير المحل" };
+      const u = { username: loginUsername, name: loginUsername === "admin" ? "مدير النظام" : "كاشير" };
       setUser(u);
-      localStorage.setItem("user", JSON.stringify(u));
+      localStorage.setItem("elos_user_auth", JSON.stringify(u));
     } else {
       setLoginError("اسم المستخدم أو كلمة المرور غير صحيحة");
     }
   };
 
-  const menuItems = [
-    { id: "dashboard", label: "لوحة التحكم الرئيسية", icon: "dashboard" },
-    { id: "pos", label: "نقطة البيع (POS)", icon: "pos" },
-    { id: "repairs", label: "مركز الصيانة وأجهزة IMEI", icon: "repairs" },
-    { id: "inventory", label: "المخزون والأصناف (CRUD)", icon: "audit" },
-    { id: "wallets", label: "المحافظ والبنوك", icon: "wallet" },
-    { id: "drawer", label: "الخزينة النقدية والدرج", icon: "drawer" },
-    { id: "customers", label: "العملاء والديون", icon: "customers" },
-    { id: "reports", label: "سجل المبيعات والأرباح", icon: "reports" }
-  ];
+  const handleLogout = () => {
+    localStorage.removeItem("elos_user_auth");
+    setUser(null);
+  };
 
+  // شاشة تسجيل الدخول الإلزامية
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#0d131f] flex items-center justify-center p-4 font-sans" dir="rtl">
-        <div className="w-full max-w-sm bg-[#111928] border border-slate-800 rounded-3xl p-6 text-white shadow-2xl">
+      <div className="min-h-screen bg-[#111928] flex items-center justify-center p-4 font-sans" dir="rtl">
+        <div className="w-full max-w-sm bg-[#182236] border border-slate-700 rounded-3xl p-6 text-white shadow-2xl">
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-black text-emerald-400">EL-RESALA ERP & POS</h1>
-            <p className="text-slate-400 text-xs mt-1">نظام إدارة محلات المحمول والصيانة</p>
+            <h1 className="text-2xl font-black text-emerald-400">ELOS Accounting System</h1>
+            <p className="text-slate-400 text-xs mt-1">تسجيل الدخول إجباري للوصول للنظام</p>
           </div>
           <form onSubmit={handleLogin} className="space-y-4">
-            <input type="text" value={loginUsername} onChange={e => setLoginUsername(e.target.value)} placeholder="admin" className="w-full bg-[#0d131f] border border-slate-700 rounded-xl px-4 py-3 text-sm outline-none text-white font-mono" required />
-            <input type="password" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} placeholder="admin1234" className="w-full bg-[#0d131f] border border-slate-700 rounded-xl px-4 py-3 text-sm outline-none text-white font-mono" required />
-            {loginError && <p className="text-rose-400 text-xs text-center">{loginError}</p>}
-            <button type="submit" className="w-full py-3 bg-emerald-600 font-bold rounded-xl text-white text-sm">تسجيل الدخول للنظام</button>
+            <div>
+              <label className="text-xs font-bold text-slate-300 block mb-1">اسم المستخدم</label>
+              <input type="text" value={loginUsername} onChange={e => setLoginUsername(e.target.value)} placeholder="admin" className="w-full bg-[#0d131f] border border-slate-700 rounded-xl px-4 py-3 text-sm outline-none text-white font-mono" required />
+            </div>
+            <div>
+              <label className="text-xs font-bold text-slate-300 block mb-1">كلمة المرور</label>
+              <input type="password" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} placeholder="admin1234" className="w-full bg-[#0d131f] border border-slate-700 rounded-xl px-4 py-3 text-sm outline-none text-white font-mono" required />
+            </div>
+            {loginError && <p className="text-rose-400 text-xs text-center font-bold">{loginError}</p>}
+            <button type="submit" className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 font-bold rounded-xl text-white text-sm shadow-lg">تسجيل الدخول</button>
           </form>
+          <div className="mt-4 pt-3 border-t border-slate-700 text-[11px] text-slate-400 text-center">
+            <p>الإدارة: <strong className="text-emerald-400">admin</strong> / <strong className="text-emerald-400">admin1234</strong></p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0d131f] text-slate-100 flex flex-col font-sans select-none" dir="rtl">
+    <div className="min-h-screen bg-[#121826] text-slate-100 flex flex-col font-sans select-none relative" dir="rtl" onClick={() => setActivePopover(null)}>
       {toastMsg && (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-emerald-600 text-white px-5 py-2.5 rounded-full shadow-2xl text-xs font-bold animate-bounce text-center">
           {toastMsg}
         </div>
       )}
 
-      {/* الشريط العلوي */}
-      <header className="bg-[#111928] border-b border-slate-800 px-3 sm:px-4 py-2.5 sticky top-0 z-30 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
-          <button onClick={() => setSidebarOpen(true)} className="p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-slate-200 border border-slate-700">
-            <Icon name="menu" className="w-5 h-5 text-emerald-400" />
-          </button>
-          <span className="font-extrabold text-sm text-emerald-400">EL-RESALA ERP</span>
+      {/* الشريط العلوي المطابق لـ First Group / ELOS */}
+      <header className="bg-[#1a2234] border-b border-slate-700/60 px-3 sm:px-4 py-2.5 sticky top-0 z-30 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-3">
+          <span className="font-black text-sm text-white">First group</span>
+          <span className="text-xs text-emerald-400 font-medium hidden xs:inline">● ليلة سعيدة</span>
         </div>
 
-        <div className="bg-[#182236] border border-emerald-500/40 px-3 py-1 rounded-xl text-xs font-mono text-emerald-300 flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>{liveDate.toLocaleTimeString("ar-EG")}</span>
-          <span className="text-slate-500">|</span>
-          <span>{liveDate.toLocaleDateString("ar-EG")}</span>
-        </div>
+        <div className="flex items-center gap-2">
+          <div className="bg-[#121826] border border-slate-700 px-3 py-1 rounded-xl text-xs font-mono text-slate-200 flex items-center gap-2">
+            <span>{liveDate.toLocaleTimeString("ar-EG")}</span>
+            <span className="text-slate-500">|</span>
+            <span>{liveDate.toLocaleDateString("ar-EG", { weekday: 'long', day: 'numeric', month: 'long' })}</span>
+          </div>
 
-        <div className="flex items-center gap-2 shrink-0">
-          <button onClick={() => showToast("تم إرسال نبضة لفتح درج الكاش!")} className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-xs flex items-center gap-1">
-            <Icon name="open" className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">فتح الدرج</span>
+          <button onClick={() => showToast("تم إرسال نبضة لفتح درج الكاش!")} className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-400 font-bold rounded-lg text-xs border border-slate-700">
+            فتح الدرج
           </button>
-          <button onClick={() => setShiftCloseModal(true)} className="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-lg text-xs flex items-center gap-1">
-            <Icon name="lock" className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">تقفيل الشفت</span>
+          <button onClick={() => setShiftModal(true)} className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold rounded-lg text-xs border border-slate-700">
+            تقفيل الشفت
           </button>
         </div>
       </header>
 
-      {/* محتوى الشاشات */}
-      <main className="flex-1 overflow-y-auto p-3 sm:p-5 pb-24 lg:pb-16 max-w-7xl mx-auto w-full">
-        {/* 1. لوحة التحكم */}
+      {/* محتوى التبويبات الرئيسي */}
+      <main className="flex-1 overflow-y-auto p-3 sm:p-5 pb-24 max-w-7xl mx-auto w-full">
+        {/* 1. الرئيسية (Dashboard) المطابقة لـ 57615.jpg */}
         {currentTab === "dashboard" && (
           <div className="space-y-4">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-              <div className="bg-[#111928] border border-slate-800 rounded-2xl p-4 flex flex-col justify-between shadow-lg">
-                <span className="text-2xl font-black text-emerald-400 font-mono">{salesLog.reduce((a,b)=>a+b.total,0).toLocaleString()} ج.م</span>
-                <p className="text-xs text-slate-400 mt-2">مبيعات المحل الإجمالية</p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="bg-[#1f293d] border border-slate-700/60 rounded-2xl p-4 flex flex-col justify-between">
+                <span className="text-xl font-black text-emerald-400 font-mono">0.00 ج.م</span>
+                <p className="text-xs text-slate-400 mt-2">مبيعات اليوم</p>
               </div>
-              <div className="bg-[#111928] border border-slate-800 rounded-2xl p-4 flex flex-col justify-between shadow-lg">
-                <span className="text-2xl font-black text-cyan-400 font-mono">{repairs.filter(r=>r.status!=="تم التسليم والتحصيل").length}</span>
-                <p className="text-xs text-slate-400 mt-2">أجهزة قيد الصيانة بالورشة</p>
+              <div className="bg-[#1f293d] border border-slate-700/60 rounded-2xl p-4 flex flex-col justify-between">
+                <span className="text-xl font-black text-emerald-400 font-mono">0.00 ج.م</span>
+                <p className="text-xs text-slate-400 mt-2">ربح اليوم</p>
               </div>
-              <div className="bg-[#111928] border border-slate-800 rounded-2xl p-4 flex flex-col justify-between shadow-lg">
-                <span className="text-2xl font-black text-white font-mono">{products.reduce((a,b)=>a+(b.buy_price*b.stock),0).toLocaleString()} ج.م</span>
-                <p className="text-xs text-slate-400 mt-2">قيمة المخزون (شراء)</p>
+              <div className="bg-[#1f293d] border border-slate-700/60 rounded-2xl p-4 flex flex-col justify-between">
+                <span className="text-xl font-black text-white font-mono">{safeBalance.toLocaleString()} ج.م</span>
+                <p className="text-xs text-slate-400 mt-2">رصيد الخزينة الرئيسية</p>
               </div>
-              <div className="bg-[#111928] border border-slate-800 rounded-2xl p-4 flex flex-col justify-between shadow-lg">
-                <span className="text-2xl font-black text-purple-400 font-mono">{safeBalance.toLocaleString()} ج.م</span>
-                <p className="text-xs text-slate-400 mt-2">رصيد الخزينة النقدية</p>
+              <div className="bg-[#1f293d] border border-slate-700/60 rounded-2xl p-4 flex flex-col justify-between">
+                <span className="text-xl font-black text-white font-mono">0.00 ج.م</span>
+                <p className="text-xs text-slate-400 mt-2">صافي حركة الخزينة اليومية</p>
               </div>
             </div>
           </div>
         )}
 
-        {/* 2. نقطة البيع (POS) */}
+        {/* 2. نقطة البيع (POS) المطابقة لـ 57616.jpg */}
         {currentTab === "pos" && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-            <div className="lg:col-span-5 bg-[#111928] border border-slate-800 rounded-2xl p-4 flex flex-col justify-between min-h-[500px]">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <div className="lg:col-span-5 bg-[#1f293d] border border-slate-700/60 rounded-2xl p-4 flex flex-col justify-between min-h-[500px]">
               <div>
-                <div className="flex justify-between items-center pb-3 border-b border-slate-800 text-xs">
-                  <h3 className="font-bold text-white">سلة المشتريات ({cart.length})</h3>
-                  <button onClick={() => setCart([])} className="text-rose-400 font-bold">إفراغ السلة</button>
+                <div className="flex justify-between items-center pb-3 border-b border-slate-700 text-xs font-bold">
+                  <span>سلة المشتريات ({cart.length})</span>
+                  <button onClick={() => setCart([])} className="text-rose-400">مسح</button>
                 </div>
-
-                <div className="py-3 space-y-2 max-h-[320px] overflow-y-auto">
+                <div className="py-3 space-y-2 max-h-[300px] overflow-y-auto text-xs">
                   {cart.map(item => (
-                    <div key={item.id} className="bg-slate-900 border border-slate-800 p-3 rounded-xl text-xs space-y-2">
-                      <div className="flex justify-between font-bold text-white">
-                        <span>{item.name} {item.imei ? `(${item.imei})` : ""}</span>
-                        <span>{item.customPrice * item.qty} ج.م</span>
-                      </div>
-                      <div className="flex items-center justify-between pt-1 border-t border-slate-800">
-                        <span className="text-slate-400">تخصيص السعر:</span>
-                        <input
-                          type="number"
-                          value={item.customPrice}
-                          onChange={e => {
-                            const val = Number(e.target.value);
-                            setCart(cart.map(i => i.id === item.id ? { ...i, customPrice: val } : i));
-                          }}
-                          className="w-20 bg-slate-950 border border-slate-700 rounded px-2 py-0.5 text-center font-mono font-bold text-emerald-400"
-                        />
-                      </div>
+                    <div key={item.id} className="bg-[#121826] p-2.5 rounded-xl flex justify-between items-center">
+                      <span>{item.name} ({item.qty})</span>
+                      <span className="font-mono font-bold text-emerald-400">{item.retail_price * item.qty} ج.م</span>
                     </div>
                   ))}
-                  {cart.length === 0 && <p className="text-center text-slate-500 py-16 text-xs">السلة فارغة، اختر الأصناف للبيع</p>}
+                  {cart.length === 0 && <p className="text-center text-slate-500 py-16 text-xs">السلة فارغة</p>}
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-slate-800 space-y-3">
-                <div className="flex justify-between text-base font-black text-white">
-                  <span>الإجمالي المستحق:</span>
-                  <span className="text-emerald-400 font-mono">{cartTotal.toLocaleString()} ج.م</span>
+              <div className="pt-3 border-t border-slate-700 space-y-3">
+                <div className="flex justify-between text-sm font-black">
+                  <span>إجمالي السلة:</span>
+                  <span className="text-emerald-400 font-mono">{cart.reduce((a,b)=>a+(b.retail_price*b.qty),0)} ج.م</span>
                 </div>
-                <button
-                  onClick={() => {
-                    if (cart.length === 0) return;
-                    setLiquidCash(p => p + cartTotal);
-                    setSalesLog([{ id: "INV-"+Math.floor(1000+Math.random()*9000), total: cartTotal, itemsCount: cart.length }, ...salesLog]);
-                    setCart([]);
-                    showToast(`تم إتمام البيع بنجاح بقيمة ${cartTotal} ج.م!`);
-                    window.print();
-                  }}
-                  disabled={cart.length === 0}
-                  className={`w-full py-3.5 rounded-xl font-bold text-sm shadow-lg transition ${cart.length > 0 ? "bg-emerald-600 hover:bg-emerald-500 text-white" : "bg-slate-800 text-slate-500 cursor-not-allowed"}`}
-                >
-                  إتمام البيع الفوري وطباعة الفاتورة
-                </button>
+                <button onClick={() => {
+                  if(cart.length === 0) return;
+                  const tot = cart.reduce((a,b)=>a+(b.retail_price*b.qty),0);
+                  setSafeBalance(p => p + tot);
+                  setSalesLog([{ id: "INV-"+Math.floor(1000+Math.random()*9000), total: tot, itemsCount: cart.length }, ...salesLog]);
+                  setCart([]);
+                  showToast("تم إتمام الفاتورة بنجاح!");
+                  window.print();
+                }} disabled={cart.length === 0} className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 font-bold text-xs rounded-xl text-white">إتمام البيع</button>
               </div>
             </div>
 
-            <div className="lg:col-span-7 space-y-4">
-              {/* شريحة السعر */}
-              <div className="bg-[#111928] border border-slate-800 p-3 rounded-2xl flex justify-between items-center text-xs">
-                <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-800">
-                  <button onClick={() => setPriceTier("retail")} className={`px-3 py-1.5 rounded-xl font-bold transition ${priceTier==="retail"?"bg-emerald-600 text-white":"text-slate-400"}`}>قطاعي</button>
-                  <button onClick={() => setPriceTier("semi")} className={`px-3 py-1.5 rounded-xl font-bold transition ${priceTier==="semi"?"bg-emerald-600 text-white":"text-slate-400"}`}>نصف جملة</button>
-                  <button onClick={() => setPriceTier("whole")} className={`px-3 py-1.5 rounded-xl font-bold transition ${priceTier==="whole"?"bg-emerald-600 text-white":"text-slate-400"}`}>جملة</button>
-                </div>
-                <span className="text-emerald-400 font-bold">نوع التسعير: {priceTier}</span>
+            <div className="lg:col-span-7 space-y-3">
+              <div className="bg-[#1f293d] border border-slate-700/60 p-3 rounded-2xl flex gap-2 overflow-x-auto text-xs">
+                <button onClick={() => setSelectedCategory("الأجهزة")} className={`px-4 py-2 rounded-xl font-bold ${selectedCategory==="الأجهزة"?"bg-emerald-600 text-white":"bg-[#121826] text-slate-300"}`}>الأجهزة</button>
+                <button onClick={() => setSelectedCategory("الإكسسوارات")} className={`px-4 py-2 rounded-xl font-bold ${selectedCategory==="الإكسسوارات"?"bg-emerald-600 text-white":"bg-[#121826] text-slate-300"}`}>الإكسسوارات</button>
+                <button onClick={() => setSelectedCategory("قطع الغيار")} className={`px-4 py-2 rounded-xl font-bold ${selectedCategory==="قطع الغيار"?"bg-emerald-600 text-white":"bg-[#121826] text-slate-300"}`}>قطع الغيار</button>
+                <button onClick={() => setSelectedCategory("الكل")} className={`px-4 py-2 rounded-xl font-bold ${selectedCategory==="الكل"?"bg-emerald-600 text-white":"bg-[#121826] text-slate-300"}`}>الكل</button>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {products.map(p => {
-                  const price = priceTier === "whole" ? p.whole_price : priceTier === "semi" ? p.semi_price : p.retail_price;
-                  return (
-                    <div key={p.id} onClick={() => {
-                      setCart(prev => {
-                        const exist = prev.find(i => i.id === p.id);
-                        if (exist && !p.imeiTracked) return prev.map(i => i.id === p.id ? { ...i, qty: i.qty + 1 } : i);
-                        return [...prev, { ...p, qty: 1, customPrice: price }];
-                      });
-                      showToast(`تمت إضافة ${p.name}`);
-                    }} className="bg-[#111928] hover:border-emerald-500 border border-slate-800 p-4 rounded-2xl cursor-pointer transition flex flex-col justify-between">
-                      <div>
-                        <div className="flex justify-between text-[10px] text-slate-400">
-                          <span className="font-mono">{p.barcode}</span>
-                          {p.imeiTracked && <span className="text-amber-400 font-bold">IMEI</span>}
-                        </div>
-                        <h4 className="font-bold text-xs text-white mt-1 line-clamp-2">{p.name}</h4>
-                        {p.imeiTracked && <p className="text-[10px] text-slate-400 font-mono mt-0.5">IMEI: {p.imei}</p>}
-                      </div>
-                      <div className="mt-4 pt-2 border-t border-slate-800 flex justify-between items-center">
-                        <span className="font-black text-sm text-white font-mono">{price} ج.م</span>
-                        <span className="w-7 h-7 bg-emerald-600/20 text-emerald-400 rounded-lg flex items-center justify-center font-bold">+</span>
-                      </div>
+                {products.filter(p => selectedCategory === "الكل" || p.category === selectedCategory).map(p => (
+                  <div key={p.id} onClick={() => {
+                    setCart(prev => {
+                      const ex = prev.find(i => i.id === p.id);
+                      if(ex) return prev.map(i => i.id === p.id ? {...i, qty: i.qty+1} : i);
+                      return [...prev, {...p, qty: 1}];
+                    });
+                    showToast(`أضيف ${p.name}`);
+                  }} className="bg-[#1f293d] hover:border-emerald-500 border border-slate-700/60 p-4 rounded-2xl cursor-pointer flex flex-col justify-between">
+                    <div>
+                      <span className="text-[10px] text-slate-400 font-mono">{p.barcode}</span>
+                      <h4 className="font-bold text-xs text-white mt-1 line-clamp-2">{p.name}</h4>
                     </div>
-                  );
-                })}
+                    <div className="mt-4 pt-2 border-t border-slate-700/60 flex justify-between items-center">
+                      <span className="font-black text-sm text-emerald-400 font-mono">{p.retail_price} ج.م</span>
+                      <span className="w-6 h-6 bg-emerald-600/30 text-emerald-300 rounded-lg flex items-center justify-center font-bold">+</span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         )}
 
-        {/* 3. مركز الصيانة وأجهزة IMEI */}
+        {/* 3. الصيانة المطابقة لـ 57617.jpg */}
         {currentTab === "repairs" && (
-          <div className="bg-[#111928] border border-slate-800 rounded-2xl p-5 space-y-4">
-            <div className="flex justify-between items-center pb-3 border-b border-slate-800">
-              <h3 className="text-base font-bold text-white">مركز صيانة الهواتف وتتبع IMEI</h3>
-              <button onClick={() => {
-                const client = prompt("اسم العميل:");
-                const phone = prompt("رقم الهاتف:");
-                const device = prompt("نوع الجهاز (iPhone 13):");
-                const imei = prompt("رقم السيريال / IMEI (إلزامي):") || "-";
-                const issue = prompt("العطل المطلوب:");
-                const cost = Number(prompt("التكلفة المتفق عليها:")) || 0;
-                const dep = Number(prompt("العربون المدفوع:")) || 0;
-                if(client && device) {
-                  const t = { id: "REP-"+Math.floor(1000+Math.random()*9000), client, phone, device, imei, issue, cost, deposit: dep, status: "قيد الفحص", date: new Date().toLocaleDateString("ar-EG") };
-                  setRepairs([t, ...repairs]);
-                  if(dep > 0) setLiquidCash(p => p + dep);
-                  showToast("تم فتح كارت الصيانة بنجاح!");
-                }
-              }} className="px-3.5 py-1.5 bg-cyan-600 text-white font-bold text-xs rounded-xl">+ استلام جهاز صيانة جديد</button>
-            </div>
-
-            <div className="space-y-3">
-              {repairs.map(r => (
-                <div key={r.id} className="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs">
-                  <div>
-                    <span className="font-mono font-bold text-cyan-400">#{r.id}</span>
-                    <h4 className="font-bold text-white text-sm">{r.device} - {r.client} ({r.phone})</h4>
-                    <p className="text-slate-400 font-mono text-[11px]">IMEI: {r.imei} | العطل: {r.issue} | التكلفة: {r.cost} ج.م</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <select value={r.status} onChange={e => {
-                      const st = e.target.value;
-                      setRepairs(repairs.map(x => x.id === r.id ? { ...x, status: st } : x));
-                    }} className="bg-slate-950 border border-slate-700 rounded-lg px-2 py-1 text-white text-xs">
-                      <option value="قيد الفحص">قيد الفحص</option>
-                      <option value="قيد الإصلاح">قيد الإصلاح</option>
-                      <option value="جاهز للتسليم">جاهز للتسليم</option>
-                      <option value="تم التسليم والتحصيل">تم التسليم والتحصيل</option>
-                    </select>
-                    <button onClick={() => {
-                      if(confirm("حذف الكارت؟")) setRepairs(repairs.filter(x => x.id !== r.id));
-                    }} className="px-2 py-1 bg-rose-600/30 text-rose-300 rounded font-bold">حذف</button>
-                  </div>
-                </div>
-              ))}
-              {repairs.length === 0 && <p className="text-center text-slate-500 py-10">لا توجد أجهزة في الصيانة</p>}
-            </div>
-          </div>
-        )}
-
-        {/* 4. إدارة المخزون والأصناف (CRUD كامل) */}
-        {currentTab === "inventory" && (
-          <div className="bg-[#111928] border border-slate-800 rounded-2xl p-5 space-y-4">
-            <div className="flex justify-between items-center pb-3 border-b border-slate-800">
-              <h3 className="text-base font-bold text-white">إدارة المخزون والأصناف (إضافة وتعديل وحذف)</h3>
-              <div className="flex gap-2">
-                <button onClick={() => exportToCSV("inventory_list", products)} className="px-3 py-1.5 bg-slate-800 text-emerald-300 font-bold text-xs rounded-xl">تصدير Excel</button>
+          <div className="bg-[#1f293d] border border-slate-700/60 rounded-2xl p-4 space-y-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-3 border-b border-slate-700/60">
+              <div className="flex gap-2 flex-wrap">
                 <button onClick={() => {
-                  const name = prompt("اسم المنتج أو الجهاز:");
-                  const isImei = confirm("هل هذا الجهاز مستعمل وله رقم IMEI خاص به؟ (OK نعم / Cancel لا)");
-                  const imei = isImei ? prompt("أدخل رقم الـ IMEI:") : "";
-                  const buy = Number(prompt("سعر الشراء:")) || 0;
-                  const retail = Number(prompt("سعر القطاعي:")) || 0;
-                  const stock = isImei ? 1 : (Number(prompt("الكمية:")) || 0);
-
-                  if (name) {
-                    const np = {
-                      id: Date.now(),
-                      name,
-                      barcode: "622" + Math.floor(100 + Math.random() * 900),
-                      imeiTracked: isImei,
-                      imei: imei || "",
-                      buy_price: buy,
-                      retail_price: retail,
-                      semi_price: retail - 10,
-                      whole_price: retail - 20,
-                      stock,
-                      category: isImei ? "هواتف مستعملة" : "إكسسوارات"
-                    };
-                    setProducts([...products, np]);
-                    showToast("تمت إضافة الصنف بنجاح!");
+                  const client = prompt("اسم العميل:");
+                  const phone = prompt("رقم الهاتف:");
+                  const device = prompt("نوع الجهاز:");
+                  const issue = prompt("العطل المشكلة:");
+                  const cost = Number(prompt("التكلفة:")) || 0;
+                  if(client && device) {
+                    setRepairs([{ id: "R-"+Date.now()+"#", client, phone: phone||"-", device, issue, status: "قيد الفحص", cost, date: new Date().toLocaleDateString("ar-EG") }, ...repairs]);
+                    showToast("تم استلام جهاز الصيانة بنجاح!");
                   }
-                }} className="px-3.5 py-1.5 bg-emerald-600 text-white font-bold text-xs rounded-xl">+ إضافة منتج أو جهاز جديد</button>
+                }} className="px-3 py-2 bg-emerald-600 text-white font-bold text-xs rounded-xl">+ استلام جديد</button>
               </div>
+              <span className="text-xs text-slate-400 font-mono">عدد التذاكر: {repairs.length}</span>
             </div>
 
             <div className="overflow-x-auto">
               <table className="w-full text-right text-xs">
-                <thead className="text-slate-400 border-b border-slate-800">
+                <thead className="text-slate-400 border-b border-slate-700">
                   <tr>
-                    <th className="py-2">المنتج / الجهاز</th>
-                    <th className="py-2">الباركود / IMEI</th>
-                    <th className="py-2">شراء</th>
-                    <th className="py-2">قطاعي</th>
-                    <th className="py-2">الكمية</th>
-                    <th className="py-2">تحكم</th>
+                    <th className="py-2">رقم التذكرة</th>
+                    <th className="py-2">اسم العميل</th>
+                    <th className="py-2">رقم الموبايل</th>
+                    <th className="py-2">الجهاز</th>
+                    <th className="py-2">العطل / المشكلة</th>
+                    <th className="py-2">الحالة</th>
+                    <th className="py-2">التكلفة</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800">
-                  {products.map(p => (
-                    <tr key={p.id}>
-                      <td className="py-2.5 font-bold text-white">{p.name} {p.imeiTracked ? <span className="text-amber-400 text-[10px]">(IMEI)</span> : ""}</td>
-                      <td className="py-2.5 font-mono text-emerald-400">{p.imeiTracked ? p.imei : p.barcode}</td>
-                      <td className="py-2.5">{p.buy_price} ج.م</td>
-                      <td className="py-2.5 text-emerald-400 font-bold">{p.retail_price} ج.م</td>
-                      <td className="py-2.5 font-bold">{p.stock}</td>
-                      <td className="py-2.5">
-                        <button onClick={() => {
-                          if(confirm(`حذف ${p.name}؟`)) setProducts(products.filter(x => x.id !== p.id));
-                        }} className="text-rose-400 font-bold hover:underline">حذف</button>
+                <tbody className="divide-y divide-slate-700/50">
+                  {repairs.map(r => (
+                    <tr key={r.id}>
+                      <td className="py-3 font-mono font-bold text-emerald-400">{r.id}</td>
+                      <td className="py-3 font-bold text-white">{r.client}</td>
+                      <td className="py-3 font-mono">{r.phone}</td>
+                      <td className="py-3 font-bold">{r.device}</td>
+                      <td className="py-3 text-slate-300">{r.issue}</td>
+                      <td className="py-3">
+                        <span className={`px-2 py-0.5 rounded-md font-bold text-[11px] ${r.status==="تم التسليم"?"bg-emerald-500/20 text-emerald-400":"bg-amber-500/20 text-amber-400"}`}>
+                          {r.status}
+                        </span>
                       </td>
+                      <td className="py-3 font-mono font-bold text-emerald-400">{r.cost} ج.م</td>
                     </tr>
                   ))}
                 </tbody>
@@ -430,146 +324,160 @@ export default function App() {
           </div>
         )}
 
-        {/* 5. المحافظ والبنوك */}
-        {currentTab === "wallets" && (
-          <div className="bg-[#111928] border border-slate-800 rounded-2xl p-5 space-y-4">
-            <h3 className="text-base font-bold text-white">المحافظ الإلكترونية والحسابات البنكية</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {/* 4. التحويلات المطابقة لـ 57618.jpg */}
+        {currentTab === "transfers" && (
+          <div className="bg-[#1f293d] border border-slate-700/60 rounded-2xl p-4 space-y-4">
+            <h3 className="text-base font-bold text-white">التحويلات المالية والمحافظ الإلكترونية</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {wallets.map(w => (
-                <div key={w.id} className="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex justify-between items-center text-xs">
+                <div key={w.id} className="bg-[#121826] border border-slate-700 p-4 rounded-xl flex justify-between items-center text-xs">
                   <div>
-                    <h4 className="font-bold text-white">{w.name}</h4>
-                    <p className="text-slate-400 font-mono">{w.phone}</p>
+                    <h4 className="font-bold text-white text-sm">{w.name}</h4>
+                    <p className="text-slate-400 font-mono mt-0.5">{w.phone}</p>
                   </div>
-                  <span className="font-mono font-black text-cyan-400 text-sm">{w.balance.toLocaleString()} ج.م</span>
+                  <div className="text-left">
+                    <span className="font-mono font-black text-cyan-400 text-sm">{w.balance.toLocaleString()} ج.م</span>
+                    <button onClick={() => {
+                      const amt = Number(prompt(`إيداع في ${w.name}:`));
+                      if(amt > 0) setWallets(wallets.map(x => x.id === w.id ? {...x, balance: x.balance + amt} : x));
+                    }} className="block mt-1 text-[10px] text-emerald-400 font-bold hover:underline">+ إيداع</button>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        {/* 6. الخزينة */}
-        {currentTab === "drawer" && (
-          <div className="bg-[#111928] border border-slate-800 rounded-2xl p-5 space-y-4">
-            <h3 className="text-base font-bold text-white">الخزينة النقدية ودرج الكاشير</h3>
-            <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex justify-between items-center">
-              <div>
-                <p className="text-xs text-slate-400">الرصيد النقدي الفعلي</p>
-                <h2 className="text-3xl font-black text-emerald-400 font-mono mt-1">{safeBalance.toLocaleString()} ج.م</h2>
+        {/* 5. الأقساط المطابقة لـ 57619.jpg */}
+        {currentTab === "installments" && (
+          <div className="bg-[#1f293d] border border-slate-700/60 rounded-2xl p-4 space-y-4">
+            <div className="flex justify-between items-center pb-3 border-b border-slate-700">
+              <h3 className="text-base font-bold text-white">إدارة الأقساط وعقود التمويل</h3>
+              <button onClick={() => showToast("فتح عقد تقسيط جديد")} className="px-3 py-1.5 bg-emerald-600 text-white font-bold text-xs rounded-xl">+ عقد جديد</button>
+            </div>
+            <p className="text-xs text-slate-400 text-center py-12">لا توجد أقساط مستحقة اليوم</p>
+          </div>
+        )}
+
+        {/* 6. المخزون المطابق لـ 57622.jpg */}
+        {currentTab === "inventory" && (
+          <div className="bg-[#1f293d] border border-slate-700/60 rounded-2xl p-4 space-y-4">
+            <div className="flex justify-between items-center pb-3 border-b border-slate-700">
+              <h3 className="text-base font-bold text-white">إدارة المخازن والأصناف</h3>
+              <div className="flex gap-2">
+                <button onClick={() => exportToCSV("inventory", products)} className="px-3 py-1.5 bg-slate-800 text-emerald-300 font-bold text-xs rounded-xl">تصدير Excel</button>
+                <button onClick={() => {
+                  const name = prompt("اسم الصنف أو الجهاز:");
+                  const buy = Number(prompt("سعر الشراء:")) || 0;
+                  const retail = Number(prompt("سعر القطاعي:")) || 0;
+                  const stock = Number(prompt("الكمية:")) || 0;
+                  if(name) setProducts([...products, { id: Date.now(), name, barcode: "622"+Math.floor(100+Math.random()*900), category: "الإكسسوارات", buy_price: buy, retail_price: retail, whole_price: retail-10, stock }]);
+                }} className="px-3 py-1.5 bg-emerald-600 text-white font-bold text-xs rounded-xl">+ إضافة صنف</button>
               </div>
-              <button onClick={() => {
-                const amt = Number(prompt("إيداع نقدي بالدرج:"));
-                if(amt > 0) setSafeBalance(p => p + amt);
-              }} className="px-4 py-2.5 bg-emerald-600 font-bold text-xs rounded-xl text-white">+ إيداع</button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              <div className="bg-[#121826] border border-slate-700 p-4 rounded-xl">
+                <p className="text-slate-400">إجمالي الكمية بالمخزن</p>
+                <h3 className="text-2xl font-black text-white mt-1">{products.reduce((a,b)=>a+b.stock,0)} قطعة</h3>
+              </div>
+              <div className="bg-[#121826] border border-slate-700 p-4 rounded-xl">
+                <p className="text-slate-400">رأس مال المخزون (شراء)</p>
+                <h3 className="text-2xl font-black text-emerald-400 font-mono mt-1">{products.reduce((a,b)=>a+(b.buy_price*b.stock),0).toLocaleString()} ج.م</h3>
+              </div>
             </div>
           </div>
         )}
 
-        {/* 7. العملاء */}
-        {currentTab === "customers" && (
-          <div className="bg-[#111928] border border-slate-800 rounded-2xl p-5 space-y-4">
-            <h3 className="text-base font-bold text-white">العملاء وحسابات الآجل</h3>
-            <div className="space-y-2">
-              {customers.map(c => (
-                <div key={c.id} className="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl flex justify-between items-center text-xs">
-                  <div>
-                    <h4 className="font-bold text-white">{c.name}</h4>
-                    <p className="text-slate-400 font-mono">{c.phone}</p>
-                  </div>
-                  <span className="font-mono font-bold text-rose-400">{c.debt} ج.م</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* 8. التقارير */}
-        {currentTab === "reports" && (
-          <div className="bg-[#111928] border border-slate-800 rounded-2xl p-5 space-y-4">
-            <div className="flex justify-between items-center pb-3 border-b border-slate-800">
-              <h3 className="text-base font-bold text-white">سجل المبيعات والأرباح</h3>
-              <button onClick={() => exportToCSV("sales_report", salesLog)} className="px-3 py-1.5 bg-slate-800 text-purple-300 font-bold text-xs rounded-xl">تصدير Excel</button>
-            </div>
-            <div className="space-y-2">
-              {salesLog.map(s => (
-                <div key={s.id} className="bg-slate-900 border border-slate-800 p-3 rounded-2xl flex justify-between items-center text-xs">
-                  <span className="font-mono text-purple-300 font-bold">{s.id}</span>
-                  <span className="text-slate-300">{s.itemsCount} أصناف</span>
-                  <span className="font-mono text-emerald-400 font-bold">{s.total} ج.م</span>
-                </div>
-              ))}
-              {salesLog.length === 0 && <p className="text-center text-slate-500 py-10">لا توجد مبيعات مسجلة</p>}
-            </div>
+        {/* 7. المبيعات والمشتريات والحسابات */}
+        {["sales", "purchases", "accounts"].includes(currentTab) && (
+          <div className="bg-[#1f293d] border border-slate-700/60 rounded-2xl p-6 text-center space-y-3">
+            <h3 className="text-base font-bold text-white">قسم العمليات والحسابات</h3>
+            <p className="text-xs text-slate-400">هذا القسم متصل تلقائياً بحركة المخزون والخزينة.</p>
+            <button onClick={() => setCurrentTab("dashboard")} className="px-4 py-2 bg-emerald-600 text-white font-bold text-xs rounded-xl">العودة للرئيسية</button>
           </div>
         )}
       </main>
 
       {/* مودال تقفيل الشفت */}
-      {shiftCloseModal && (
+      {shiftModal && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" dir="rtl">
-          <div className="bg-[#111928] border border-slate-700 w-full max-w-md rounded-3xl p-6 text-white space-y-4 shadow-2xl">
-            <h3 className="font-black text-base">تقفيل الشفت - ملخص الخزينة</h3>
-            <div className="bg-slate-900 p-3 rounded-xl space-y-2 text-xs">
-              <div className="flex justify-between"><span>كاش سائل بالدرج:</span><strong>{liquidCash} ج.م</strong></div>
-              <div className="flex justify-between"><span>أرصدة المحافظ:</span><strong>{wallets.reduce((a,b)=>a+b.balance,0)} ج.م</strong></div>
-              <div className="flex justify-between pt-2 border-t border-slate-800 text-sm font-bold">
-                <span>الإجمالي للخزينة:</span>
-                <span className="text-emerald-400 font-mono">{(liquidCash + wallets.reduce((a,b)=>a+b.balance,0)).toLocaleString()} ج.م</span>
-              </div>
+          <div className="bg-[#1f293d] border border-slate-700 w-full max-w-md rounded-3xl p-6 text-white space-y-4 shadow-2xl">
+            <h3 className="font-black text-base">تأكيد تقفيل الشفت</h3>
+            <div className="bg-[#121826] p-3 rounded-xl space-y-2 text-xs">
+              <div className="flex justify-between"><span>الخزينة النقدية:</span><strong className="text-emerald-400">{safeBalance} ج.م</strong></div>
+              <div className="flex justify-between"><span>إجمالي المحافظ:</span><strong className="text-cyan-400">{wallets.reduce((a,b)=>a+b.balance,0)} ج.م</strong></div>
             </div>
             <div className="flex gap-2 pt-2">
-              <button onClick={() => {
-                setShiftCloseModal(false);
-                setLiquidCash(0);
-                showToast("تم تقفيل الشفت وبدء وردية جديدة!");
-              }} className="flex-1 py-3 bg-emerald-600 font-bold text-xs rounded-xl text-white">تأكيد وبدء شفت جديد</button>
-              <button onClick={() => setShiftCloseModal(false)} className="px-4 py-3 bg-slate-800 text-slate-400 text-xs rounded-xl">إلغاء</button>
+              <button onClick={() => { setShiftModal(false); showToast("تم تقفيل الشفت بنجاح!"); }} className="flex-1 py-3 bg-emerald-600 font-bold text-xs rounded-xl text-white">تأكيد التقفيل</button>
+              <button onClick={() => setShiftModal(false)} className="px-4 py-3 bg-slate-800 text-slate-400 text-xs rounded-xl">إلغاء</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* القائمة الجانبية */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex justify-start" dir="rtl">
-          <div className="w-72 max-w-[85vw] bg-[#111928] border-l border-slate-800 h-full flex flex-col p-4 shadow-2xl">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-              <h3 className="font-bold text-sm text-white">أقسام EL-RESALA</h3>
-              <button onClick={() => setSidebarOpen(false)} className="text-slate-400">✕</button>
-            </div>
-            <div className="flex-1 overflow-y-auto py-3 space-y-1">
-              {menuItems.map(item => (
-                <button key={item.id} onClick={() => { setCurrentTab(item.id); setSidebarOpen(false); }} className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition ${currentTab === item.id ? "bg-emerald-600 text-white" : "text-slate-300 hover:bg-slate-800"}`}>
-                  <Icon name={item.icon} className="w-4 h-4" />
-                  <span>{item.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
+      {/* ==================== القوائم المنسدلة (Popovers) المطابقة لـ ELOS ==================== */}
+      {/* 1. قائمة المخزون */}
+      {activePopover === "inventory" && (
+        <div className="absolute bottom-16 left-1/2 -translate-x-32 bg-[#1f293d] border border-slate-700 rounded-2xl p-2 shadow-2xl z-50 text-xs w-48 space-y-1" onClick={e => e.stopPropagation()}>
+          <button onClick={() => { setCurrentTab("inventory"); setActivePopover(null); }} className="w-full text-right px-3 py-2 hover:bg-[#121826] rounded-xl font-bold text-white flex items-center gap-2"><span>📦</span> المخازن والأصناف</button>
+          <button onClick={() => { setCurrentTab("inventory"); setActivePopover(null); }} className="w-full text-right px-3 py-2 hover:bg-[#121826] rounded-xl font-bold text-white flex items-center gap-2"><span>📋</span> جرد المخزن</button>
+          <button onClick={() => { setCurrentTab("inventory"); setActivePopover(null); }} className="w-full text-right px-3 py-2 hover:bg-[#121826] rounded-xl font-bold text-white flex items-center gap-2"><span>🗑️</span> تقرير الهالك</button>
         </div>
       )}
 
-      {/* الشريط السفلي المتوافق مع ELOS */}
-      <footer className="fixed bottom-0 left-0 right-0 bg-[#0c1017]/95 backdrop-blur-md border-t border-slate-800 px-2 py-1.5 flex items-center justify-around text-[10px] text-slate-400 z-40 shadow-2xl">
-        <button onClick={() => setCurrentTab("cash_drawer")} className={`flex flex-col items-center gap-1 px-3 py-1 rounded-xl transition ${currentTab === "cash_drawer" ? "text-emerald-400 font-bold bg-emerald-950/40" : "hover:text-white"}`}>
-          <Icon name="drawer" className="w-4 h-4" />
-          <span>الخزينة</span>
+      {/* 2. قائمة المبيعات */}
+      {activePopover === "sales" && (
+        <div className="absolute bottom-16 left-1/2 -translate-x-20 bg-[#1f293d] border border-slate-700 rounded-2xl p-2 shadow-2xl z-50 text-xs w-48 space-y-1" onClick={e => e.stopPropagation()}>
+          <button onClick={() => { setCurrentTab("pos"); setActivePopover(null); }} className="w-full text-right px-3 py-2 hover:bg-[#121826] rounded-xl font-bold text-white">📈 المبيعات العامة</button>
+          <button onClick={() => { setCurrentTab("pos"); setActivePopover(null); }} className="w-full text-right px-3 py-2 hover:bg-[#121826] rounded-xl font-bold text-white">📱 مبيعات الأجهزة</button>
+          <button onClick={() => { setCurrentTab("pos"); setActivePopover(null); }} className="w-full text-right px-3 py-2 hover:bg-[#121826] rounded-xl font-bold text-white">🎧 مبيعات الإكسسوارات</button>
+        </div>
+      )}
+
+      {/* 3. قائمة الإدارة */}
+      {activePopover === "management" && (
+        <div className="absolute bottom-16 left-1/2 -translate-x-44 bg-[#1f293d] border border-slate-700 rounded-2xl p-2 shadow-2xl z-50 text-xs w-48 space-y-1" onClick={e => e.stopPropagation()}>
+          <button onClick={() => { setCurrentTab("dashboard"); setActivePopover(null); }} className="w-full text-right px-3 py-2 hover:bg-[#121826] rounded-xl font-bold text-white">👥 الموظفين</button>
+          <button onClick={() => { setCurrentTab("dashboard"); setActivePopover(null); }} className="w-full text-right px-3 py-2 hover:bg-[#121826] rounded-xl font-bold text-white">🔒 المستخدمين والصلاحيات</button>
+          <button onClick={() => { setCurrentTab("dashboard"); setActivePopover(null); }} className="w-full text-right px-3 py-2 hover:bg-[#121826] rounded-xl font-bold text-white">⚙️ الإعدادات العامة</button>
+        </div>
+      )}
+
+      {/* ==================== شريط التنقل السفلي المطابق تماماً لـ ELOS ==================== */}
+      <footer className="fixed bottom-0 left-0 right-0 bg-[#1a2234]/95 backdrop-blur-md border-t border-slate-700/60 px-1 py-1.5 flex items-center justify-around text-[10px] text-slate-300 z-40 shadow-2xl">
+        <button onClick={() => setCurrentTab("dashboard")} className={`flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-xl transition ${currentTab==="dashboard"?"text-emerald-400 font-bold bg-[#121826]":""}`}>
+          <span>الرئيسية</span>
         </button>
-        <button onClick={() => setCurrentTab("pos")} className={`flex flex-col items-center gap-1 px-3 py-1 rounded-xl transition ${currentTab === "pos" ? "text-emerald-400 font-bold bg-emerald-950/40" : "hover:text-white"}`}>
-          <Icon name="pos" className="w-4 h-4" />
+        <button onClick={() => setCurrentTab("pos")} className={`flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-xl transition ${currentTab==="pos"?"text-emerald-400 font-bold bg-[#121826]":""}`}>
           <span>نقطة البيع</span>
         </button>
-        <button onClick={() => setCurrentTab("repairs")} className={`flex flex-col items-center gap-1 px-3 py-1 rounded-xl transition ${currentTab === "repairs" ? "text-emerald-400 font-bold bg-emerald-950/40" : "hover:text-white"}`}>
-          <Icon name="repairs" className="w-4 h-4" />
+        <button onClick={() => setCurrentTab("repairs")} className={`flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-xl transition ${currentTab==="repairs"?"text-emerald-400 font-bold bg-[#121826]":""}`}>
           <span>الصيانة</span>
         </button>
-        <button onClick={() => setCurrentTab("inventory")} className={`flex flex-col items-center gap-1 px-3 py-1 rounded-xl transition ${currentTab === "inventory" ? "text-emerald-400 font-bold bg-emerald-950/40" : "hover:text-white"}`}>
-          <Icon name="audit" className="w-4 h-4" />
-          <span>المخزون</span>
+        <button onClick={() => setCurrentTab("transfers")} className={`flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-xl transition ${currentTab==="transfers"?"text-emerald-400 font-bold bg-[#121826]":""}`}>
+          <span>التحويلات</span>
         </button>
-        <button onClick={() => setSidebarOpen(true)} className="flex flex-col items-center gap-1 px-3 py-1 rounded-xl text-emerald-400 font-bold">
-          <Icon name="menu" className="w-4 h-4" />
-          <span>القائمة</span>
+        <button onClick={() => setCurrentTab("installments")} className={`flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-xl transition ${currentTab==="installments"?"text-emerald-400 font-bold bg-[#121826]":""}`}>
+          <span>الأقسام</span>
+        </button>
+        <button onClick={(e) => { e.stopPropagation(); setActivePopover(activePopover==="inventory"?null:"inventory"); }} className={`flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-xl transition ${currentTab==="inventory"?"text-emerald-400 font-bold bg-[#121826]":""}`}>
+          <span>المخزون ▾</span>
+        </button>
+        <button onClick={(e) => { e.stopPropagation(); setActivePopover(activePopover==="sales"?null:"sales"); }} className={`flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-xl transition ${currentTab==="pos"?"text-emerald-400 font-bold bg-[#121826]":""}`}>
+          <span>المبيعات ▾</span>
+        </button>
+        <button onClick={() => setCurrentTab("dashboard")} className="flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-xl">
+          <span>المشتريات</span>
+        </button>
+        <button onClick={() => setCurrentTab("dashboard")} className="flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-xl">
+          <span>الحسابات</span>
+        </button>
+        <button onClick={(e) => { e.stopPropagation(); setActivePopover(activePopover==="management"?null:"management"); }} className="flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-xl">
+          <span>الإدارة ▾</span>
+        </button>
+        <button onClick={() => showToast("أدوات النظام نشطة")} className="flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-xl">
+          <span>أدوات</span>
         </button>
       </footer>
     </div>

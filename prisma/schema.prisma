@@ -1,0 +1,176 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./el_resala.db"
+}
+
+model User {
+  id           String      @id @default(uuid())
+  name         String
+  username     String      @unique
+  role         String      @default("CASHIER") // OWNER, MANAGER, CASHIER, TECHNICIAN
+  repairs      RepairJob[]
+  sales        Sale[]
+  createdAt    DateTime    @default(now())
+}
+
+model Product {
+  id             String          @id @default(uuid())
+  name           String
+  sku            String          @unique
+  barcode        String?         @unique
+  type           String          // DEVICE, ACCESSORY, SPARE_PART
+  stockQuantity  Int             @default(0)
+  minStockAlert  Int             @default(3)
+  purchasePrice  Float           @default(0.0)
+  retailPrice    Float
+  wholesalePrice Float?
+  location       String?
+  imeis          DeviceImei[]
+  saleItems      SaleItem[]
+  repairParts    RepairItem[]
+  stockMovements StockMovement[]
+  createdAt      DateTime        @default(now())
+}
+
+model DeviceImei {
+  id              String    @id @default(uuid())
+  imei1           String    @unique
+  imei2           String?   @unique
+  serialNumber    String?
+  productId       String
+  product         Product   @relation(fields: [productId], references: [id])
+  condition       String    @default("NEW") // NEW, USED
+  status          String    @default("IN_STOCK") // IN_STOCK, SOLD, IN_REPAIR
+  purchasePrice   Float
+  soldPrice       Float?
+  warrantyMonths  Int       @default(12)
+  warrantyEndDate DateTime?
+  saleItemId      String?   @unique
+  saleItem        SaleItem? @relation(fields: [saleItemId], references: [id])
+  createdAt       DateTime  @default(now())
+}
+
+model FinancialAccount {
+  id            String               @id @default(uuid())
+  name          String               // خزنة المحل، فودافون كاش، انستاباي، البنك
+  type          String               // CASH, WALLET, BANK
+  balance       Float                @default(0.0)
+  transfersFrom FinancialTransfer[]  @relation("SourceAcc")
+  transfersTo   FinancialTransfer[]  @relation("DestAcc")
+  payments      PaymentTransaction[]
+  expenses      Expense[]
+  createdAt     DateTime             @default(now())
+}
+
+model FinancialTransfer {
+  id          String           @id @default(uuid())
+  sourceAccId String
+  destAccId   String
+  sourceAcc   FinancialAccount @relation("SourceAcc", fields: [sourceAccId], references: [id])
+  destAcc     FinancialAccount @relation("DestAcc", fields: [destAccId], references: [id])
+  amount      Float
+  notes       String?
+  createdAt   DateTime         @default(now())
+}
+
+model Sale {
+  id             String               @id @default(uuid())
+  invoiceNumber  String               @unique
+  customerName   String?
+  customerPhone  String?
+  cashierId      String
+  cashier        User                 @relation(fields: [cashierId], references: [id])
+  totalAmount    Float
+  discountAmount Float                @default(0.0)
+  netAmount      Float
+  paidAmount     Float
+  remaining      Float                @default(0.0)
+  items          SaleItem[]
+  payments       PaymentTransaction[]
+  createdAt      DateTime             @default(now())
+}
+
+model SaleItem {
+  id         String      @id @default(uuid())
+  saleId     String
+  sale       Sale        @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  productId  String
+  product    Product     @relation(fields: [productId], references: [id])
+  quantity   Int         @default(1)
+  unitPrice  Float
+  totalPrice Float
+  costPrice  Float
+  deviceImei DeviceImei?
+}
+
+model PaymentTransaction {
+  id          String           @id @default(uuid())
+  accountId   String
+  account     FinancialAccount @relation(fields: [accountId], references: [id])
+  amount      Float
+  type        String           // IN, OUT
+  saleId      String?
+  sale        Sale?            @relation(fields: [saleId], references: [id])
+  repairJobId String?
+  repairJob   RepairJob?       @relation(fields: [repairJobId], references: [id])
+  createdAt   DateTime         @default(now())
+}
+
+model RepairJob {
+  id             String               @id @default(uuid())
+  jobCardNumber  String               @unique
+  customerName   String
+  customerPhone  String
+  deviceModel    String
+  imeiOrSerial   String?
+  reportedFaults String
+  status         String               @default("RECEIVED") 
+  // RECEIVED, IN_REPAIR, READY, DELIVERED, CANCELLED
+  technicianId   String?
+  technician     User?                @relation(fields: [technicianId], references: [id])
+  diagnosticFee  Float                @default(0.0)
+  laborFee       Float                @default(0.0)
+  partsTotal     Float                @default(0.0)
+  totalAmount    Float                @default(0.0)
+  paidAmount     Float                @default(0.0)
+  commissionRate Float                @default(0.0)
+  techPayout     Float                @default(0.0)
+  partsUsed      RepairItem[]
+  payments       PaymentTransaction[]
+  deliveredAt    DateTime?
+  createdAt      DateTime             @default(now())
+}
+
+model RepairItem {
+  id          String    @id @default(uuid())
+  repairJobId String
+  repairJob   RepairJob @relation(fields: [repairJobId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product   @relation(fields: [productId], references: [id])
+  quantity    Int       @default(1)
+  unitPrice   Float
+  costPrice   Float
+}
+
+model Expense {
+  id        String           @id @default(uuid())
+  title     String
+  amount    Float
+  category  String
+  accountId String
+  account   FinancialAccount @relation(fields: [accountId], references: [id])
+  createdAt DateTime         @default(now())
+}
+
+model StockMovement {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  changeQty Int
+  reason    String
+  createdAt DateTime @default(now())
+}
