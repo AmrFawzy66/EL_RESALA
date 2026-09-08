@@ -1,37 +1,30 @@
 {
-  "name": "el_resala",
+  "name": "el-resala-pos-frontend",
+  "private": true,
   "version": "1.0.0",
-  "description": "This is the web version of El-RESALA POS, converted from the original Electron desktop app. It's split into three independent pieces:",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/AmrFawzy66/EL_RESALA.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/AmrFawzy66/EL_RESALA/issues"
-  },
-  "homepage": "https://github.com/AmrFawzy66/EL_RESALA#readme",
   "dependencies": {
-    "@prisma/client": "^7.10.0",
-    "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "zod": "^4.5.4"
+    "clsx": "^2.1.0",
+    "idb": "^8.0.3",
+    "lucide-react": "^0.344.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.18.3",
+    "tailwind-merge": "^2.2.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6",
-    "@types/node": "^26.4.1",
-    "nodemon": "^3.1.14",
-    "prisma": "^8.0.0-rc.13",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.4",
+    "vite": "^5.3.4"
   }
 }

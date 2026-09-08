@@ -1,0 +1,191 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =====================================================================
+   THEME SYSTEM
+   Each theme sets the --resala-* RGB triplets Tailwind reads (see
+   tailwind.config.js). Switching html[data-theme] instantly re-themes
+   every resala-* utility class app-wide — no rebuild, no re-render.
+   ===================================================================== */
+
+:root,
+html[data-theme='resala'] {
+  --resala-50: 238 250 246;
+  --resala-100: 212 242 231;
+  --resala-200: 169 229 207;
+  --resala-300: 120 209 179;
+  --resala-400: 75 184 148;
+  --resala-500: 45 156 120;
+  --resala-600: 31 125 97;
+  --resala-700: 28 99 79;
+  --resala-800: 25 79 65;
+  --resala-900: 22 66 55;
+  --resala-950: 10 37 31;
+  --resala-eye-comfort-bg: #f4f1ea;
+}
+
+html[data-theme='ocean'] {
+  --resala-50: 234 244 251;
+  --resala-100: 204 230 246;
+  --resala-200: 153 205 236;
+  --resala-300: 102 176 224;
+  --resala-400: 63 147 209;
+  --resala-500: 36 120 179;
+  --resala-600: 29 111 165;
+  --resala-700: 24 93 138;
+  --resala-800: 20 74 110;
+  --resala-900: 17 60 90;
+  --resala-950: 9 31 48;
+  --resala-eye-comfort-bg: #eef3f6;
+}
+
+html[data-theme='sunset'] {
+  --resala-50: 253 241 231;
+  --resala-100: 251 224 196;
+  --resala-200: 247 192 138;
+  --resala-300: 241 159 82;
+  --resala-400: 218 125 36;
+  --resala-500: 194 87 11;
+  --resala-600: 168 74 9;
+  --resala-700: 136 60 8;
+  --resala-800: 107 48 7;
+  --resala-900: 86 39 6;
+  --resala-950: 46 20 3;
+  --resala-eye-comfort-bg: #f7efe6;
+}
+
+html[data-theme='violet'] {
+  --resala-50: 244 240 251;
+  --resala-100: 228 217 245;
+  --resala-200: 200 179 234;
+  --resala-300: 168 136 221;
+  --resala-400: 139 99 207;
+  --resala-500: 109 63 181;
+  --resala-600: 92 47 160;
+  --resala-700: 74 37 130;
+  --resala-800: 58 29 102;
+  --resala-900: 47 24 82;
+  --resala-950: 25 12 44;
+  --resala-eye-comfort-bg: #f2eefb;
+}
+
+html[data-theme='dark'] {
+  /* Brighter accent so buttons/links still pop against dark surfaces */
+  --resala-50: 219 241 234;
+  --resala-100: 187 230 213;
+  --resala-200: 140 212 184;
+  --resala-300: 94 194 156;
+  --resala-400: 60 178 134;
+  --resala-500: 45 156 120;
+  --resala-600: 52 168 130;
+  --resala-700: 40 140 108;
+  --resala-800: 33 116 90;
+  --resala-900: 26 92 71;
+  --resala-950: 12 46 36;
+  --resala-eye-comfort-bg: #1c2230;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  background-color: #f7f8fa;
+  color: #1a1a1a;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+body.eye-comfort {
+  background-color: var(--resala-eye-comfort-bg);
+}
+
+body.density-compact {
+  font-size: 0.875rem;
+}
+
+/* ---------------------------------------------------------------------
+   Dark theme surface overrides.
+   The rest of the app is written with plain Tailwind grays (bg-white,
+   text-gray-500, border-gray-200 ...). Rather than touching every view,
+   we re-point those fixed utility classes when the dark theme is active
+   so cards/tables/inputs stay legible without a full component rewrite.
+   --------------------------------------------------------------------- */
+html[data-theme='dark'] body {
+  background-color: #11141b;
+  color: #e5e7eb;
+}
+
+html[data-theme='dark'] .bg-white {
+  background-color: #1b1f2a !important;
+}
+html[data-theme='dark'] .bg-gray-50 {
+  background-color: #161a23 !important;
+}
+html[data-theme='dark'] .bg-gray-100 {
+  background-color: #232838 !important;
+}
+html[data-theme='dark'] .bg-black\/40 {
+  background-color: rgb(0 0 0 / 0.6) !important;
+}
+html[data-theme='dark'] .text-gray-800,
+html[data-theme='dark'] .text-gray-900 {
+  color: #e9ebf0 !important;
+}
+html[data-theme='dark'] .text-gray-700 {
+  color: #d3d7e0 !important;
+}
+html[data-theme='dark'] .text-gray-600 {
+  color: #b6bcc9 !important;
+}
+html[data-theme='dark'] .text-gray-500 {
+  color: #98a0b0 !important;
+}
+html[data-theme='dark'] .text-gray-400 {
+  color: #7d8496 !important;
+}
+html[data-theme='dark'] .border,
+html[data-theme='dark'] .border-t,
+html[data-theme='dark'] .border-b,
+html[data-theme='dark'] .border-gray-200 {
+  border-color: #2b3040 !important;
+}
+html[data-theme='dark'] input,
+html[data-theme='dark'] select,
+html[data-theme='dark'] textarea {
+  background-color: #1a1e29;
+  color: #e9ebf0;
+  border-color: #333a4a;
+}
+html[data-theme='dark'] thead.bg-gray-50,
+html[data-theme='dark'] .text-gray-400.border-b {
+  background-color: #171b26 !important;
+}
+html[data-theme='dark'] tr:nth-child(even) td {
+  background-color: #1a1e29;
+}
+html[data-theme='dark'] .shadow-sm,
+html[data-theme='dark'] .shadow-xl {
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.5);
+}
+
+/* Scrollbars sized comfortably for touch-POS screens */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #cbd5d1;
+  border-radius: 9999px;
+}
+html[data-theme='dark'] ::-webkit-scrollbar-thumb {
+  background-color: #3a4152;
+}
+
+/* Elements marked .no-print never appear in the browser print dialog
+   (e.g. action toolbars on report screens). */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
