@@ -1,0 +1,5 @@
+{
+  "buildCommand": "npm run bill || npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install"
+}

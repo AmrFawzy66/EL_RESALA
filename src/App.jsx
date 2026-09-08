@@ -1,37 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 
-// --- أيقونات ELOS الاحترافية الموحدة ---
-const Icon = ({ name, className = "w-5 h-5" }) => {
-  const icons = {
-    menu: <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>,
-    search: <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>,
-    dashboard: <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>,
-    pos: <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>,
-    drawer: <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm0 4v2H5V7h14zm-5 6h-4v-2h4v2zM5 19v-6h14v6H5z"/>,
-    audit: <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-7 2h5v2h-5V5zm-4 4h9v2H8V9zm0 4h9v2H8v-2zm0 4h6v2H8v-2z"/>,
-    repairs: <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/>,
-    wallet: <path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>,
-    bank: <path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>,
-    lock: <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>,
-    open: <path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/>,
-    barcode: <path d="M2 4h2v16H2zm4 0h1v16H6zm3 0h2v16H9zm4 0h1v16h-1zm3 0h2v16h-2zm4 0h2v16h-2z"/>,
-    customers: <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>,
-    users: <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>,
-    reports: <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>,
-    settings: <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c-.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>,
-    print: <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/>,
-    check: <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>,
-    logout: <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>,
-    installments: <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>,
-    transfers: <path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/>
-  };
-  return <svg className={className} fill="currentColor" viewBox="0 0 24 24">{icons[name] || icons.dashboard}</svg>;
-};
-
 export default function App() {
-  // المصادقة الشاملة وإلغاء الدخول التلقائي
   const [user, setUser] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("elos_user_auth")); } catch { return null; }
+    try { return JSON.parse(localStorage.getItem("elos_auth_v9")); } catch { return null; }
   });
   const [loginUsername, setLoginUsername] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -44,38 +15,36 @@ export default function App() {
   }, []);
 
   const [currentTab, setCurrentTab] = useState("dashboard");
-  const [activePopover, setActivePopover] = useState(null); // 'inventory', 'sales', 'management'
+  const [activePopover, setActivePopover] = useState(null);
   const [toastMsg, setToastMsg] = useState("");
   const [shiftModal, setShiftModal] = useState(false);
 
-  // قواعد البيانات الكاملة القابلة للتحكم (CRUD)
-  const [products, setProducts] = useState(() => JSON.parse(localStorage.getItem("elos_p_v8") || JSON.stringify([
-    { id: 1, name: "اوبو رينو 13F (مستعمل/زيرو)", barcode: "700001", category: "الأجهزة", buy_price: 7500, retail_price: 8900, whole_price: 8500, stock: 5 },
+  // قواعد البيانات القابلة للتحكم (CRUD)
+  const [products, setProducts] = useState(() => JSON.parse(localStorage.getItem("elos_p_v9") || JSON.stringify([
+    { id: 1, name: "اوبو رينو 13F (مستعمل)", barcode: "700001", category: "الأجهزة", buy_price: 7500, retail_price: 8900, whole_price: 8500, stock: 5 },
     { id: 2, name: "شاحن سامسونج أصلي 25W", barcode: "622001", category: "الإكسسوارات", buy_price: 85, retail_price: 160, whole_price: 110, stock: 45 },
-    { id: 3, name: "شاشة كاملة Samsung A12 أصلية", barcode: "622005", category: "قطع الغيار", buy_price: 450, retail_price: 750, whole_price: 580, stock: 8 }
+    { id: 3, name: "شاشة كاملة Samsung A12", barcode: "622005", category: "قطع الغيار", buy_price: 450, retail_price: 750, whole_price: 580, stock: 8 }
   ])));
 
   const [cart, setCart] = useState([]);
-  const [priceTier, setPriceTier] = useState("retail");
-  const [repairs, setRepairs] = useState(() => JSON.parse(localStorage.getItem("elos_r_v8") || JSON.stringify([
-    { id: "R-202609-000001#", client: "محمود", phone: "012130", device: "Samsung A12", issue: "الشاشة مكسورة وتحتاج تغيير - يرجى فحص الإطار.", status: "تم التسليم", cost: 650, date: "2026/9/3" },
-    { id: "R-202609-000002#", client: "محمد محمود", phone: "01008235456", device: "Oppo reno13F", issue: "البطارية ضعيفة وتنفذ بسرعة - العميل يطلب تغيير.", status: "جاهز للتسليم", cost: 500, date: "2026/9/3" }
+  const [repairs, setRepairs] = useState(() => JSON.parse(localStorage.getItem("elos_r_v9") || JSON.stringify([
+    { id: "R-202609-000001#", client: "محمود", phone: "012130", device: "Samsung A12", issue: "الشاشة مكسورة وتحتاج تغيير", status: "تم التسليم", cost: 650, date: "2026/9/3" },
+    { id: "R-202609-000002#", client: "محمد محمود", phone: "01008235456", device: "Oppo reno13F", issue: "البطارية ضعيفة وتنفذ بسرعة", status: "جاهز للتسليم", cost: 500, date: "2026/9/3" }
   ])));
 
-  const [wallets, setWallets] = useState(() => JSON.parse(localStorage.getItem("elos_w_v8") || JSON.stringify([
+  const [wallets, setWallets] = useState(() => JSON.parse(localStorage.getItem("elos_w_v9") || JSON.stringify([
     { id: "w1", name: "فودافون كاش", phone: "01002345678", balance: 5400 },
-    { id: "w2", name: "أورنج كاش", phone: "01200112233", balance: 1850 },
-    { id: "w3", name: "إنستاباي", phone: "elresala@instapay", balance: 12400 }
+    { id: "w2", name: "إنستاباي", phone: "elresala@instapay", balance: 12400 }
   ])));
 
-  const [safeBalance, setSafeBalance] = useState(() => Number(localStorage.getItem("elos_s_v8") || 8500));
-  const [salesLog, setSalesLog] = useState(() => JSON.parse(localStorage.getItem("elos_sl_v8") || "[]"));
+  const [safeBalance, setSafeBalance] = useState(() => Number(localStorage.getItem("elos_s_v9") || 8500));
+  const [salesLog, setSalesLog] = useState(() => JSON.parse(localStorage.getItem("elos_sl_v9") || "[]"));
 
-  useEffect(() => { localStorage.setItem("elos_p_v8", JSON.stringify(products)); }, [products]);
-  useEffect(() => { localStorage.setItem("elos_r_v8", JSON.stringify(repairs)); }, [repairs]);
-  useEffect(() => { localStorage.setItem("elos_w_v8", JSON.stringify(wallets)); }, [wallets]);
-  useEffect(() => { localStorage.setItem("elos_s_v8", String(safeBalance)); }, [safeBalance]);
-  useEffect(() => { localStorage.setItem("elos_sl_v8", JSON.stringify(salesLog)); }, [salesLog]);
+  useEffect(() => { localStorage.setItem("elos_p_v9", JSON.stringify(products)); }, [products]);
+  useEffect(() => { localStorage.setItem("elos_r_v9", JSON.stringify(repairs)); }, [repairs]);
+  useEffect(() => { localStorage.setItem("elos_w_v9", JSON.stringify(wallets)); }, [wallets]);
+  useEffect(() => { localStorage.setItem("elos_s_v9", String(safeBalance)); }, [safeBalance]);
+  useEffect(() => { localStorage.setItem("elos_sl_v9", JSON.stringify(salesLog)); }, [salesLog]);
 
   const showToast = (msg) => {
     setToastMsg(msg);
@@ -102,24 +71,23 @@ export default function App() {
     if ((loginUsername === "admin" && loginPassword === "admin1234") || (loginUsername === "cashier" && loginPassword === "1234")) {
       const u = { username: loginUsername, name: loginUsername === "admin" ? "مدير النظام" : "كاشير" };
       setUser(u);
-      localStorage.setItem("elos_user_auth", JSON.stringify(u));
+      localStorage.setItem("elos_auth_v9", JSON.stringify(u));
     } else {
       setLoginError("اسم المستخدم أو كلمة المرور غير صحيحة");
     }
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("elos_user_auth");
+    localStorage.removeItem("elos_auth_v9");
     setUser(null);
   };
 
-  // شاشة تسجيل الدخول الإلزامية
   if (!user) {
     return (
       <div className="min-h-screen bg-[#111928] flex items-center justify-center p-4 font-sans" dir="rtl">
         <div className="w-full max-w-sm bg-[#182236] border border-slate-700 rounded-3xl p-6 text-white shadow-2xl">
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-black text-emerald-400">ELOS Accounting System</h1>
+            <h1 className="text-2xl font-black text-emerald-400">First Group - ELOS</h1>
             <p className="text-slate-400 text-xs mt-1">تسجيل الدخول إجباري للوصول للنظام</p>
           </div>
           <form onSubmit={handleLogin} className="space-y-4">
@@ -150,7 +118,6 @@ export default function App() {
         </div>
       )}
 
-      {/* الشريط العلوي المطابق لـ First Group / ELOS */}
       <header className="bg-[#1a2234] border-b border-slate-700/60 px-3 sm:px-4 py-2.5 sticky top-0 z-30 flex items-center justify-between gap-2">
         <div className="flex items-center gap-3">
           <span className="font-black text-sm text-white">First group</span>
@@ -170,21 +137,22 @@ export default function App() {
           <button onClick={() => setShiftModal(true)} className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold rounded-lg text-xs border border-slate-700">
             تقفيل الشفت
           </button>
+          <button onClick={handleLogout} className="px-2.5 py-1.5 bg-rose-600/20 text-rose-300 rounded-lg text-xs font-bold border border-rose-500/30">
+            خروج
+          </button>
         </div>
       </header>
 
-      {/* محتوى التبويبات الرئيسي */}
       <main className="flex-1 overflow-y-auto p-3 sm:p-5 pb-24 max-w-7xl mx-auto w-full">
-        {/* 1. الرئيسية (Dashboard) المطابقة لـ 57615.jpg */}
         {currentTab === "dashboard" && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="bg-[#1f293d] border border-slate-700/60 rounded-2xl p-4 flex flex-col justify-between">
-                <span className="text-xl font-black text-emerald-400 font-mono">0.00 ج.م</span>
+                <span className="text-xl font-black text-emerald-400 font-mono">{salesLog.reduce((a,b)=>a+b.total,0).toLocaleString()} ج.م</span>
                 <p className="text-xs text-slate-400 mt-2">مبيعات اليوم</p>
               </div>
               <div className="bg-[#1f293d] border border-slate-700/60 rounded-2xl p-4 flex flex-col justify-between">
-                <span className="text-xl font-black text-emerald-400 font-mono">0.00 ج.م</span>
+                <span className="text-xl font-black text-emerald-400 font-mono">{(salesLog.reduce((a,b)=>a+b.total,0)*0.2).toLocaleString()} ج.م</span>
                 <p className="text-xs text-slate-400 mt-2">ربح اليوم</p>
               </div>
               <div className="bg-[#1f293d] border border-slate-700/60 rounded-2xl p-4 flex flex-col justify-between">
@@ -192,14 +160,13 @@ export default function App() {
                 <p className="text-xs text-slate-400 mt-2">رصيد الخزينة الرئيسية</p>
               </div>
               <div className="bg-[#1f293d] border border-slate-700/60 rounded-2xl p-4 flex flex-col justify-between">
-                <span className="text-xl font-black text-white font-mono">0.00 ج.م</span>
-                <p className="text-xs text-slate-400 mt-2">صافي حركة الخزينة اليومية</p>
+                <span className="text-xl font-black text-white font-mono">{repairs.length} تذكرة</span>
+                <p className="text-xs text-slate-400 mt-2">أجهزة الصيانة</p>
               </div>
             </div>
           </div>
         )}
 
-        {/* 2. نقطة البيع (POS) المطابقة لـ 57616.jpg */}
         {currentTab === "pos" && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
             <div className="lg:col-span-5 bg-[#1f293d] border border-slate-700/60 rounded-2xl p-4 flex flex-col justify-between min-h-[500px]">
@@ -231,21 +198,13 @@ export default function App() {
                   setSalesLog([{ id: "INV-"+Math.floor(1000+Math.random()*9000), total: tot, itemsCount: cart.length }, ...salesLog]);
                   setCart([]);
                   showToast("تم إتمام الفاتورة بنجاح!");
-                  window.print();
-                }} disabled={cart.length === 0} className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 font-bold text-xs rounded-xl text-white">إتمام البيع</button>
+                }} disabled={cart.length === 0} className="w-full py-3 bg-emerald-600 font-bold text-xs rounded-xl text-white">إتمام البيع</button>
               </div>
             </div>
 
             <div className="lg:col-span-7 space-y-3">
-              <div className="bg-[#1f293d] border border-slate-700/60 p-3 rounded-2xl flex gap-2 overflow-x-auto text-xs">
-                <button onClick={() => setSelectedCategory("الأجهزة")} className={`px-4 py-2 rounded-xl font-bold ${selectedCategory==="الأجهزة"?"bg-emerald-600 text-white":"bg-[#121826] text-slate-300"}`}>الأجهزة</button>
-                <button onClick={() => setSelectedCategory("الإكسسوارات")} className={`px-4 py-2 rounded-xl font-bold ${selectedCategory==="الإكسسوارات"?"bg-emerald-600 text-white":"bg-[#121826] text-slate-300"}`}>الإكسسوارات</button>
-                <button onClick={() => setSelectedCategory("قطع الغيار")} className={`px-4 py-2 rounded-xl font-bold ${selectedCategory==="قطع الغيار"?"bg-emerald-600 text-white":"bg-[#121826] text-slate-300"}`}>قطع الغيار</button>
-                <button onClick={() => setSelectedCategory("الكل")} className={`px-4 py-2 rounded-xl font-bold ${selectedCategory==="الكل"?"bg-emerald-600 text-white":"bg-[#121826] text-slate-300"}`}>الكل</button>
-              </div>
-
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {products.filter(p => selectedCategory === "الكل" || p.category === selectedCategory).map(p => (
+                {products.map(p => (
                   <div key={p.id} onClick={() => {
                     setCart(prev => {
                       const ex = prev.find(i => i.id === p.id);
@@ -269,23 +228,20 @@ export default function App() {
           </div>
         )}
 
-        {/* 3. الصيانة المطابقة لـ 57617.jpg */}
         {currentTab === "repairs" && (
           <div className="bg-[#1f293d] border border-slate-700/60 rounded-2xl p-4 space-y-4">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-3 border-b border-slate-700/60">
-              <div className="flex gap-2 flex-wrap">
-                <button onClick={() => {
-                  const client = prompt("اسم العميل:");
-                  const phone = prompt("رقم الهاتف:");
-                  const device = prompt("نوع الجهاز:");
-                  const issue = prompt("العطل المشكلة:");
-                  const cost = Number(prompt("التكلفة:")) || 0;
-                  if(client && device) {
-                    setRepairs([{ id: "R-"+Date.now()+"#", client, phone: phone||"-", device, issue, status: "قيد الفحص", cost, date: new Date().toLocaleDateString("ar-EG") }, ...repairs]);
-                    showToast("تم استلام جهاز الصيانة بنجاح!");
-                  }
-                }} className="px-3 py-2 bg-emerald-600 text-white font-bold text-xs rounded-xl">+ استلام جديد</button>
-              </div>
+              <button onClick={() => {
+                const client = prompt("اسم العميل:");
+                const phone = prompt("رقم الهاتف:");
+                const device = prompt("نوع الجهاز:");
+                const issue = prompt("العطل المطلوب:");
+                const cost = Number(prompt("التكلفة:")) || 0;
+                if(client && device) {
+                  setRepairs([{ id: "R-"+Date.now()+"#", client, phone: phone||"-", device, issue, status: "قيد الفحص", cost, date: new Date().toLocaleDateString("ar-EG") }, ...repairs]);
+                  showToast("تم استلام جهاز الصيانة بنجاح!");
+                }
+              }} className="px-3 py-2 bg-emerald-600 text-white font-bold text-xs rounded-xl">+ استلام جديد</button>
               <span className="text-xs text-slate-400 font-mono">عدد التذاكر: {repairs.length}</span>
             </div>
 
@@ -324,31 +280,23 @@ export default function App() {
           </div>
         )}
 
-        {/* 4. التحويلات المطابقة لـ 57618.jpg */}
         {currentTab === "transfers" && (
           <div className="bg-[#1f293d] border border-slate-700/60 rounded-2xl p-4 space-y-4">
             <h3 className="text-base font-bold text-white">التحويلات المالية والمحافظ الإلكترونية</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {wallets.map(w => (
                 <div key={w.id} className="bg-[#121826] border border-slate-700 p-4 rounded-xl flex justify-between items-center text-xs">
                   <div>
                     <h4 className="font-bold text-white text-sm">{w.name}</h4>
                     <p className="text-slate-400 font-mono mt-0.5">{w.phone}</p>
                   </div>
-                  <div className="text-left">
-                    <span className="font-mono font-black text-cyan-400 text-sm">{w.balance.toLocaleString()} ج.م</span>
-                    <button onClick={() => {
-                      const amt = Number(prompt(`إيداع في ${w.name}:`));
-                      if(amt > 0) setWallets(wallets.map(x => x.id === w.id ? {...x, balance: x.balance + amt} : x));
-                    }} className="block mt-1 text-[10px] text-emerald-400 font-bold hover:underline">+ إيداع</button>
-                  </div>
+                  <span className="font-mono font-black text-cyan-400 text-sm">{w.balance.toLocaleString()} ج.م</span>
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        {/* 5. الأقساط المطابقة لـ 57619.jpg */}
         {currentTab === "installments" && (
           <div className="bg-[#1f293d] border border-slate-700/60 rounded-2xl p-4 space-y-4">
             <div className="flex justify-between items-center pb-3 border-b border-slate-700">
@@ -359,7 +307,6 @@ export default function App() {
           </div>
         )}
 
-        {/* 6. المخزون المطابق لـ 57622.jpg */}
         {currentTab === "inventory" && (
           <div className="bg-[#1f293d] border border-slate-700/60 rounded-2xl p-4 space-y-4">
             <div className="flex justify-between items-center pb-3 border-b border-slate-700">
@@ -388,63 +335,41 @@ export default function App() {
             </div>
           </div>
         )}
-
-        {/* 7. المبيعات والمشتريات والحسابات */}
-        {["sales", "purchases", "accounts"].includes(currentTab) && (
-          <div className="bg-[#1f293d] border border-slate-700/60 rounded-2xl p-6 text-center space-y-3">
-            <h3 className="text-base font-bold text-white">قسم العمليات والحسابات</h3>
-            <p className="text-xs text-slate-400">هذا القسم متصل تلقائياً بحركة المخزون والخزينة.</p>
-            <button onClick={() => setCurrentTab("dashboard")} className="px-4 py-2 bg-emerald-600 text-white font-bold text-xs rounded-xl">العودة للرئيسية</button>
-          </div>
-        )}
       </main>
 
-      {/* مودال تقفيل الشفت */}
       {shiftModal && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" dir="rtl">
           <div className="bg-[#1f293d] border border-slate-700 w-full max-w-md rounded-3xl p-6 text-white space-y-4 shadow-2xl">
             <h3 className="font-black text-base">تأكيد تقفيل الشفت</h3>
-            <div className="bg-[#121826] p-3 rounded-xl space-y-2 text-xs">
-              <div className="flex justify-between"><span>الخزينة النقدية:</span><strong className="text-emerald-400">{safeBalance} ج.م</strong></div>
-              <div className="flex justify-between"><span>إجمالي المحافظ:</span><strong className="text-cyan-400">{wallets.reduce((a,b)=>a+b.balance,0)} ج.م</strong></div>
-            </div>
             <div className="flex gap-2 pt-2">
-              <button onClick={() => { setShiftModal(false); showToast("تم تقفيل الشفت بنجاح!"); }} className="flex-1 py-3 bg-emerald-600 font-bold text-xs rounded-xl text-white">تأكيد التقفيل</button>
+              <button onClick={() => { setShiftModal(false); showToast("تم تقفيل الشفت بنجاح!"); }} className="flex-1 py-3 bg-emerald-600 font-bold text-xs rounded-xl text-white">تأكيد وبدء وردية جديدة</button>
               <button onClick={() => setShiftModal(false)} className="px-4 py-3 bg-slate-800 text-slate-400 text-xs rounded-xl">إلغاء</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* ==================== القوائم المنسدلة (Popovers) المطابقة لـ ELOS ==================== */}
-      {/* 1. قائمة المخزون */}
       {activePopover === "inventory" && (
         <div className="absolute bottom-16 left-1/2 -translate-x-32 bg-[#1f293d] border border-slate-700 rounded-2xl p-2 shadow-2xl z-50 text-xs w-48 space-y-1" onClick={e => e.stopPropagation()}>
           <button onClick={() => { setCurrentTab("inventory"); setActivePopover(null); }} className="w-full text-right px-3 py-2 hover:bg-[#121826] rounded-xl font-bold text-white flex items-center gap-2"><span>📦</span> المخازن والأصناف</button>
           <button onClick={() => { setCurrentTab("inventory"); setActivePopover(null); }} className="w-full text-right px-3 py-2 hover:bg-[#121826] rounded-xl font-bold text-white flex items-center gap-2"><span>📋</span> جرد المخزن</button>
-          <button onClick={() => { setCurrentTab("inventory"); setActivePopover(null); }} className="w-full text-right px-3 py-2 hover:bg-[#121826] rounded-xl font-bold text-white flex items-center gap-2"><span>🗑️</span> تقرير الهالك</button>
         </div>
       )}
 
-      {/* 2. قائمة المبيعات */}
       {activePopover === "sales" && (
         <div className="absolute bottom-16 left-1/2 -translate-x-20 bg-[#1f293d] border border-slate-700 rounded-2xl p-2 shadow-2xl z-50 text-xs w-48 space-y-1" onClick={e => e.stopPropagation()}>
           <button onClick={() => { setCurrentTab("pos"); setActivePopover(null); }} className="w-full text-right px-3 py-2 hover:bg-[#121826] rounded-xl font-bold text-white">📈 المبيعات العامة</button>
           <button onClick={() => { setCurrentTab("pos"); setActivePopover(null); }} className="w-full text-right px-3 py-2 hover:bg-[#121826] rounded-xl font-bold text-white">📱 مبيعات الأجهزة</button>
-          <button onClick={() => { setCurrentTab("pos"); setActivePopover(null); }} className="w-full text-right px-3 py-2 hover:bg-[#121826] rounded-xl font-bold text-white">🎧 مبيعات الإكسسوارات</button>
         </div>
       )}
 
-      {/* 3. قائمة الإدارة */}
       {activePopover === "management" && (
-        <div className="absolute bottom-16 left-1/2 -translate-x-44 bg-[#1f293d] border border-slate-700 rounded-2xl p-2 shadow-2xl z-50 text-xs w-48 space-y-1" onClick={e => e.stopPropagation()}>
+        <div className="absolute bottom-16 left-1/2 -translate-x-44 bg-[#1f293d] border border-slate-700 rounded-2xl p-2 shadow-2xl z-50 text-xs w-48 space-y-1" onClick= {e => e.stopPropagation()}>
           <button onClick={() => { setCurrentTab("dashboard"); setActivePopover(null); }} className="w-full text-right px-3 py-2 hover:bg-[#121826] rounded-xl font-bold text-white">👥 الموظفين</button>
-          <button onClick={() => { setCurrentTab("dashboard"); setActivePopover(null); }} className="w-full text-right px-3 py-2 hover:bg-[#121826] rounded-xl font-bold text-white">🔒 المستخدمين والصلاحيات</button>
           <button onClick={() => { setCurrentTab("dashboard"); setActivePopover(null); }} className="w-full text-right px-3 py-2 hover:bg-[#121826] rounded-xl font-bold text-white">⚙️ الإعدادات العامة</button>
         </div>
       )}
 
-      {/* ==================== شريط التنقل السفلي المطابق تماماً لـ ELOS ==================== */}
       <footer className="fixed bottom-0 left-0 right-0 bg-[#1a2234]/95 backdrop-blur-md border-t border-slate-700/60 px-1 py-1.5 flex items-center justify-around text-[10px] text-slate-300 z-40 shadow-2xl">
         <button onClick={() => setCurrentTab("dashboard")} className={`flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-xl transition ${currentTab==="dashboard"?"text-emerald-400 font-bold bg-[#121826]":""}`}>
           <span>الرئيسية</span>
@@ -464,7 +389,7 @@ export default function App() {
         <button onClick={(e) => { e.stopPropagation(); setActivePopover(activePopover==="inventory"?null:"inventory"); }} className={`flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-xl transition ${currentTab==="inventory"?"text-emerald-400 font-bold bg-[#121826]":""}`}>
           <span>المخزون ▾</span>
         </button>
-        <button onClick={(e) => { e.stopPropagation(); setActivePopover(activePopover==="sales"?null:"sales"); }} className={`flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-xl transition ${currentTab==="pos"?"text-emerald-400 font-bold bg-[#121826]":""}`}>
+        <button onClick={(e) => { e.stopPropagation(); setActivePopover(activePopover==="sales"?null:"sales"); }} className={`flex flex-col items-center gap-1 px-2.5 py-1 rounded-xl transition ${currentTab==="pos"?"text-emerald-400 font-bold bg-[#121826]":""}`}>
           <span>المبيعات ▾</span>
         </button>
         <button onClick={() => setCurrentTab("dashboard")} className="flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-xl">
