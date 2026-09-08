@@ -1,26 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 
-// --- أيقونات ELOS الاحترافية ---
-const Icon = ({ name, className = "w-5 h-5" }) => {
-  const icons = {
-    menu: <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>,
-    search: <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>,
-    dashboard: <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>,
-    pos: <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>,
-    drawer: <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm0 4v2H5V7h14zm-5 6h-4v-2h4v2zM5 19v-6h14v6H5z"/>,
-    audit: <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-7 2h5v2h-5V5zm-4 4h9v2H8V9zm0 4h9v2H8v-2zm0 4h6v2H8v-2z"/>,
-    repairs: <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/>,
-    wallet: <path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>,
-    lock: <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>,
-    open: <path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/>,
-    logout: <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
-  };
-  return <svg className={className} fill="currentColor" viewBox="0 0 24 24">{icons[name] || icons.dashboard}</svg>;
-};
-
 export default function App() {
   const [user, setUser] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("elos_auth_v8")); } catch { return null; }
+    try { return JSON.parse(localStorage.getItem("elos_auth_final")); } catch { return null; }
   });
   const [loginUsername, setLoginUsername] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -37,33 +19,32 @@ export default function App() {
   const [toastMsg, setToastMsg] = useState("");
   const [shiftModal, setShiftModal] = useState(false);
 
-  // قواعد البيانات الكاملة للسيستم
-  const [products, setProducts] = useState(() => JSON.parse(localStorage.getItem("elos_prods_v8") || JSON.stringify([
-    { id: 1, name: "اوبو رينو 13F (مستعمل)", barcode: "700001", category: "الأجهزة", buy_price: 7500, retail_price: 8900, whole_price: 8500, stock: 5 },
+  // قواعد البيانات التفاعلية بالكامل
+  const [products, setProducts] = useState(() => JSON.parse(localStorage.getItem("elos_p_final") || JSON.stringify([
+    { id: 1, name: "اوبو رينو 13F (مستعمل/زيرو)", barcode: "700001", category: "الأجهزة", buy_price: 7500, retail_price: 8900, whole_price: 8500, stock: 5 },
     { id: 2, name: "شاحن سامسونج أصلي 25W", barcode: "622001", category: "الإكسسوارات", buy_price: 85, retail_price: 160, whole_price: 110, stock: 45 },
-    { id: 3, name: "شاشة كاملة Samsung A12", barcode: "622005", category: "قطع الغيار", buy_price: 450, retail_price: 750, whole_price: 580, stock: 8 }
+    { id: 3, name: "شاشة كاملة Samsung A12 أصلية", barcode: "622005", category: "قطع الغيار", buy_price: 450, retail_price: 750, whole_price: 580, stock: 8 }
   ])));
 
   const [cart, setCart] = useState([]);
-  const [priceTier, setPriceTier] = useState("retail");
-  const [repairs, setRepairs] = useState(() => JSON.parse(localStorage.getItem("elos_rep_v8") || JSON.stringify([
+  const [repairs, setRepairs] = useState(() => JSON.parse(localStorage.getItem("elos_r_final") || JSON.stringify([
     { id: "R-202609-000001#", client: "محمود", phone: "012130", device: "Samsung A12", issue: "الشاشة مكسورة وتحتاج تغيير", status: "تم التسليم", cost: 650, date: "2026/9/3" },
     { id: "R-202609-000002#", client: "محمد محمود", phone: "01008235456", device: "Oppo reno13F", issue: "البطارية ضعيفة وتنفذ بسرعة", status: "جاهز للتسليم", cost: 500, date: "2026/9/3" }
   ])));
 
-  const [wallets, setWallets] = useState(() => JSON.parse(localStorage.getItem("elos_wal_v8") || JSON.stringify([
+  const [wallets, setWallets] = useState(() => JSON.parse(localStorage.getItem("elos_w_final") || JSON.stringify([
     { id: "w1", name: "فودافون كاش", phone: "01002345678", balance: 5400 },
     { id: "w2", name: "إنستاباي", phone: "elresala@instapay", balance: 12400 }
   ])));
 
-  const [safeBalance, setSafeBalance] = useState(() => Number(localStorage.getItem("elos_safe_v8") || 8500));
-  const [salesLog, setSalesLog] = useState(() => JSON.parse(localStorage.getItem("elos_sales_v8") || "[]"));
+  const [safeBalance, setSafeBalance] = useState(() => Number(localStorage.getItem("elos_s_final") || 8500));
+  const [salesLog, setSalesLog] = useState(() => JSON.parse(localStorage.getItem("elos_sl_final") || "[]"));
 
-  useEffect(() => { localStorage.setItem("elos_prods_v8", JSON.stringify(products)); }, [products]);
-  useEffect(() => { localStorage.setItem("elos_rep_v8", JSON.stringify(repairs)); }, [repairs]);
-  useEffect(() => { localStorage.setItem("elos_wal_v8", JSON.stringify(wallets)); }, [wallets]);
-  useEffect(() => { localStorage.setItem("elos_safe_v8", String(safeBalance)); }, [safeBalance]);
-  useEffect(() => { localStorage.setItem("elos_sales_v8", JSON.stringify(salesLog)); }, [salesLog]);
+  useEffect(() => { localStorage.setItem("elos_p_final", JSON.stringify(products)); }, [products]);
+  useEffect(() => { localStorage.setItem("elos_r_final", JSON.stringify(repairs)); }, [repairs]);
+  useEffect(() => { localStorage.setItem("elos_w_final", JSON.stringify(wallets)); }, [wallets]);
+  useEffect(() => { localStorage.setItem("elos_s_final", String(safeBalance)); }, [safeBalance]);
+  useEffect(() => { localStorage.setItem("elos_sl_final", JSON.stringify(salesLog)); }, [salesLog]);
 
   const showToast = (msg) => {
     setToastMsg(msg);
@@ -90,18 +71,18 @@ export default function App() {
     if ((loginUsername === "admin" && loginPassword === "admin1234") || (loginUsername === "cashier" && loginPassword === "1234")) {
       const u = { username: loginUsername, name: loginUsername === "admin" ? "مدير النظام" : "كاشير" };
       setUser(u);
-      localStorage.setItem("elos_auth_v8", JSON.stringify(u));
+      localStorage.setItem("elos_auth_final", JSON.stringify(u));
     } else {
       setLoginError("اسم المستخدم أو كلمة المرور غير صحيحة");
     }
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("elos_auth_v8");
+    localStorage.removeItem("elos_auth_final");
     setUser(null);
   };
 
-  // شاشة تسجيل الدخول الإلزامية
+  // شاشة تسجيل الدخول الإلزامية المطابقة لـ ELOS
   if (!user) {
     return (
       <div className="min-h-screen bg-[#111928] flex items-center justify-center p-4 font-sans" dir="rtl">
@@ -138,7 +119,7 @@ export default function App() {
         </div>
       )}
 
-      {/* الشريط العلوي */}
+      {/* الشريط العلوي المطابق لصور First Group / ELOS */}
       <header className="bg-[#1a2234] border-b border-slate-700/60 px-3 sm:px-4 py-2.5 sticky top-0 z-30 flex items-center justify-between gap-2">
         <div className="flex items-center gap-3">
           <span className="font-black text-sm text-white">First group</span>
@@ -158,7 +139,7 @@ export default function App() {
           <button onClick={() => setShiftModal(true)} className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold rounded-lg text-xs border border-slate-700">
             تقفيل الشفت
           </button>
-          <button onClick={handleLogout} className="px-2.5 py-1.5 bg-rose-600/20 text-rose-300 rounded-lg text-xs font-bold border border-rose-500/30" title="تسجيل الخروج">
+          <button onClick={handleLogout} className="px-2.5 py-1.5 bg-rose-600/20 text-rose-300 rounded-lg text-xs font-bold border border-rose-500/30">
             خروج
           </button>
         </div>
@@ -400,7 +381,7 @@ export default function App() {
         </div>
       )}
 
-      {/* الشريط السفلي المطابق تماماً لـ ELOS في صور العميل */}
+      {/* الشريط السفلي المطابق تماماً لصور ELOS */}
       <footer className="fixed bottom-0 left-0 right-0 bg-[#1a2234]/95 backdrop-blur-md border-t border-slate-700/60 px-1 py-1.5 flex items-center justify-around text-[10px] text-slate-300 z-40 shadow-2xl">
         <button onClick={() => setCurrentTab("dashboard")} className={`flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-xl transition ${currentTab==="dashboard"?"text-emerald-400 font-bold bg-[#121826]":""}`}>
           <span>الرئيسية</span>
@@ -420,7 +401,7 @@ export default function App() {
         <button onClick={(e) => { e.stopPropagation(); setActivePopover(activePopover==="inventory"?null:"inventory"); }} className={`flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-xl transition ${currentTab==="inventory"?"text-emerald-400 font-bold bg-[#121826]":""}`}>
           <span>المخزون ▾</span>
         </button>
-        <button onClick={(e) => { e.stopPropagation(); setActivePopover(activePopover==="sales"?null:"sales"); }} className={`flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-xl transition ${currentTab==="pos"?"text-emerald-400 font-bold bg-[#121826]":""}`}>
+        <button onClick={(e) => { e.stopPropagation(); setActivePopover(activePopover==="sales"?null:"sales"); }} className={`flex flex-col items-center gap-1 px-2.5 py-1 rounded-xl transition ${currentTab==="pos"?"text-emerald-400 font-bold bg-[#121826]":""}`}>
           <span>المبيعات ▾</span>
         </button>
         <button onClick={() => setCurrentTab("dashboard")} className="flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-xl">
